@@ -107,10 +107,10 @@ nationalTrends <- (
                           column(1),
                           column(10,
                                  br(),
-                                 hr(),
-                                 h1(
-                                   class = "instructions",
-                                   "Welcome to National Trends!", # some kind of intro to national trends in stop and search
+                                 div(
+                                   id="begin"
+                                 ),
+                                 # some kind of intro to national trends in stop and search
                                    # Welcome to National Trends!
                                    # This page provide a high-level view of trends in stop and search
                                    # Provides three key measures
@@ -119,39 +119,26 @@ nationalTrends <- (
                                    # Ethnic disparities: what it tells you
                                    # SOme button giving option to jump to dashboard view
                                    #
+                                  br(),
+                                  br(),
+                                  br(),
+                                  br(),
+                                   div(id = "end"),
+                                   includeScript('js-assets/intersectionObserver/render_on_view1.js'),
                                    br(),
                                    br(),
-                                   HTML(
-                                     "This page provides a high-level view of trends in stop and search in England and Wales including:
-                                        <ul> 
-                                          <li>summary stats by:</li>
-                                            <ul>
-                                              <li>time</li>
-                                              <li>legislation</li>
-                                              <li>reason for search</li>
-                                              <li>outcome</li>
-                                            </ul>
-                                          <li>comparisonns between PFAs</li>
-                                          <li>something else</li>
-                                       </ul>
-                                     "
-                                   ),
                                    br(),
-                                   HTML(
-                                     "There are three statistical measures to choose from
-                                        <ul> 
-                                          <li>summary stats</li>
-                                          <li>comparisonns between PFAs</li>
-                                          <li>something else</li>
-                                       </ul>
-                                     "
-                                   ),
+                                   br(),
+                                   br(),
+                                   br(),
+                                   br(),
+
                                    br(),
                                    "Bit of info about using the tool", icon("circle"), "in the legend to focus on a specific level of education.",
                                    br(),
                                    br(),
                                    br()
-                                 )),
+                                 ),
                           column(1))
           ),
           
