@@ -1,0 +1,272 @@
+ /* Import required fonts */
+/***************************************/
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono&display=swap|Public%20Sans&display=swap');
+
+
+
+
+/* Set size of all headers */
+h3{
+
+    font-size: 20px;
+    font-weight:600
+}
+
+ 
+ 
+ h4{
+  font-weight:bold;
+}
+
+ 
+p{
+
+    font-size: 12px;
+}
+ 
+
+
+/* a grey container to place dashboard items in*/ 
+.grey-container{
+  background-color:#f5f5f5;
+  margin-top: -4px;
+}
+ 
+
+ /* responsive layout for items placed in container - for larger screens*/
+.container-inner-contents{
+  display: flex;
+  flex-direction: row;
+  padding-left:-15px;
+  padding-right:-15px;
+  
+  
+}  
+
+ /* responsive layout for items placed in container - for for smaller screens*/
+@media (max-width: 800px) {
+.container-inner-contents {
+    flex-direction: column;
+}
+}
+
+
+
+
+/* Hero home banner styles */
+/***************************************/
+.hero{
+  /* Using "linear-gradient" to add gradient to the image. This will make the text easier to read */
+  background-image: linear-gradient(to bottom right, #868686, rgba(0, 0, 0, 0)), url("stopwatch_banner.jpg") ;
+
+
+ /* Set a specific height/add padding */
+  height: 92%;
+  display: flex;
+  padding-left:10px;
+  padding-right:10px;
+  padding-top:10px;
+  padding-bottom:10px;
+  margin-left:-15px;
+  margin-right:-15px;
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+
+/* formatting the header within the hero*/
+.hero h1{
+  font-family: 'Public Sans', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color:white;
+  }
+  
+  
+/* formatting the tagline within the hero*/
+.hero h2{
+  font-family: 'IBM Plex Mono', sans-serif;
+  font-size: 18px;
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 15px;
+ 
+  }
+
+/* navbar style
+/***************************************/
+.navbar-default {
+  font-family:  'Public Sans', sans-serif;
+  border: none;
+  margin: 0 !important;
+  font-weight:bold; 
+  padding: 5px;
+  background-color: white
+}
+
+.navbar-brand, .navbar-default:hover .navbar-brand:hover {
+  padding: 10px;
+
+}
+
+/* Changes font to black in nav bar */
+.navbar-default .navbar-nav > li > a {
+  color: black;
+
+}
+
+/* Changes colour of active (clicked) tab on the nav bar */
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+  outline: 1px solid #e10000;
+  background-color: inherit;
+  color: black;
+}
+
+
+
+
+
+
+
+/* section 2: boxes on homepage linking to different tabs*/ 
+
+
+/* Homepage - styling clickable buttons to take to new tab*/
+.featured-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    word-wrap: break-word;
+    background-clip: border-box;
+    box-shadow: rgb(27 31 35 / 10%) 0 1px 0;
+    flex:1; /* ensures that the boxes are evenly spaced in the container*/
+    margin:5px;
+    color: #333333;
+    font-family: 'Public Sans', sans-serif;
+    background-color: #ffffff;
+    }
+    
+/* Homepage - styling clickable buttons to take to new tab - change backaground color to lght grey on hover*/    
+ .featured-item:hover{
+   cursor: pointer;
+   background-color: #333333;
+   color: #ffffff;
+   
+
+}   
+
+
+
+/* Tab buttons - centre position all the text  */     
+.features-text-section {
+    text-align: center!important;
+    padding: 1rem;
+}
+
+
+
+
+/* Format icons on homepage*/ 
+.icon-box {
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+    margin: 15px auto 35px auto;
+    margin-bottom:10px;
+    background: #e10000;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+
+}
+
+
+.intro-widget-box {
+  background-color: #e10000;
+  font-size 16px;
+  padding-top: 5px; 
+  margin-top: 30px;
+}
+
+.page-title {
+  margin-left: 30px;
+  font-family: 'Public Sans', sans-serif;
+  font-size: 54px;
+  font-weight: 700;
+  
+}
+
+
+
+
+
+.box-collapsible  {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.scroll-left {
+ height: 30px;	
+ overflow: hidden;
+ position: relative;
+ font-size:16px;
+ font-family: 'Public Sans', sans-serif;
+ color: #f5f5f5;
+ background-color: #333333;
+ border: 1px solid #333333;
+ position: relative;
+ width: 250%;
+ height: 100%;
+ margin: 0;
+ line-height: 50px;
+ text-align: center;
+ /* Starting position */
+ transform:translateX(50%);
+ transform:translateX(50%);	
+ transform:translateX(50%);
+ /* Apply animation to this element */	
+ animation: scroll-left 30s linear infinite;
+ animation: scroll-left 30s linear infinite;
+ animation: scroll-left 30s linear infinite;
+}
+/* Move it (define the animation) */
+@keyframes scroll-left {
+ 0%   { transform: translateX(20%); }
+ 100% { transform: translateX(-50%); }
+}
+@keyframes scroll-left {
+ 0%   { transform: translateX(20%); }
+ 100% { transform: translateX(-50%); }
+}
+@keyframes scroll-left {
+ 0%   { 
+ transform: translateX(20%); /* Browser bug fix */
+ transform: translateX(20%); /* Browser bug fix */
+ transform: translateX(20%); 		
+ }
+ 100% { 
+ transform: translateX(-50%); /* Browser bug fix */
+ transform: translateX(-50%); /* Browser bug fix */
+ transform: translateX(-50%); 
+ }
+}
+
+.panel-expandible {
+  margin-bottom: 2px;
+}
+
+
+.control-panel{
+  max-width: 25vw;
+}
+
+.wrapper {
+  max-width:100vw;
+}

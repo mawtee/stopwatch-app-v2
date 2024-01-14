@@ -1,0 +1,13 @@
+.countUp{
+  text-align: center;
+  border-left: 6px solid #073b4c;
+  padding: 1em;
+}
+
+.countUp-title{
+  text-transform: uppercase;
+}
+
+.countUp-value{
+  font-size: 3em;
+}
