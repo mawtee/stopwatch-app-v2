@@ -22,6 +22,7 @@ library(scrollytell)
 library(shinyThings)
 library(anicon)
 library(shiny.fluent)
+library(shinybrowser)
 
 
 source("app/ui/home.R")
@@ -33,6 +34,8 @@ source("app/funs/onOffToggle_funs.R")
 
 
 df_pfa <- read_csv("data/dfPFA_clean_231009.csv")
+df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 
+                               ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
 df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
 
 
@@ -45,6 +48,8 @@ df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
 ui <- 
   tagList(
   useShinyjs(), 
+  # Get user browser size for scaling outputs
+  shinybrowser::detect(),
   navbarPage(position = c("fixed-top"),
     
     
@@ -62,6 +67,8 @@ ui <-
     
    # Declare CSS styles
    includeCSS("www/styles_old.css"),
+   
+
    
    # Home
    home,

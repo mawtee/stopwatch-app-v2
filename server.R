@@ -63,12 +63,17 @@ function(input, output, session) {
     countUp("Subscriptions", 16719, color = "#ffd166")
   })
   
-  output$hc <- renderHighchart({ 
+  output$hc4 <- renderHighchart({ 
+    
     highchart() %>% 
-      hc_chart(type = "column") %>% 
-      hc_yAxis(max = 7000000, min = 0) %>% 
+      hc_chart(type = "column", inverted=T) %>% 
+      hc_xAxis(categories=0,
+               gridLineColor= 'transparent',
+               labels=list(enabled=F),
+               lineColor= 'transparent', lineWidth= 0, tickLength=0) %>%
+      hc_yAxis(max = 7000000, min = 0, gridLineColor= 'transparent', lineColor= 'transparent', lineWidth= 0) %>% 
       #hc_xAxis(categories = c(2011:2021)) %>% 
-      hc_add_series(index=10, data = list(
+      hc_add_series(index=10, id="anno1",  data = list(
         list(sequence = rep(1189882, 11))
       ), dataLabels = list(
         enabled = TRUE,
@@ -78,8 +83,8 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
-      hc_add_series(index=9, data = list(
+        )), pointWidth=42) %>%
+      hc_add_series(index=9, id="anno2",  data = list(
         list(sequence = c(rep(NA,1), rep(1017542, 10)))
       ), dataLabels = list(
         enabled = TRUE,
@@ -88,8 +93,8 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
-      hc_add_series(index=8, data = list(
+        )), pointWidth=42) %>%
+      hc_add_series(index=8, id="anno3", data = list(
         list(sequence = c(rep(NA, 2), rep(904038, 9)))
       ), dataLabels = list(
         enabled = TRUE,
@@ -98,7 +103,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=7, data = list(
         list(sequence = c(rep(NA, 3), rep(541144, 8)))
       ), dataLabels = list(
@@ -108,8 +113,8 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
-      hc_add_series(index=6, data = list(
+        )), pointWidth=42) %>%
+      hc_add_series(index=6,  data = list(
         list(sequence = c(rep(NA, 4), rep(383595, 7)))
       ), dataLabels = list(
         enabled = TRUE,
@@ -118,7 +123,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=5, data = list(
         list(sequence = c(rep(NA, 5), rep(304132, 6)))
       ), dataLabels = list(
@@ -128,7 +133,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=4, data = list(
         list(sequence = c(rep(NA, 6), rep(282380, 5)))
       ), dataLabels = list(
@@ -138,7 +143,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=3, data = list(
         list(sequence = c(rep(NA, 7), rep(385154, 4)))
       ), dataLabels = list(
@@ -148,7 +153,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=2, data = list(
         list(sequence = c(rep(NA, 8), rep(579955, 3)))
       ), dataLabels = list(
@@ -158,7 +163,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=1, data = list(
         list(sequence = c(rep(NA, 9), rep(715987, 2)))
       ), dataLabels = list(
@@ -168,7 +173,7 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
       hc_add_series(index=0, data = list(
         list(sequence = c(rep(NA, 10), rep(530365, 1)))
       ), dataLabels = list(
@@ -178,14 +183,42 @@ function(input, output, session) {
           textOutline = F,
           fontWeight = 'bold',
           opacity = 1
-        ))) %>%
+        )), pointWidth=42) %>%
+      hc_annotations(
+        list(
+          labelOptions = list(
+            shape = "connector",
+            align = "right",
+            justify = FALSE,
+            crop = TRUE,
+            borderColor= '#e10000',
+            borderRadius=30,
+            backgroundColor='yellow',
+            style = list(
+              fontSize = "0.8em",
+              textOutline = "1px white",
+              backgroundColor='yellow'
+            )
+          ),
+          labels = list(
+            list(point = list(x = 0, y = 500000, xAxis = 0, yAxis = 0, linkedTo="anno1"), text = "value1"),
+            list(point = list(x = 0, y = 1500000, xAxis = 0, yAxis = 0, linkedTo="anno2"), text = "value2" ),
+            list(point = list(x = 0, y = 6000000, xAxis = 0, yAxis = 0, linkedTo="anno3"), text = "value3")
+          )
+        )
+      ) %>%
+    
+    
       
       hc_colors(rep("#e10000",2)) %>%
       hc_motion(enabled = TRUE, labels = 2011:2021, series = 0:10, autoPlay=T, loop=F) %>%
       hc_plotOptions(column = list(stacking = "normal"))
   }
   )
-  
+  output$hc <- renderHighchart({ 
+    plot__nattrend_timeline(df_pfa, input$year_range, browser_width(), browser_height())
+  }
+  )
   
   observeEvent(input$render_hc, {
     
@@ -196,12 +229,17 @@ function(input, output, session) {
     insertUI(
       selector = "#end",
       where = "afterEnd",
-      ui = fluidRow(
-        column(
-          3, countUpOutput("subs")
-        ),
-        column(6, highchartOutput("hc"))
+      ui = 
+        fluidPage(
+        fluidRow(
+          column(3, countUpOutput("subs"))
+          ),
+      fluidRow(
+        column(1),
+          column(10, highchartOutput("hc")),
+        column(10)
       )
+    )
       
       #    ui = tags$div(
       #      includeCSS("counter.css"),
@@ -212,6 +250,16 @@ function(input, output, session) {
   once=T
   )
   
+
+  
+  
+  browser_width <- reactive({
+    shinybrowser::get_width()
+  })
+  
+  browser_height <- reactive({
+    shinybrowser::get_height()
+  })
   
 
 }

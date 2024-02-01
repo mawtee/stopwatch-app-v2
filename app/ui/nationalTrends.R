@@ -99,52 +99,85 @@ nationalTrends <- (
       conditionalPanel(
         condition = "input.pageview_toggle_nattre > 0",
         fluidRow(
-          column(1),
-          
-          column(10,
-                 # intro text
-                 fluidRow(id='text',
-                          column(1),
-                          column(10,
-                                 br(),
-                                 div(
-                                   id="begin"
-                                 ),
-                                 # some kind of intro to national trends in stop and search
-                                   # Welcome to National Trends!
-                                   # This page provide a high-level view of trends in stop and search
-                                   # Provides three key measures
-                                   # Number: what it tells you
-                                   # Rate: what it tells you
-                                   # Ethnic disparities: what it tells you
-                                   # SOme button giving option to jump to dashboard view
-                                   #
-                                  br(),
-                                  br(),
-                                  br(),
-                                  br(),
-                                   div(id = "end"),
-                                   includeScript('js-assets/intersectionObserver/render_on_view1.js'),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   br(),
-                                   br(),
-
-                                   br(),
-                                   "Bit of info about using the tool", icon("circle"), "in the legend to focus on a specific level of education.",
-                                   br(),
-                                   br(),
-                                   br()
-                                 ),
-                          column(1))
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          fluidRow(
+            column(3),
+            column(6,align="center",
+                   shinyWidgets::sliderTextInput(
+                     inputId="year_range", label="Which year(s) would like to visualise?",
+                     choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
+                     force_edges=TRUE
+                   )
+            ),
+            column(3)
+            
           ),
+          div(id = "end"),
+         # fluidRow(
+         #   column(3),
+         #   column(6,align="center",
+         #          shinyWidgets::sliderTextInput(
+         #            inputId="year_range", label="Which year(s) would like to visualise?",
+         #            choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
+         #            force_edges=TRUE
+          #         )
+         #   ),
+         #   column(3)
+            
+         # ),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          div(id="begin"),
+          br(),
           
-          column(1),
-          
+          includeScript('js-assets/intersectionObserver/render_on_view1.js'),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br()
         ),
+
         scrolly_container(
           "scrcon_nattrend_agg", 
           scrolly_graph(
@@ -186,7 +219,20 @@ nationalTrends <- (
     )
   )
 )
-        
+ 
+
+
+# Number of searches
+# By ethnicity
+# By legislation
+# Reason/Object for search
+# Outcome of search
+
+# Select PFA 
+# have a map, and click the pfa 
+# timeline and counter renders as with above (the base range should be the range selected above)
+# drop into maps 
+       
       
 # add some tabs for number and rate
 # get plots looking good, with right colour an rate functionality
