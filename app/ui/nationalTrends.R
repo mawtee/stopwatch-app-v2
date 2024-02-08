@@ -79,11 +79,11 @@ nationalTrends <- (
           column(1,
             conditionalPanel(
               condition = "input.pageview_toggle_nattre > 0",
-              icon("fa-solid fa-basketball fa-bounce", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;")
+              icon("fas fa-chevron-down fa-bounce", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;")
             ),
             conditionalPanel(
               condition = "input.pageview_toggle_nattre == 0",
-              icon("fa-solid fa-basketball", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
+              icon("fas fa-chevron-down", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
             ),
           ),
           column(6,
@@ -92,13 +92,18 @@ nationalTrends <- (
         )
       ),
       
-      
+      # tags$i(class = " fa-3x")
       #-------------------------------------------------------------------------
       
       # Scrolly 
       conditionalPanel(
         condition = "input.pageview_toggle_nattre > 0",
         fluidRow(
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
           br(),
           br(),
           br(),
@@ -130,91 +135,96 @@ nationalTrends <- (
             
          # ),
           br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
           div(id="begin"),
-          br(),
           
-          includeScript('js-assets/intersectionObserver/render_on_view1.js'),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br()
+          includeScript('js-assets/intersectionObserver/render_on_view1.js') # AT SAME POINT WORK OUT HOW TO RENDER ONCE bottom of intro page has fully left the viewport
         ),
 
         scrolly_container(
-          "scrcon_nattrend_agg", 
-          scrolly_graph(
-            br(),
-            br(),
-            #textOutput("section"),
-            br(),
+          "scrcon_nattrend_agg"
+          ,
+          scrolly_graph(  # RE-DO PLOT IN HIGHCHARTS AND SEE IF CAN REPLICATE SAME EFFECT, THEN DO SO FOR THESE EXAMPLE PLOTS, THEN MOVE ONTO ACTUAL STOP-SEARCH DATA
+            div(style="height: 12vh"),
+            textOutput("section"),
+            div(uiOutput('metric_list'), style = 'font-size: 80%'),
             HTML('<center>'),
-            highchartOutput("plot__pfa_scr_nattrend_agg",  height = '430px'),
+            div(
+              highchartOutput("plot__pfa_scr_nattrend_agg", height = '95%'),
+              style = "height: 85vh; margin: auto; padding-top: 9vh; padding-bottom: 5vh;"),
             HTML('</center>')
-          ), 
+            
+          )
+          ,
           scrolly_sections(
             HTML('<center>'),
-            scrolly_section(
-              id = "year",
-              br(),
-              br(),
-              h3("Stop and search over time"), #
-              shinyWidgets::sliderTextInput(
-                inputId="year_range", label="Which year(s) would like to visualise?",
-                choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
-                force_edges=TRUE
-              ),
-            ),
-            scrolly_section(
-              id = "legislation",
-              h3("Legislation"),
-              p("dit is een paragraaf, die de grafiek rood maakt")
-            ),
-            scrolly_section(
-              id = "reasonForSearch","Reason for search"),
-            scrolly_section(
-              id = "outcome","Outcome of search"),
-            scrolly_section(id = "buffer_bottom", br()),
-            HTML('</center>'),
+            # scrolly_section(id = 0, render_text(0), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 1, render_text(1), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 2, render_text(2), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 3, render_text(3), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 4, render_text(4), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 5, render_text(5), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 6, render_text(6), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 7, render_text(7), br(), br(), br(), br(), br()),
+            # scrolly_section(id = 8, render_text(8), br(), br(), br(), br(), br()),
+            
+            #div(scrolly_section(id = 'year', render_text(1)),style = "height: 85vh;margin-top: 45vh;"),
+            #div(scrolly_section(id = "buffer1", render_text(0), br())),
+            div(scrolly_section(id = 'selfDefinedEthnicityGroup', render_text(2)),style = "height: 85vh;margin-top: 45vh;"),
+            div(scrolly_section(id = 'region', render_text(3)),style = "height: 85vh;margin-top: 45vh;"),
+            div(scrolly_section(id = 'legislation', render_text(4)),style = "height: 85vh;margin-top: 45vh;"),
+            div(scrolly_section(id = 'reasonForSearch', render_text(5)),style = "height: 85vh;margin-top: 45vh;"),
+            div(scrolly_section(id = 'outcome', render_text(6)),style = "height: 85vh;margin-top: 45vh;"),
+            # 
+            # div(scrolly_section(id = 0, render_text(0)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 1, render_text(1)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 2, render_text(2)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 3, render_text(3)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 4, render_text(4)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 5, render_text(5)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 6, render_text(6)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 7, render_text(7)),style = "height: 85vh;"),
+            # div(scrolly_section(id = 8, render_text(8)),style = "height: 85vh;"),
+            
+            # div(scrolly_section(id = 0, render_text(0)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 1, render_text(1)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 2, render_text(2)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 3, render_text(3)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 4, render_text(4)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 5, render_text(5)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 6, render_text(6)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 7, render_text(7)),style = paste0("height:", browser_height(), "px;")), 
+            # div(scrolly_section(id = 8, render_text(8)),style = paste0("height:", browser_height(), "px;")), 
+   
+
+
+            # add a scrolly_section with nothing in it;
+            # this buffer prevents the plot from disappearing while reading last section
+            #scrolly_section(id = "buffer2", br()),
+            br(),
+            br(),
+            br(),
+            br(),
+            br(),
+            br(),
+            br(),
+            br(),
+            br(),
+            HTML('</center>')
+            
           )
+          
+        ),
+        
+        br(),
+        br(),
+        br(),
+        
+        fluidRow(
+          leafletOutput("map")
         )
+        
+        #leafletOutput("map")
+        
       )
     )
   )

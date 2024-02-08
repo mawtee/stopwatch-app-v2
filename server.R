@@ -16,6 +16,10 @@ function(input, output, session) {
     plot__pfa_tsline_nat_hc(df_pfa, input$year_range, input$legislation_select)
   })
   
+  output$map <- renderLeaflet({
+    plot__pfa_map(df_pfa_sf, input$year_range)
+  })
+  
   output$hc_rep2 <- renderHighchart({
     plot__pfa_tsline_nat_hc(df_pfa, input$year_range, input$legislation_select)
   })
@@ -259,6 +263,32 @@ function(input, output, session) {
   
   browser_height <- reactive({
     shinybrowser::get_height()
+  })
+  
+  
+  
+  
+  output$introPlot <- renderPlotly({
+    introPlot
+  })
+  output$scr <- renderScrollytell({
+    scrollytell()
+  })
+  renderText(paste0("Section: ", input$scr))
+  observe({
+    cat("section:", input$scr, "\n")
+  })
+  
+  
+  output$metric_list <- renderUI({
+    radioGroupButtons(
+      inputId = "metric", label = "",
+      choices = c('Number of stop-searches', 'Rate of stop-search per 1,000 people', 'Ratio of stop-searches to recorded crimes'),
+      selected = 'Number of stop-searches',
+      size = 'sm',
+      justified = TRUE,
+      status = "default"
+    )
   })
   
 
