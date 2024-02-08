@@ -61,7 +61,7 @@ p{
 
 
  /* Set a specific height/add padding */
-  height: 92%;
+  height: 80vh;
   display: flex;
   padding-left:10px;
   padding-right:10px;
@@ -96,6 +96,8 @@ p{
   margin-bottom: 15px;
  
   }
+  
+
 
 /* navbar style
 /***************************************/
@@ -462,3 +464,41 @@ p{
 .wrapper {
   max-width:100vw;
 }
+
+
+
+.text {
+  padding-left: 15px;
+  padding-top: 100px;
+  text-align: left;
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+.sg{
+  color: black;
+    text-shadow: 2px 2px 14px #949494;
+}
+
+.sg-dark{
+  color: black;
+  text-shadow: 2px 2px 14px #24C96B;
+}
+
+.emph{
+  font-size: 30px;
+}
+
+a:hover{
+  color: black;
+}
+
+/* At some point need to get this right so that animation is same for all screens, need to consider how dimensions of active section interaction with last-child section
+.scrolly-section{
+   margin-top: 10vh; 
+}
+
+/*.scrolly-sections .scrolly-section:last-child {
+   margin-bottom: 100vh; 
+}
+*/

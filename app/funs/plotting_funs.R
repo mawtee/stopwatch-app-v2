@@ -202,29 +202,33 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
 
 plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, group) {
   
+
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
   #browser()
+  df_pfa <- df_pfa %>%
+    group_by(year, .data[[group]]) %>%
+    mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+    #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+    ungroup() %>% 
+    distinct(year, .data[[group]], .keep_all=T) %>%
+    select(year, .data[[group]], numberOfSearches) 
+    #arrange(.data[[group]]) %>%               # sort your dataframe
+    #mutate(group = factor(.data[[group]], unique(.data[[group]]))) # reset your factor-column based on that order
   
-  if (group=="year") {
-    df_pfa <- df_pfa %>%
-      group_by(year) %>%
-      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-     # mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
-      ungroup() %>% 
-      distinct(year, .keep_all=T) %>%
-      select(year, .data[[group]], numberOfSearches,)
-  }
-  if (group!="year") {
-    df_pfa <- df_pfa %>%
-      group_by(year, .data[[group]]) %>%
-      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-      #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
-      ungroup() %>% 
-      distinct(year, .data[[group]], .keep_all=T) %>%
-      select(year, .data[[group]], numberOfSearches)
-  }
+  df_pfa[group] <- eval(parse(text=paste0("factor(df_pfa$",group,")")))
+  df_pfa[group] <- eval(parse(text=paste0("fct_rev(reorder(df_pfa$",group,", df_pfa$numberOfSearches, .fun = mean))")))
 
+  #browser()
+  group_categories <- dplyr::n_distinct(df_pfa[group])
+  
+  #600000 #e10000 #f29191
+  pal <- colorRampPalette(rev(c("#600000", "#e10000", "#f29191")))
+  colors <- pal(group_categories)
+  #range01 <- function(x)(x-min(x))/diff(range(x))
+  #year_colors <- colorRamp(pal(group_categories))(range01(df_pfa$numberOfSearches))#(range01(year_widths))
+  #year_colors <- apply(year_colors, 1, function(xt)rgb(xt[1], xt[2], xt[3], maxColorValue=255))
+  
 
   plot <- df_pfa %>%
     hchart(
@@ -234,8 +238,12 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, group) {
       series = list(stacking = "normal")
     ) %>%
     hc_yAxis(
-      reversedStacks=F
-    )
+      reversedStacks=F,
+      title=list(text="Number of stop-searches")
+    ) %>%
+    hc_xAxis(title=list(text="")) %>%
+    hc_colors(rev(colors)) %>%
+    hc_legend(itemStyle=list(fontSize="1.6vh"))
 
   return(plot)
 
@@ -244,6 +252,33 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, group) {
 
 
 
+plot__pfa_map <- function(df_pfa_sf, year_range) {
+
+  year_range_int <- which(levels(df_pfa_sf$year) %in% year_range)
+  df_pfa_sf <- df_pfa_sf[df_pfa_sf$year %in% levels(df_pfa_sf$year)[year_range_int[1]:year_range_int[2]],]
+  #browser()
+  df_pfa_sf <- df_pfa_sf %>%
+    group_by(pfaName) %>%
+    mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+    #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+    ungroup() %>% 
+    distinct(pfaName, .keep_all=T) %>%
+    select(pfaName, numberOfSearches, geometry) 
+  
+  df_pfa_sf <- sf::st_as_sf(df_pfa_sf)
+  
+  
+  pal <- colorNumeric(
+    palette = "Reds",
+    domain = df_pfa_sf$numberOfSearches)
+  
+  leaflet(df_pfa_sf) %>%
+    addTiles() %>%
+    addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                fillColor = ~pal(numberOfSearches))
+  
+  
+}
 
 
 
@@ -289,3 +324,72 @@ plot__pfa_tsline_nat_anim <- function(df_pfa, year_range, legislation_select) {
   return(animplot)
   
 }
+
+
+render_text <- function(num){
+  
+  div(
+    text(num), class = "text"
+  )
+  
+}
+
+text <- function(num){
+  p(
+    switch(num,
+           text1,
+           text2,
+           text3,
+           text4,
+           text5,
+           text6,
+           text7,
+           text8
+    )
+  )
+}
+
+
+text2 <- HTML("<H2> Stop and search by ethnic group </H2>
+              <br> <p> Workers with <font color='#A00042'>no formal education credential</font> have a median income of $25,636.
+              <br> On average, those occupations have a <b>90% chance</b> of job automation.
+              <br><br> There are 23,765,700 workers with <font color='#A00042'>no formal education credential</font>.<p>")
+
+text3 <- HTML("<H2> Stop and search by region </H2>
+              <br> <p>Workers with <font color='#F56C42'>high school diplomas</font> have a median income of $25,636.
+              <br> On average, those occupations have a <b>60% chance</b> of job automation.
+              <br><br> There are 33,129,910 workers with a <font color='#F56C42'>high school diploma</font>.<p>")
+
+text4 <- HTML("<H2> Stop and search by legislation </H2>
+              <br> <p>Workers with <font color='#008640'>postsecondary nondegree awards</font> (e.g. actors) have a median income of $39,990.
+              <br> On average, those occupations have a <b>52% chance</b> of job automation.
+              <br><br> There are 5,904,150 workers with a <font color='#008640'>postsecondary nondegree award</font>.<p>")
+
+text5 <- HTML("<H2> Stop and search by reason for search </H2>
+              <br> <p>Workers with <font color='#3487BD'>associate's degrees</font> have a median income of $41,496.
+              <br> On average, those occupations have a <b>50% chance</b> of job automation.
+              <br><br> There are 1,869,840 workers with an <font color='#3487BD'>associate's degree</font>.<p>")
+
+text6 <- HTML("<H2> Stop and search by outcome of search </H2>
+              <br> <p>Workers with <font color='#C71C7E'>bachelor's degrees</font> have a median income of $59,124.
+              <br> On average, those occupations have a <b>20% chance</b> of job automation.
+              <br><br> There are 18,399,270 workers with a <font color='#C71C7E'>bachelor's degree</font>.<p>")
+
+text6 <- HTML("<H2> Master's degrees </H2>
+              <br> <p>Workers with <font color='#5E4FA2'>master's degrees</font> have a median income of $69,732.
+              <br> On average, those occupations have a <b>10% chance</b> of job automation.
+              <br><br> There are 1,281,710 workers with a <font color='#5E4FA2'>master's degree</font>.<p>")
+
+text7 <- HTML("<H2> Doctoral degrees </H2>
+              <br> <p>Workers with <b>doctoral degrees</b> have a median income of $84,396.
+              <br> On average, those occupations have a <b>3% chance</b> of job automation.
+              <br><br> There are 1,386,850 workers with a <b>doctoral degree</b>.<p>")
+
+text8 <- HTML("<H2> In Sum </H2>
+              <br> <p>All things considered, the nominal median income of an average US worker is <b>$31,786</b>.
+              <br>
+              <br> 47% of jobs are expected to face a high risk of automatization in the near future.<sup>1</sup><p>
+              <br><br><br>
+              <span style='font-size:11px'><sup>1</sup><a href='https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf' target='_blank'>Frey and Osborne (2013)</a>
+               write that 'associated occupations are potentially automatable over
+              some unspecified number of years, <i>perhaps a decade or two.'</i></span>")

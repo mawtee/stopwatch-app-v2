@@ -23,6 +23,9 @@ library(shinyThings)
 library(anicon)
 library(shiny.fluent)
 library(shinybrowser)
+library(sf)
+library(plotly)
+library(leaflet)
 
 
 source("app/ui/home.R")
@@ -38,7 +41,12 @@ df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21",
                                ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
 df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
 
+#library(here)
+#source(here("scripts_scr/source_code_for_shiny.R"))
+sf <- read_sf("data/pfa_merged_bounds_full_clipped_v2.geojson")
 
+
+df_pfa_sf <- left_join(df_pfa, sf, by=c("pfaName"="name"))
 
 
 
@@ -51,6 +59,8 @@ ui <-
   # Get user browser size for scaling outputs
   shinybrowser::detect(),
   navbarPage(position = c("fixed-top"),
+
+             
     
     
     # Add StopWatch logo to navigation bar
@@ -67,6 +77,7 @@ ui <-
     
    # Declare CSS styles
    includeCSS("www/styles_old.css"),
+   
    
 
    
