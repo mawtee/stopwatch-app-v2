@@ -153,7 +153,7 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
     hc_chart(type="timeline") %>%
     hc_xAxis(visible=F) %>%
     hc_yAxis(visible=F) %>%
-    hc_title(text="Timeline of space exploration") %>%
+    hc_title(text="Timeline of Stop and Search events") %>%
     hc_add_series(
       dataLabels = list(
         enabled = TRUE,
