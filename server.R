@@ -16,8 +16,8 @@ function(input, output, session) {
     plot__pfa_tsline_nat_hc(df_pfa, input$year_range, input$legislation_select)
   })
   
-  output$map <- renderLeaflet({
-    plot__pfa_map(df_pfa_sf, input$year_range)
+  output$map <- renderHighchart({
+    plot__pfa_map(df_pfa, bounds_pfa, input$year_range)
   })
   
   output$hc_rep2 <- renderHighchart({
@@ -46,7 +46,7 @@ function(input, output, session) {
   
   
   output$plot__pfa_scr_nattrend_agg <- renderHighchart ({
-    plot__pfa_scr_nattrend_agg(df_pfa, input$year_range, input$scrcon_nattrend_agg)
+    plot__pfa_scr_nattrend_agg(df_pfa, input$year_range, input$year_range_scr, input$scrcon_nattrend_agg)
   })
   output$distPlot <- renderPlot({
     # generate bins based on input$bins from ui.R
@@ -61,6 +61,9 @@ function(input, output, session) {
   #output$section <- renderText(paste0("Section: ", input$scrcon_nattrend_agg))
   
   observe({cat("section:", input$scrcon_nattrend_agg, "\n")})
+  
+  
+  
   
   
   output$subs <- renderCountUp({
@@ -291,6 +294,59 @@ function(input, output, session) {
     )
   })
   
+  
+  
+  year_range_list <- reactive({
+    levels(df_pfa$year)[which(levels(df_pfa$year) %in% input$year_range)[1]:which(levels(df_pfa$year) %in% input$year_range)[2]]
+  })
+  
+  
+  observeEvent(c(input$year_range,year_range_list()), {
+    shinyWidgets::updateSliderTextInput(
+      session, inputId="year_range_scr", 
+      choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+  }
+  )
+  # 
+  # observeEvent(c(input$year_range,year_range_list()), {
+  #   shinyWidgets::updateSliderTextInput(
+  #     session, inputId="year_range_scr3", 
+  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+  # }
+  # )
+  # 
+  # observeEvent(c(input$year_range,year_range_list()), {
+  #   shinyWidgets::updateSliderTextInput(
+  #     session, inputId="year_range_scr4", 
+  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+  # }
+  # )
+  # 
+  # observeEvent(c(input$year_range,year_range_list()), {
+  #   shinyWidgets::updateSliderTextInput(
+  #     session, inputId="year_range_scr5", 
+  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+  # }
+  # )
+  # 
+  # observeEvent(c(input$year_range,year_range_list()), {
+  #   shinyWidgets::updateSliderTextInput(
+  #     session, inputId="year_range_scr6", 
+  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+  # }
+  # )
+    
+  #   
+  # output$year_range_scr <- renderUI({
+  #   shinyWidgets::sliderTextInput(
+  #     inputId="year_range_scr", label="Press play to animate", 
+  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1],
+  #     animate=T)
+    #animate =
+  
+      #animate =
+       # animationOptions(loop = TRUE))
+
 
 }
 
