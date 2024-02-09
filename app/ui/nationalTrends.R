@@ -144,13 +144,18 @@ nationalTrends <- (
           "scrcon_nattrend_agg"
           ,
           scrolly_graph(  # RE-DO PLOT IN HIGHCHARTS AND SEE IF CAN REPLICATE SAME EFFECT, THEN DO SO FOR THESE EXAMPLE PLOTS, THEN MOVE ONTO ACTUAL STOP-SEARCH DATA
-            div(style="height: 12vh"),
+            div(style="height: 10vh"),
             textOutput("section"),
             div(uiOutput('metric_list'), style = 'font-size: 80%'),
+            shinyWidgets::sliderTextInput(
+              inputId="year_range_scr", label="Press play to view by year",
+              choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
+              animationOptions(interval=3500, loop=T)
+            ),
             HTML('<center>'),
             div(
               highchartOutput("plot__pfa_scr_nattrend_agg", height = '95%'),
-              style = "height: 85vh; margin: auto; padding-top: 9vh; padding-bottom: 5vh;"),
+              style = "height: 85vh; margin: auto; margin-bottom: 20vh; padding-top: 2vh; padding-bottom: 8vh;"),
             HTML('</center>')
             
           )
@@ -169,7 +174,7 @@ nationalTrends <- (
             
             #div(scrolly_section(id = 'year', render_text(1)),style = "height: 85vh;margin-top: 45vh;"),
             #div(scrolly_section(id = "buffer1", render_text(0), br())),
-            div(scrolly_section(id = 'selfDefinedEthnicityGroup', render_text(2)),style = "height: 85vh;margin-top: 45vh;"),
+            div(scrolly_section(id = 'selfDefinedEthnicityGroup', render_text(2)) ,style = "height: 85vh;margin-top: 45vh;"),
             div(scrolly_section(id = 'region', render_text(3)),style = "height: 85vh;margin-top: 45vh;"),
             div(scrolly_section(id = 'legislation', render_text(4)),style = "height: 85vh;margin-top: 45vh;"),
             div(scrolly_section(id = 'reasonForSearch', render_text(5)),style = "height: 85vh;margin-top: 45vh;"),
@@ -220,7 +225,7 @@ nationalTrends <- (
         br(),
         
         fluidRow(
-          leafletOutput("map")
+          highchartOutput("map", height='85vh')
         )
         
         #leafletOutput("map")

@@ -200,9 +200,12 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
 
 
 
-plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, group) {
+plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group) {
   
 
+  
+ # browser()
+  
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
   #browser()
@@ -216,33 +219,41 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, group) {
     #arrange(.data[[group]]) %>%               # sort your dataframe
     #mutate(group = factor(.data[[group]], unique(.data[[group]]))) # reset your factor-column based on that order
   
+  
+  
+  
   df_pfa[group] <- eval(parse(text=paste0("factor(df_pfa$",group,")")))
   df_pfa[group] <- eval(parse(text=paste0("fct_rev(reorder(df_pfa$",group,", df_pfa$numberOfSearches, .fun = mean))")))
-
+  
+  
   #browser()
-  group_categories <- dplyr::n_distinct(df_pfa[group])
+  #group_categories <- dplyr::n_distinct(df_pfa[group])
   
   #600000 #e10000 #f29191
-  pal <- colorRampPalette(rev(c("#600000", "#e10000", "#f29191")))
-  colors <- pal(group_categories)
+  #pal <- colorRampPalette(rev(c("#600000", "#e10000", "#f29191")))
+  #colors <- pal(group_categories)
   #range01 <- function(x)(x-min(x))/diff(range(x))
   #year_colors <- colorRamp(pal(group_categories))(range01(df_pfa$numberOfSearches))#(range01(year_widths))
   #year_colors <- apply(year_colors, 1, function(xt)rgb(xt[1], xt[2], xt[3], maxColorValue=255))
-  
+  #browser()
 
   plot <- df_pfa %>%
+    filter(year==year_range_scr) %>%
     hchart(
-      'column', hcaes(x=year, y=numberOfSearches, group=.data[[group]])
+      'column', hcaes(x=.data[[group]], y=numberOfSearches)
     ) %>%
-    hc_plotOptions(
-      series = list(stacking = "normal")
-    ) %>%
+    #hc_plotOptions(
+    #  series = list(stacking = "normal")
+    #) %>%
     hc_yAxis(
-      reversedStacks=F,
-      title=list(text="Number of stop-searches")
+      #reversedStacks=F,
+      title=list(text="Number of stop-searches"),
+      max=600000,
+      min=0
     ) %>%
     hc_xAxis(title=list(text="")) %>%
-    hc_colors(rev(colors)) %>%
+    
+    hc_colors("#e10000") %>%
     hc_legend(itemStyle=list(fontSize="1.6vh"))
 
   return(plot)
@@ -252,30 +263,36 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, group) {
 
 
 
-plot__pfa_map <- function(df_pfa_sf, year_range) {
+plot__pfa_map <- function(df_pfa, bounds_pfa, year_range) {
 
-  year_range_int <- which(levels(df_pfa_sf$year) %in% year_range)
-  df_pfa_sf <- df_pfa_sf[df_pfa_sf$year %in% levels(df_pfa_sf$year)[year_range_int[1]:year_range_int[2]],]
+  year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
   #browser()
-  df_pfa_sf <- df_pfa_sf %>%
+  df_pfa <- df_pfa %>%
     group_by(pfaName) %>%
     mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
     #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
     ungroup() %>% 
     distinct(pfaName, .keep_all=T) %>%
-    select(pfaName, numberOfSearches, geometry) 
+    select(pfaName, numberOfSearches) 
+  #df_pfa_sf <- sf::st_as_sf(df_pfa_sf)
   
-  df_pfa_sf <- sf::st_as_sf(df_pfa_sf)
   
+  min <- min(df_pfa$numberOfSearches)
+  max <- sort(df_pfa$numberOfSearches, TRUE)[2]+(.05*max(df_pfa$numberOfSearches))
+  rownames(df_pfa) <- df_pfa$pfaName
+  highchart() %>%
+    hc_title(text = "") %>%
+    hc_subtitle(text = "") %>%
+    hc_add_series_map(bounds_pfa, df_pfa, name="Number of stop-searches", value = "numberOfSearches", joinBy=c("pfa16nm", "pfaName"), borderColor="white", borderWidth=0.1) %>%
+    hc_colorAxis(
+      minColor = "#fce5e5",
+      maxColor = "#e10000",
+      min=min,
+      max=max
+    ) %>%
+    hc_mapNavigation(enabled = TRUE)
   
-  pal <- colorNumeric(
-    palette = "Reds",
-    domain = df_pfa_sf$numberOfSearches)
-  
-  leaflet(df_pfa_sf) %>%
-    addTiles() %>%
-    addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-                fillColor = ~pal(numberOfSearches))
   
   
 }
@@ -375,7 +392,7 @@ text6 <- HTML("<H2> Stop and search by outcome of search </H2>
               <br> On average, those occupations have a <b>20% chance</b> of job automation.
               <br><br> There are 18,399,270 workers with a <font color='#C71C7E'>bachelor's degree</font>.<p>")
 
-text6 <- HTML("<H2> Master's degrees </H2>
+text7 <- HTML("<H2> Master's degrees </H2>
               <br> <p>Workers with <font color='#5E4FA2'>master's degrees</font> have a median income of $69,732.
               <br> On average, those occupations have a <b>10% chance</b> of job automation.
               <br><br> There are 1,281,710 workers with a <font color='#5E4FA2'>master's degree</font>.<p>")

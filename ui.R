@@ -23,9 +23,8 @@ library(shinyThings)
 library(anicon)
 library(shiny.fluent)
 library(shinybrowser)
-library(sf)
 library(plotly)
-library(leaflet)
+library(geojsonio)
 
 
 source("app/ui/home.R")
@@ -43,11 +42,8 @@ df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
 
 #library(here)
 #source(here("scripts_scr/source_code_for_shiny.R"))
-sf <- read_sf("data/pfa_merged_bounds_full_clipped_v2.geojson")
-
-
-df_pfa_sf <- left_join(df_pfa, sf, by=c("pfaName"="name"))
-
+json_pfa <- "data/smoothed.geojson"
+bounds_pfa <- geojsonio::geojson_read(json_pfa, what = "list")
 
 
 # Define the UI
