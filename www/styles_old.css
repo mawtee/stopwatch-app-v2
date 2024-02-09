@@ -3,7 +3,9 @@
 @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono&display=swap|Public%20Sans&display=swap');
 
 
-
+hero-inner{
+  padding-top: 5%;
+}
 
 /* Set size of all headers */
 h3{
@@ -28,7 +30,7 @@ p{
 
 /* a grey container to place dashboard items in*/ 
 .grey-container{
-  background-color:#f5f5f5;
+  background-color:transparent;
   margin-top: -4px;
 }
  
@@ -39,7 +41,9 @@ p{
   flex-direction: row;
   padding-left:-15px;
   padding-right:-15px;
-  
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 2%;
   
 }  
 
@@ -61,11 +65,11 @@ p{
 
 
  /* Set a specific height/add padding */
-  height: 80vh;
+  height: 100vh;
   display: flex;
   padding-left:10px;
   padding-right:10px;
-  padding-top:10px;
+  padding-top:5%;
   padding-bottom:10px;
   margin-left:-15px;
   margin-right:-15px;
@@ -78,16 +82,42 @@ p{
 }
 
 
-/* formatting the header within the hero*/
+
+
+
+.hero h1 {
+  margin-left: 30px;
+  font-family: 'Public Sans', sans-serif;
+  height: 18vh;
+  font-size: 13.5vh;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 3vh;
+  
+}
+
+.hero h2 {
+  margin-left: 30px;
+  margin-bottom: 0px;
+  font-family: 'Public Sans', sans-serif;
+  height: 9vh;
+  font-size: 7vh;
+  color: white;
+  font-weight: normal;
+  margin-bottom: 10vh;
+}
+
+
+/* formatting the header within the hero
 .hero h1{
   font-family: 'Public Sans', sans-serif;
-  font-size: 36px;
+  font-size: 72px;
   font-weight: 700;
   color:white;
   }
   
   
-/* formatting the tagline within the hero*/
+/* formatting the tagline within the hero
 .hero h2{
   font-family: 'IBM Plex Mono', sans-serif;
   font-size: 18px;
@@ -97,7 +127,7 @@ p{
  
   }
   
-
+*/
 
 /* navbar style
 /***************************************/

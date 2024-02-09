@@ -1,13 +1,16 @@
 .countUp{
   text-align: center;
-  border-left: 6px solid #073b4c;
+  border-left: 6px solid #000000;
   padding: 1em;
+  color: red;
 }
 
 .countUp-title{
   text-transform: uppercase;
+  color: blue;
 }
 
 .countUp-value{
   font-size: 3em;
+  color: green;
 }

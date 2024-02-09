@@ -64,7 +64,7 @@ function(input, output, session) {
   
   
   output$subs <- renderCountUp({
-    countUp("Subscriptions", 16719, color = "#ffd166")
+    countUp("Number of stop and searches in the England & Wales", 1671794, color = "#fff")
   })
   
   output$hc4 <- renderHighchart({ 
