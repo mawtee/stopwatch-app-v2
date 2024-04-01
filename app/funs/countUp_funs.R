@@ -5,8 +5,8 @@ countUp <- function(title, value, color = "black"){
 countUpOutput <- function(id){
   el <- shiny::tags$div(
     id = id, class = "boxxy",
-    h1(id = sprintf("%s-boxxy-value", id), class = "boxxy-value"),
-    p(id = sprintf("%s-boxxy-title", id), class = "boxxy-title")
+    h1(id = sprintf("%s-boxxy-value", id), class = "countUp-value"),
+    p(id = sprintf("%s-boxxy-title", id), class = "countUp-title")
   )
   
   path <- normalizePath("js-assets/countUp")

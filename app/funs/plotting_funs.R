@@ -153,7 +153,7 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
     hc_chart(type="timeline") %>%
     hc_xAxis(visible=F) %>%
     hc_yAxis(visible=F) %>%
-    hc_title(text="Timeline of Stop and Search events") %>%
+    hc_title(text="") %>%
     hc_add_series(
       dataLabels = list(
         enabled = TRUE,
@@ -200,11 +200,32 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
 
 
 
-plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group) {
+plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group, ethnic_group, region_group, legislation_group, reason_group, outcome_group) {
   
-
+  if (group != "buffer1") {
   
- # browser()
+    #browser()
+  if(!is.null(ethnic_group)) {
+    df_pfa <- df_pfa %>% filter(selfDefinedEthnicityGroup %in% ethnic_group)
+  }
+  if(!is.null(region_group)) {
+    df_pfa <- df_pfa %>% filter(region %in% region_group)
+  }
+  if(!is.null(legislation_group)) {
+    df_pfa <- df_pfa %>% filter(legislation %in% legislation_group)
+  }
+  if(!is.null(reason_group)) {
+    df_pfa <- df_pfa %>% filter(reasonForSearch %in% reason_group)
+  }
+  if(!is.null(outcome_group)) {
+    df_pfa <- df_pfa %>% filter(outcome %in% outcome_group)
+  }
+  
+    
+    
+    
+  
+ #browser()
   
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
@@ -214,14 +235,14 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
     mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
     #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
     ungroup() %>% 
-    distinct(year, .data[[group]], .keep_all=T) %>%
-    select(year, .data[[group]], numberOfSearches) 
+    distinct(year, .data[[group]], .keep_all=T) #%>%
+    #select(year, .data[[group]], numberOfSearches) 
     #arrange(.data[[group]]) %>%               # sort your dataframe
     #mutate(group = factor(.data[[group]], unique(.data[[group]]))) # reset your factor-column based on that order
   
   
   
-  
+  #browser()
   df_pfa[group] <- eval(parse(text=paste0("factor(df_pfa$",group,")")))
   df_pfa[group] <- eval(parse(text=paste0("fct_rev(reorder(df_pfa$",group,", df_pfa$numberOfSearches, .fun = mean))")))
   
@@ -236,27 +257,98 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
   #year_colors <- colorRamp(pal(group_categories))(range01(df_pfa$numberOfSearches))#(range01(year_widths))
   #year_colors <- apply(year_colors, 1, function(xt)rgb(xt[1], xt[2], xt[3], maxColorValue=255))
   #browser()
+  #browser()
 
-  plot <- df_pfa %>%
-    filter(year==year_range_scr) %>%
-    hchart(
-      'column', hcaes(x=.data[[group]], y=numberOfSearches)
-    ) %>%
-    #hc_plotOptions(
-    #  series = list(stacking = "normal")
-    #) %>%
-    hc_yAxis(
-      #reversedStacks=F,
-      title=list(text="Number of stop-searches"),
-      max=600000,
-      min=0
-    ) %>%
-    hc_xAxis(title=list(text="")) %>%
+  if (nchar(year_range_scr)>8) {
+    df_pfa_plot <- df_pfa %>%
+      group_by(.data[[group]]) %>%
+      summarise(numberOfSearches = sum(numberOfSearches, na.mrm=T)) %>%
+      #summarise(numberOfSearches_fmt = case_when(
+      #   max(numberOfSearches)>1000000~round(sum(numberOfSearches, na.rm=T)/1000000, 2),
+      #   T~round(sum(numberOfSearches, na.rm=T)/1000, 2)
+      # )) %>%
+      ungroup() %>%
+      arrange(-numberOfSearches) 
+    max <-  max(df_pfa_plot$numberOfSearches)*1.1
+  
+  }
+  else {
+    max <- max(tapply(df_pfa$numberOfSearches, df_pfa[group], max))*1.1
+    df_pfa_plot <- df_pfa %>%
+      filter(year==year_range_scr) %>%
+      # filter(selfDefinedEthnicityGroup %in% ethnic_group) %>%
+      arrange(-numberOfSearches) 
+  }
+  
+  df_pfa_plot <- df_pfa_plot %>%
+    mutate(format = case_when(max(numberOfSearches) > 1000000~ "M", T~ "k")) %>%
+    mutate(numberOfSearches = case_when(format=="M"~ round(numberOfSearches/1000000,1), T~ round(numberOfSearches/1000,0)))
+  fmt <- unique(df_pfa_plot$format)
+  if (fmt == "M") {
+    max <- max/1000000
+  }
+  else {
+    max <- max/1000
+  }
+
+    plot <- df_pfa_plot %>%
+      hchart(
+        'bar', hcaes(x=.data[[group]], y=numberOfSearches)
+      ) %>%
+      hc_yAxis(
+        #reversedStacks=F,
+        #visible=F,
+        title=list(text=""),
+        min=0, max=max,
+        labels=list(
+          format=paste0("{value}",fmt)
+        ),
+        gridLineWidth=0
+        
+      ) %>%
+      hc_xAxis(title=list(text="")) %>%
+      
+      hc_colors("#e10000") %>%
+      # hc_plotOptions(
+      #   'bar' = list(
+      #     dataLabels = list(
+      #       enabled=T,
+      #       format=paste0("{y}",fmt),
+      #       x=.5, y=.5,
+      #       style = list(
+      #         fontSize = "14px", 
+      #         textOutline = FALSE,
+      #         
+      #         color = "#5b5b5b",
+      #         fontWeight = "normal"
+      #       )
+      #     )
+      #   )
+      # ) %>%
+      
+      hc_title(
+        text= paste0("Number of stop-searches, ",year_range_scr,"<br>''"),
+        align = "center",style = list(
+          fontSize ="18px",color = "#333333", 
+          fontFamily = "Arial", fontWeight = "400" )) 
+
+  
+  
+  
+  
+  # 
+  # if (length(year_range_scr)>2) {
+  #   max <-  df_pfa_plot$numberOfSearches
+  # }
+  # max <- max(df_pfa_plot$numberOfSearches*)
     
-    hc_colors("#e10000") %>%
-    hc_legend(itemStyle=list(fontSize="1.6vh"))
+   
+    # hc_legend(itemStyle=list(fontSize="1.6vh"))
+    
 
   return(plot)
+  
+  }
 
 }
 
@@ -367,27 +459,27 @@ text <- function(num){
 }
 
 
-text2 <- HTML("<H2> Stop and search by ethnic group </H2>
+text2 <- HTML("<H2>Ethnic disparties</H2>
               <br> <p> Workers with <font color='#A00042'>no formal education credential</font> have a median income of $25,636.
               <br> On average, those occupations have a <b>90% chance</b> of job automation.
               <br><br> There are 23,765,700 workers with <font color='#A00042'>no formal education credential</font>.<p>")
 
-text3 <- HTML("<H2> Stop and search by region </H2>
+text3 <- HTML("<H2>Regional disparities</H2>
               <br> <p>Workers with <font color='#F56C42'>high school diplomas</font> have a median income of $25,636.
               <br> On average, those occupations have a <b>60% chance</b> of job automation.
               <br><br> There are 33,129,910 workers with a <font color='#F56C42'>high school diploma</font>.<p>")
 
-text4 <- HTML("<H2> Stop and search by legislation </H2>
+text4 <- HTML("<H2>Legislation</H2>
               <br> <p>Workers with <font color='#008640'>postsecondary nondegree awards</font> (e.g. actors) have a median income of $39,990.
               <br> On average, those occupations have a <b>52% chance</b> of job automation.
               <br><br> There are 5,904,150 workers with a <font color='#008640'>postsecondary nondegree award</font>.<p>")
 
-text5 <- HTML("<H2> Stop and search by reason for search </H2>
+text5 <- HTML("<H2>Reason for search</H2>
               <br> <p>Workers with <font color='#3487BD'>associate's degrees</font> have a median income of $41,496.
               <br> On average, those occupations have a <b>50% chance</b> of job automation.
               <br><br> There are 1,869,840 workers with an <font color='#3487BD'>associate's degree</font>.<p>")
 
-text6 <- HTML("<H2> Stop and search by outcome of search </H2>
+text6 <- HTML("<H2>Outcome of search</H2>
               <br> <p>Workers with <font color='#C71C7E'>bachelor's degrees</font> have a median income of $59,124.
               <br> On average, those occupations have a <b>20% chance</b> of job automation.
               <br><br> There are 18,399,270 workers with a <font color='#C71C7E'>bachelor's degree</font>.<p>")

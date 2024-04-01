@@ -26,6 +26,14 @@ p{
     font-size: 12px;
 }
  
+ 
+ #subs {
+   color: #e10000;
+ }
+ 
+#boxxy-value {
+  font-size: 30vh;
+}
 
 
 /* a grey container to place dashboard items in*/ 
@@ -173,15 +181,18 @@ p{
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 18vw;
     word-wrap: break-word;
     background-clip: border-box;
     box-shadow: rgb(27 31 35 / 10%) 0 1px 0;
     flex:1; /* ensures that the boxes are evenly spaced in the container*/
-    margin:5px;
+    margin-left: .3vw;
+    margin-right: .3vw;
+    margin-top: 40vh;
+    margin-bottom: .2vh;
     color: #333333;
     font-family: 'Public Sans', sans-serif;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.8);
     }
     
 /* Homepage - styling clickable buttons to take to new tab - change backaground color to lght grey on hover*/    
@@ -221,6 +232,69 @@ p{
 }
 
 
+.parent {
+  background-color: white
+  border-radius: 25px;
+}
+
+
+
+/* 5 section, separated by simple line, same color as backgorund (div with horizontally divided elements, )
+Filter: "None"
+Filter: "Black"
+*/
+
+
+
+.divy{
+  display: inline-block;
+  vertical-align: text-top;
+  height: 95%;
+  width: 19%;
+  border-radius: 20px;
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-right: 10px;
+  background: #f6f7f8;
+    box-shadow: -5px -5px 9px
+  rgba(255,255,255,0.45), 5px 5px 9px
+  rgba(94,104,121,0.3);
+
+
+  /*display: inline-block;
+  vertical-align: text-top;
+  background-color:  #f8f8f8;
+  box-shadow: 5px 0 5px -2px #888;
+  width: 18%;
+  height: 90%;
+  border-radius: 15px;*/
+}
+
+
+.divy2{
+  display: inline-block;
+  vertical-align: text-top;
+  height: 95%;
+  width: 12%;
+  border-radius: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+    background: #f6f7f8;
+      box-shadow: inset -5px -5px 9px
+  rgba(255,255,255,0.45), inset 5px 5px 9px
+  rgba(94,104,121,0.3); 
+
+
+  /*
+  display: inline-block;
+  vertical-align: text-top;
+  background-color:  #e10000;
+  colour: white
+  box-shadow: 5px 0 5px -2px #888;
+  width: 18%;
+  height: 90%;
+  border-radius: 15px;*/
+}
 
 
 .intro-widget-box {
@@ -303,6 +377,51 @@ p{
   margin-left: 30px;
   color: white;
 }
+
+
+#scrcon_nattrend_agg {
+
+}
+
+#temp {
+  background-color: white;
+}
+
+ .tag-wrapper {
+     position: absolute;
+     top: 0px;
+     left: 80px;
+   }
+
+.header, .footer {
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 0px;
+  float: bottom;
+  z-index: 99 !important;
+  width: 103vw;
+  height: 18vh;
+  margin-left: -5vw;
+  margin-right: -5vw;
+  background: #f6f7f8;
+  justify-content: center;
+  align-items: center;
+  
+
+
+
+}
+
+
+.bootstrap-select .dropdown-menu li a span.text {
+ display: inline-block;
+ padding-top: 5px
+}
+
+
+
+
+
 
  /* All switch */
   .onoffswitch {
@@ -501,7 +620,7 @@ p{
   padding-left: 15px;
   padding-top: 100px;
   text-align: left;
-  font-size: 16px;
+  /*font-size: 16px;*/
   word-wrap: break-word;
 }
 
@@ -521,6 +640,22 @@ p{
 
 a:hover{
   color: black;
+}
+
+.irs irs--shiny js-irs-1 {
+height: 12px; width: 2px; font-size: 2px;
+}
+
+#sidebar {
+  margin-right:-2vw;
+}
+
+
+.fixed-ct {
+  position: sticky;
+  width:100vw;
+  height:23vh;
+  background: red;
 }
 
 /* At some point need to get this right so that animation is same for all screens, need to consider how dimensions of active section interaction with last-child section

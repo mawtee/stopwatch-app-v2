@@ -83,7 +83,7 @@ nationalTrends <- (
             ),
             conditionalPanel(
               condition = "input.pageview_toggle_nattre == 0",
-              icon("fas fa-chevron-down", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
+              icon("fas fa-chevron-down", "fa-6x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
             ),
           ),
           column(6,
@@ -134,33 +134,94 @@ nationalTrends <- (
          #   column(3)
             
          # ),
-          br(),
           div(id="begin"),
+
           
           includeScript('js-assets/intersectionObserver/render_on_view1.js') # AT SAME POINT WORK OUT HOW TO RENDER ONCE bottom of intro page has fully left the viewport
         ),
-
+        br(),
+        br(),
+        br(),
+        br(),
+        
+        #div(class=)
+        
         scrolly_container(
-          "scrcon_nattrend_agg"
-          ,
-          scrolly_graph(  # RE-DO PLOT IN HIGHCHARTS AND SEE IF CAN REPLICATE SAME EFFECT, THEN DO SO FOR THESE EXAMPLE PLOTS, THEN MOVE ONTO ACTUAL STOP-SEARCH DATA
+          "scrcon_nattrend_agg",
+         # div(id="temp", class="highchart html-widget html-widget-output shiny-report-size html-fill-item-overflow-hidden html-fill-item shiny-bound-output header",
+         # div(class="header-wrapper" ,
+
+         # ),
+          scrolly_graph( 
             div(style="height: 10vh"),
-            textOutput("section"),
-            div(uiOutput('metric_list'), style = 'font-size: 80%'),
-            shinyWidgets::sliderTextInput(
-              inputId="year_range_scr", label="Press play to view by year",
-              choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
-              animationOptions(interval=3500, loop=T)
-            ),
+            fluidRow(
+              column(12,
+            #div(uiOutput('metric_list'), style = 'font-size: 80%'),
+
             HTML('<center>'),
-            div(
-              highchartOutput("plot__pfa_scr_nattrend_agg", height = '95%'),
-              style = "height: 85vh; margin: auto; margin-bottom: 20vh; padding-top: 2vh; padding-bottom: 8vh;"),
+            div(sstyle="height:30vh"),
+            tagAppendAttributes(
+              div(
+              shinyWidgets::sliderTextInput(
+                inputId="year_range_scr", label="Press play to view by year",
+                choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
+                animationOptions(interval=3500, loop=T)
+              ),
+              style="position: absolute; top: 40%; right: 12%; z-index:1"
+              )
+            ),
+            #div(wellPanel(h1("panel")), style="width=100%", height="10%"),
+              div(
+                highchartOutput(
+                  "plot__pfa_scr_nattrend_agg", height = '100%'
+                  ),
+                style = "height: 65vh; margin: auto; padding-top: 2vh;"
+                ),
+           #div(wellPanel(h1("panel")), style="width:100%; height:40vw;"),
+           
+           # div(style="height:4vh"),
+            # 
+            # div(class="parent",
+            #     div(class="divy", HTML("<b>Ethnic Group</b><br>Filter: x")),
+            #     div(class="divy", HTML("<b>Region</b><br>Filter: x")),
+            #     div(class="divy", HTML("<b>Legislation</b><br>Filter: x")),
+            #     div(class="divy", HTML("<b>Reason for Search</b><br>Filter: x")),
+            #     div(class="divy", HTML("<b>Outcome of Search</b><br>Filter: x")),
+            #     
+            #     style="width:95%; height:20vh;"),
+           
+           # uiOutput("sidebar_ui"),
+            
             HTML('</center>')
             
-          )
-          ,
+          )#,
+          # column(3, 
+          #   wellPanel(
+          #     uiOutput("sidebar_ui"),
+          #   #uiOutput("sidebar_ui"),,
+          #   
+          # 
+          # 
+          #   
+          #   
+          #   style="width: 98%; height: 90%"))
+          # column(4,
+          #   div(style="height: 20vh"),
+          #   sidebarPanel(id="sidebar", width=12,
+          #                shinyWidgets::sliderTextInput(
+          #                  inputId="year_range_scr", label="Press play to view by year",
+          #                  choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
+          #                  animationOptions(interval=3500, loop=T)
+          #                ),
+          #                
+          #                )
+          #   )
+            ),
+          width="63.5%"#,
+          #style="margin-left:0.5vw" # need to div it
+          ),
           scrolly_sections(
+           
             HTML('<center>'),
             # scrolly_section(id = 0, render_text(0), br(), br(), br(), br(), br()),
             # scrolly_section(id = 1, render_text(1), br(), br(), br(), br(), br()),
@@ -173,12 +234,95 @@ nationalTrends <- (
             # scrolly_section(id = 8, render_text(8), br(), br(), br(), br(), br()),
             
             #div(scrolly_section(id = 'year', render_text(1)),style = "height: 85vh;margin-top: 45vh;"),
-            #div(scrolly_section(id = "buffer1", render_text(0), br())),
-            div(scrolly_section(id = 'selfDefinedEthnicityGroup', render_text(2)) ,style = "height: 85vh;margin-top: 45vh;"),
-            div(scrolly_section(id = 'region', render_text(3)),style = "height: 85vh;margin-top: 45vh;"),
-            div(scrolly_section(id = 'legislation', render_text(4)),style = "height: 85vh;margin-top: 45vh;"),
-            div(scrolly_section(id = 'reasonForSearch', render_text(5)),style = "height: 85vh;margin-top: 45vh;"),
-            div(scrolly_section(id = 'outcome', render_text(6)),style = "height: 85vh;margin-top: 45vh;"),
+            div(scrolly_section(id = "buffer1", render_text(0), br())),
+            div(
+              scrolly_section(
+                id = 'selfDefinedEthnicityGroup',
+                render_text(2), 
+                # shinyWidgets::multiInput(
+                #   inputId = "ethnic_group_scr", label = "Select ethnicity",
+                #   choices=unique(df_pfa$selfDefinedEthnicityGroup),
+                #   selected = unique(df_pfa$selfDefinedEthnicityGroup) ,
+                # ),
+                # selectInput(
+                #   inputId="ethnic_group_scr",
+                #   label="Select ethnicity",
+                #   choices=unique(df_pfa$selfDefinedEthnicityGroup),
+                #   selected = unique(df_pfa$selfDefinedEthnicityGroup) ,
+                #   multiple = T
+                # ),
+                pickerInput(
+                  inputId = "ethnic_group_scr",
+                            label = " Select ethnicity (click and press backspace to filter - working on a more user-friendly solution)",
+                            choices=c(unique(df_pfa$selfDefinedEthnicityGroup)),
+                            selected=c(unique(df_pfa$selfDefinedEthnicityGroup)), options = list(
+                              `actions-box` = TRUE), 
+                  multiple = TRUE
+                ),
+                # selectizeInput('season', "", choices = shots$SeasonNr, selected = TRUE, multiple = TRUE),
+              ) ,style = "height: 125vh;margin-top: 45vh;"),
+            div(
+              scrolly_section(
+                id = 'region', render_text(3),
+                pickerInput(
+                  inputId = "region_group_scr",
+                  label = " Select region (click and press backspace to filter - working on a more user-friendly solution)",
+                  choices=c(unique(df_pfa$region)),
+                  selected=c(unique(df_pfa$region)),
+                  options = list(
+                    `actions-box` = TRUE), 
+                  multiple = TRUE
+                )
+              ),
+              style = "height: 125vh;margin-top: 45vh;"
+            ),
+            div(
+              scrolly_section(
+                id = 'legislation', render_text(4),
+                pickerInput(
+                  inputId = "legislation_group_scr",
+                  label = " Select legislation (click and press backspace to filter - working on a more user-friendly solution)",
+                  choices=c(unique(df_pfa$legislation)),
+                  selected=c(unique(df_pfa$legislation)),
+                  options = list(
+                    `actions-box` = TRUE), 
+                  multiple = TRUE
+                )
+              ),
+              style = "height: 125vh;margin-top: 45vh;"
+            ),
+            div(
+              scrolly_section(
+                id = 'reasonForSearch', render_text(5),
+                pickerInput(
+                  inputId = "reason_group_scr",
+                  label = " Select reason (click and press backspace to filter - working on a more user-friendly solution)",
+                  choices=c(unique(df_pfa$reasonForSearch)),
+                  selected=c(unique(df_pfa$reasonForSearch)),
+                  options = list(
+                    `actions-box` = TRUE), 
+                  multiple = TRUE
+                )
+              ),
+              style = "height: 125vh;margin-top: 45vh;"
+            ),
+            div(
+              scrolly_section(
+                id = 'outcome', render_text(6),
+                div(style="height:1vh",
+                pickerInput(
+                  inputId = "outcome_group_scr",
+                  label = " Select outcome (click and press backspace to filter - working on a more user-friendly solution)",
+                  choices=c(unique(df_pfa$outcome)),
+                  selected=c(unique(df_pfa$outcome)),
+                  options = list(
+                    `actions-box` = TRUE), 
+                  multiple = TRUE
+                )
+                )
+              ),
+              style = "height: 125vh;margin-top: 45vh;"
+            ),
             # 
             # div(scrolly_section(id = 0, render_text(0)),style = "height: 85vh;"),
             # div(scrolly_section(id = 1, render_text(1)),style = "height: 85vh;"),
@@ -214,11 +358,26 @@ nationalTrends <- (
             br(),
             br(),
             br(),
-            HTML('</center>')
+            HTML('</center>'),
+            width="32.5%"#,
+            #style="margin-left:0.5vw" # need to div it
             
-          )
+         # )
+          #div(id="footer", wellPanel(h2("footer"), style="width: 90%"), style="position: sticky"), 
           
         ),
+        div(class="header", 
+            br(),
+            br(),
+            uiOutput("sidebar_ui")
+            # br(),
+            # br(),
+            # br(),
+            # br(),
+            # br(),
+        )
+        )
+        ,
         
         br(),
         br(),
@@ -227,9 +386,6 @@ nationalTrends <- (
         fluidRow(
           highchartOutput("map", height='85vh')
         )
-        
-        #leafletOutput("map")
-        
       )
     )
   )

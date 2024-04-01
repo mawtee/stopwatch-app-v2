@@ -10,7 +10,9 @@
   color: blue;
 }
 
+
 .countUp-value{
-  font-size: 3em;
-  color: green;
+  font-size: 10vh;
+  color: #e10000;
+  font-family: 'Public Sans', sans-serif;
 }

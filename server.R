@@ -46,7 +46,7 @@ function(input, output, session) {
   
   
   output$plot__pfa_scr_nattrend_agg <- renderHighchart ({
-    plot__pfa_scr_nattrend_agg(df_pfa, input$year_range, input$year_range_scr, input$scrcon_nattrend_agg)
+    plot__pfa_scr_nattrend_agg(df_pfa, input$year_range, input$year_range_scr, input$scrcon_nattrend_agg, input$ethnic_group_scr, input$region_group_scr, input$legislation_group_scr, input$reason_group_scr, input$outcome_group_scr)
   })
   output$distPlot <- renderPlot({
     # generate bins based on input$bins from ui.R
@@ -67,7 +67,7 @@ function(input, output, session) {
   
   
   output$subs <- renderCountUp({
-    countUp("Number of stop and searches in the England & Wales", 1671794, color = "#fff")
+    countUp("", 1671794, color = "#fff")
   })
   
   output$hc4 <- renderHighchart({ 
@@ -239,7 +239,7 @@ function(input, output, session) {
       ui = 
         fluidPage(
         fluidRow(
-          column(3, countUpOutput("subs"))
+          column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: 3vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
           ),
       fluidRow(
         column(1),
@@ -277,16 +277,16 @@ function(input, output, session) {
   output$scr <- renderScrollytell({
     scrollytell()
   })
-  renderText(paste0("Section: ", input$scr))
-  observe({
-    cat("section:", input$scr, "\n")
-  })
+  # renderText(paste0("Section: ", input$scr))
+  # observe({
+  #   cat("section:", input$scr, "\n")
+  # })
   
   
   output$metric_list <- renderUI({
     radioGroupButtons(
       inputId = "metric", label = "",
-      choices = c('Number of stop-searches', 'Rate of stop-search per 1,000 people', 'Ratio of stop-searches to recorded crimes'),
+      choices = c('Number of stop-searches', 'Rate of stop-search per 1,000 people'),
       selected = 'Number of stop-searches',
       size = 'sm',
       justified = TRUE,
@@ -304,48 +304,97 @@ function(input, output, session) {
   observeEvent(c(input$year_range,year_range_list()), {
     shinyWidgets::updateSliderTextInput(
       session, inputId="year_range_scr", 
-      choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+      choices=c(paste0(year_range_list()[1],"-",year_range_list()[length(year_range_list())]), year_range_list()[1:length(year_range_list())]), selected=paste0(year_range_list()[1],"-",year_range_list()[length(year_range_list())])
+    )
   }
   )
-  # 
-  # observeEvent(c(input$year_range,year_range_list()), {
-  #   shinyWidgets::updateSliderTextInput(
-  #     session, inputId="year_range_scr3", 
-  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
-  # }
-  # )
-  # 
-  # observeEvent(c(input$year_range,year_range_list()), {
-  #   shinyWidgets::updateSliderTextInput(
-  #     session, inputId="year_range_scr4", 
-  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
-  # }
-  # )
-  # 
-  # observeEvent(c(input$year_range,year_range_list()), {
-  #   shinyWidgets::updateSliderTextInput(
-  #     session, inputId="year_range_scr5", 
-  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
-  # }
-  # )
-  # 
-  # observeEvent(c(input$year_range,year_range_list()), {
-  #   shinyWidgets::updateSliderTextInput(
-  #     session, inputId="year_range_scr6", 
-  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
-  # }
-  # )
-    
-  #   
-  # output$year_range_scr <- renderUI({
-  #   shinyWidgets::sliderTextInput(
-  #     inputId="year_range_scr", label="Press play to animate", 
-  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1],
-  #     animate=T)
-    #animate =
   
-      #animate =
-       # animationOptions(loop = TRUE))
+  # observeEvent(c(input$year_range,year_range_list()), {
+  #   shinyWidgets::updateSliderTextInput(
+  #     session, inputId="year_range_sidebar", 
+  #     choices=year_range_list()[1:length(year_range_list())], selected=year_range_list()[1])
+  # }
+  # )
+  # 
+  # 
+  
+  
+  # 
+  # shinyWidgets::sliderTextInput(
+  #   inputId="year_range", label="Which year(s) would like to visualise?",
+  #   choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
+  #   force_edges=TRUE
+  # )
+
+  output$sidebar_ui <- renderUI({
+
+    myvalue <- input$scrcon_nattrend_agg
+    ethnic_group <- ifelse(length(input$ethnic_group_scr)==length(unique(df_pfa$selfDefinedEthnicityGroup)), "All", input$ethnic_group_scr)
+    region_group <-  ifelse(length(input$region_group_scr)==length(unique(df_pfa$region)), "All", input$region_group_scr)
+    legislation_group <- ifelse(length(input$legislation_group_scr)==length(unique(df_pfa$legislation)), "All", input$legislation_group_scr)
+    reason_group <- ifelse(length(input$reason_group_scr)==length(unique(df_pfa$reasonForSearch)), "All", input$reason_group_scr)
+    outcome_group <- ifelse(length(input$outcome_group_scr)==length(unique(df_pfa$outcome)), "All", input$outcome_group_scr)
+    
+    if(is.null(myvalue)) {
+    }
+    
+    else if(myvalue == "selfDefinedEthnicityGroup") {
+      div(class="parent",
+          div(class="divy2", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
+          
+          style="width:95%; height:15vh;")
+    }
+    else if(myvalue == "region") {
+      div(class="parent",
+          div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
+          div(class="divy2", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
+          
+          style="width:95%; height:15vh;")
+    }
+    else if(myvalue == "legislation") {
+      div(class="parent",
+          div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
+          div(class="divy2", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
+          
+          style="width:95%; height:15vh;")
+    }
+    else if(myvalue == "reasonForSearch") {
+      div(class="parent",
+          div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
+          div(class="divy2", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
+          
+          style="width:95%; height:15vh;")
+    }
+    else if(myvalue == "outcome") {
+      div(class="parent",
+          div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
+          div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
+          div(class="divy2", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
+          
+          style="width:95%; height:15vh;")
+    }
+    
+    else {
+      
+    }
+
+  })
+
 
 
 }
