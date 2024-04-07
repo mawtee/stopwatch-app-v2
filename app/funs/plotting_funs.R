@@ -330,10 +330,8 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
         text= paste0("Number of stop-searches, ",year_range_scr,"<br><br><br>","⠀."),
         align = "center",style = list(
           fontSize ="18px",color = "#333333", 
-          fontFamily = "Arial", fontWeight = "400" )) 
-
-  
-  
+          fontFamily = "Arial", fontWeight = "400" )) %>%
+      hc_exporting(enabled=T) 
   
   
   # 
@@ -347,9 +345,7 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
     
 
   return(plot)
-  
   }
-
 }
 
 
