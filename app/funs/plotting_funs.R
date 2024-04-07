@@ -327,7 +327,7 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
       # ) %>%
       
       hc_title(
-        text= paste0("Number of stop-searches, ",year_range_scr,"<br>''"),
+        text= paste0("Number of stop-searches, ",year_range_scr,"<br><br><br>","⠀."),
         align = "center",style = list(
           fontSize ="18px",color = "#333333", 
           fontFamily = "Arial", fontWeight = "400" )) 
@@ -460,29 +460,19 @@ text <- function(num){
 
 
 text2 <- HTML("<H2>Ethnic disparties</H2>
-              <br> <p> Workers with <font color='#A00042'>no formal education credential</font> have a median income of $25,636.
-              <br> On average, those occupations have a <b>90% chance</b> of job automation.
-              <br><br> There are 23,765,700 workers with <font color='#A00042'>no formal education credential</font>.<p>")
+              <br> <p> White people are far less likely to be stopped and searched in relation to people from all other Ethnic Groups. The likelyhood of being searched is X%, compared to a chance of X% being search for any other Ethnic Group.")
 
 text3 <- HTML("<H2>Regional disparities</H2>
-              <br> <p>Workers with <font color='#F56C42'>high school diplomas</font> have a median income of $25,636.
-              <br> On average, those occupations have a <b>60% chance</b> of job automation.
-              <br><br> There are 33,129,910 workers with a <font color='#F56C42'>high school diploma</font>.<p>")
+              <br> <p>People from X area more X times more likely to be stop and searched, in comparision to the rest of the country. <p>")
 
 text4 <- HTML("<H2>Legislation</H2>
-              <br> <p>Workers with <font color='#008640'>postsecondary nondegree awards</font> (e.g. actors) have a median income of $39,990.
-              <br> On average, those occupations have a <b>52% chance</b> of job automation.
-              <br><br> There are 5,904,150 workers with a <font color='#008640'>postsecondary nondegree award</font>.<p>")
+              <br><p>Section 1 (PACE) Section 44/47a (TACT) is the most likely legislation for being stopped and searched. With over X amount of searched compared to all other legislations combined<p>")
 
 text5 <- HTML("<H2>Reason for search</H2>
-              <br> <p>Workers with <font color='#3487BD'>associate's degrees</font> have a median income of $41,496.
-              <br> On average, those occupations have a <b>50% chance</b> of job automation.
-              <br><br> There are 1,869,840 workers with an <font color='#3487BD'>associate's degree</font>.<p>")
+              <br> <p>Drugs is the most likely reason for being stopped and searched. With over X amount of searched compared to all other regions combined.<p>")
 
 text6 <- HTML("<H2>Outcome of search</H2>
-              <br> <p>Workers with <font color='#C71C7E'>bachelor's degrees</font> have a median income of $59,124.
-              <br> On average, those occupations have a <b>20% chance</b> of job automation.
-              <br><br> There are 18,399,270 workers with a <font color='#C71C7E'>bachelor's degree</font>.<p>")
+              <br> <p>The most likely outcome of being stopped and searched would be Arrest, with X amount of searches resulting in an arrest, a percentage of X%<p>")
 
 text7 <- HTML("<H2> Master's degrees </H2>
               <br> <p>Workers with <font color='#5E4FA2'>master's degrees</font> have a median income of $69,732.
