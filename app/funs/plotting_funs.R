@@ -146,6 +146,7 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
   timeline_anim_duration <-  455*length(timeline_list_select) # duration for full 11-year series = 5 seconds -> (5000/11=455)
   #browser()
   
+  
   # Plot timeline
   #--------------------------------------------
   plot <- highchart() %>%
@@ -326,11 +327,14 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
       #   )
       # ) %>%
       
-      hc_title(
-        text= paste0("Number of stop-searches, ",year_range_scr,"<br>''"),
-        align = "center",style = list(
-          fontSize ="18px",color = "#333333", 
-          fontFamily = "Arial", fontWeight = "400" )) 
+    hc_title(
+      text= paste0("Number of stop-searches, ",year_range_scr,"<br>''"),
+      text= paste0("Number of stop-searches, ",year_range_scr,"<br><br><br>","⠀."),
+      align = "center",style = list(
+        fontSize ="18px",color = "#333333", 
+        fontFamily = "Arial", fontWeight = "400" )) %>%
+  hc_exporting(enabled=T) 
+
 
   
   
@@ -355,8 +359,9 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
 
 
 
-plot__pfa_map <- function(df_pfa, bounds_pfa, year_range) {
-
+plot__pfa_map <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
+  
+  #browser()
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
   #browser()
@@ -366,27 +371,762 @@ plot__pfa_map <- function(df_pfa, bounds_pfa, year_range) {
     #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
     ungroup() %>% 
     distinct(pfaName, .keep_all=T) %>%
-    select(pfaName, numberOfSearches) 
-  #df_pfa_sf <- sf::st_as_sf(df_pfa_sf)
+    select(pfaName, numberOfSearches)
   
+ # 
+  #browser()
+  if (!is.null(pfa_select)) {
+   
+    
+  #df_pfa_sf <- sf::st_as_sf(df_pfa_sf)
   
   min <- min(df_pfa$numberOfSearches)
   max <- sort(df_pfa$numberOfSearches, TRUE)[2]+(.05*max(df_pfa$numberOfSearches))
-  rownames(df_pfa) <- df_pfa$pfaName
+  
+  df_pfa_nonselect <- df_pfa %>% filter(pfaName != pfa_select)
+  df_pfa_select <- df_pfa %>% filter(pfaName == pfa_select)
+  
+  vec <- c()
+  for (i in 1:length(bounds_pfa$features)) {
+    if (bounds_pfa$features[[i]]$properties$pfa16nm == pfa_select) {
+      vec[i] <- 1
+    }
+    else {
+      vec[i] <- 0
+    }
+  }
+  pfa_select_index <- which(vec==1)
+  bounds_pfa_select <-   list('type'=bounds_pfa$type, 'features'=list(bounds_pfa$features[[pfa_select_index]]))
+    
+  br
+  #rownames(df_pfa) <- df_pfa$pfaName
   highchart() %>%
-    hc_title(text = "") %>%
+     # hc_title(
+     #   text = "Number of stop-searches",
+     #   align = "left",style = list(
+     #     fontSize ="28px",color = "#333333", 
+     #     fontFamily = "Arial", fontWeight = "400" 
+     #   )
+     # ) %>%
     hc_subtitle(text = "") %>%
-    hc_add_series_map(bounds_pfa, df_pfa, name="Number of stop-searches", value = "numberOfSearches", joinBy=c("pfa16nm", "pfaName"), borderColor="white", borderWidth=0.1) %>%
+    # hc_legend(align='left', verticalAlign='top', layout='vertical') %>%
+    hc_add_series_map(bounds_pfa, df_pfa_nonselect, name="Number of stop-searches", value = "numberOfSearches", joinBy=c("pfa16nm", "pfaName"),
+                       borderColor='#FAFAFA', borderWidth=.1, dataLabels = list(enabled = TRUE, format = "{point.pfaName}",
+                                                                                style=list(fontSize='10'))) %>%
+    hc_add_series_map(bounds_pfa_select, df_pfa_select, name="Number of stop-searches", value = "numberOfSearches", joinBy=c("pfa16nm", "pfaName"),
+                      borderColor='#323232', borderWidth=2, dataLabels = list(enabled = F, format = "{point.pfaName}",
+                                                                                style=list(fontSize='9'))) %>%
+    
+    
     hc_colorAxis(
       minColor = "#fce5e5",
       maxColor = "#e10000",
       min=min,
       max=max
     ) %>%
-    hc_mapNavigation(enabled = TRUE)
+    hc_mapNavigation(
+      enabled = T, enableMouseWheelZoom = T, enableDoubleClickZoom = F,
+      style=list(
+        fill='white', color='white'
+      ),
+      
+      buttonOptions = list(
+        align='right', x=-110,
+         theme=list(
+           fill='white', `stroke-width`= 3,
+           stroke='#f0f2f4', r=10,
+        states=list(
+           hover=list(
+             fill = '#ced1d6'
+           )
+         )
+         )
+        
+        
+      ) 
+      
+    )
+  
+  }
+  
+  else {
+    #browser()
+    highchart(type = "map") %>%
+      hc_add_series(mapData = bounds_pfa, showInLegend = FALSE,
+      borderColor='#323232', borderWidth=.1, showInLegend=F, dataLabels = list(enabled = TRUE, format = "{point.pfa16nm}",
+                                                                               style=list(fontSize='10'))) %>%
+      hc_mapNavigation(
+            enabled = T, enableMouseWheelZoom = T, enableDoubleClickZoom = F,
+            style=list(
+              fill='white', color='white'
+            ),
+
+            buttonOptions = list(
+              align='right', x=-110,
+              theme=list(
+                fill='white', `stroke-width`= 3,
+                stroke='#f0f2f4', r=10,
+                states=list(
+                  hover=list(
+                    fill = '#ced1d6'
+                  )
+                )
+              )
+
+
+            )
+
+          )
+    
+    # highchart() %>%
+    #   # hc_title(
+    #   #   text = "Number of stop-searches",
+    #   #   align = "left",style = list(
+    #   #     fontSize ="28px",color = "#333333", 
+    #   #     fontFamily = "Arial", fontWeight = "400" 
+    #   #   )
+    #   # ) %>%
+    #   hc_subtitle(text = "") %>%
+    #   hc_add_series_map(bounds_pfa, df_pfa, name="Number of stop-searches", value = "numberOfSearches", joinBy=c("pfa16nm", "pfaName"),
+    #                     borderColor='#323232', borderWidth=.1, showInLegend=F, dataLabels = list(enabled = TRUE, format = "{point.pfaName}",
+    #                                                                              style=list(fontSize='10'))) %>%
+    #   
+    #   hc_mapNavigation(
+    #     enabled = T, enableMouseWheelZoom = T, enableDoubleClickZoom = F,
+    #     style=list(
+    #       fill='white', color='white'
+    #     ),
+    #     
+    #     buttonOptions = list(
+    #       align='right', x=-110,
+    #       theme=list(
+    #         fill='white', `stroke-width`= 3,
+    #         stroke='#f0f2f4', r=10,
+    #         states=list(
+    #           hover=list(
+    #             fill = '#ced1d6'
+    #           )
+    #         )
+    #       )
+    #       
+    #       
+    #     )
+    #     
+    #   )
+    #https://jkunst.com/highcharter/articles/maps.html
+    
+  }
   
   
   
+}
+
+
+# 
+# 
+# 
+# plot__map_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr_pfa, group) {
+#   
+#   if (group != "buffer1_pfa") {
+#     
+#     
+#     year_range_int <- which(levels(df_pfa$year) %in% year_range)
+#     df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+#     #browser()
+#     df_pfa <- df_pfa %>%
+#       group_by(year, pfaName, .data[[group]]) %>%
+#       mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+#       #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+#       ungroup() %>% 
+#       distinct(year,pfaName, .data[[group]], .keep_all=T) #%>%
+#     #select(year, .data[[group]], numberOfSearches) 
+#     #arrange(.data[[group]]) %>%               # sort your dataframe
+#     #mutate(group = factor(.data[[group]], unique(.data[[group]]))) # reset your factor-column based on that order
+#     
+#     
+#     
+#     #browser()
+#     df_pfa[group] <- eval(parse(text=paste0("factor(df_pfa$",group,")")))
+#     df_pfa[group] <- eval(parse(text=paste0("fct_rev(reorder(df_pfa$",group,", df_pfa$numberOfSearches, .fun = mean))")))
+#     
+#     #### NEW####################################################################
+#     
+#     df_pfa <- df_pfa %>%
+#       group_by(pfaName, .data[[group]]) %>%
+#       mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+#       distinct(pfaName, .data[[group]], .keep_all=T)
+#     
+#     
+#     merged <- merge(centroids, df_pfa, by='pfaName')  %>%
+#       select(pfaName, lat, long, selfDefinedEthnicityGroup, numberOfSearches) %>%
+#       pivot_wider(names_from="selfDefinedEthnicityGroup", values_from="numberOfSearches") %>%
+#       rowwise() %>%
+#       mutate(numberOfSearches = sum(across(Asian:White, na.rm=T)))
+#     
+#     
+#     
+#     merged_geojson <- geojson_json(merged, lat = "lat", lon = "long")
+#     
+#     hcmap(merged_geojson)
+#     
+#    map <-  highchart(type = "map") %>%
+#       hc_add_series(mapData = bounds_pfa , showInLegend = F) 
+#    
+#    map %>%
+#       hc_add_series(data=merged_geojson, type='mappoint') %>%
+#       hc_chart(
+#         events = list(
+#           load = JS(
+#             "function(){
+#               var chart = this;
+#               var data = chart.series[1].data;
+#             
+#                         
+#             
+#             
+#               var demColor = 'rgba(74,131,240,0.80)';
+#               var repColor = 'rgba(220,71,71,0.80)';
+#               var libColor = 'rgba(240,190,50,0.80)';
+#               var grnColor = 'rgba(90,200,90,0.80)';
+#             
+#             const COLUMN_WIDTH = 5;
+# 
+# Highcharts.seriesType('mapcolumn', 'column', {
+#   dataLabels: {
+#     enabled: false
+#   }
+# }, {
+#   drawPoints: function() {
+#     // Proceed
+#     Highcharts.seriesTypes.column.prototype.drawPoints.call(this);
+# 
+#     // Custom      
+#     var series = this,
+#       points = series.points,
+#       firstSeries = series.chart.series[1];
+# 
+#     Highcharts.each(points, function(point, index) {
+#       var state = firstSeries.points[series.index - 3];
+# 			var newX = state.plotX + index * COLUMN_WIDTH - COLUMN_WIDTH;
+# 			var newY = state.plotY - point.graphic.attr('height') + 10;
+# 
+# 			
+# 			point.tooltipPos[0] = newX;
+# 			point.tooltipPos[1] = newY;
+# 			
+#        point.graphic.attr({
+#         x: newX,
+#         y: newY,
+# 				width: COLUMN_WIDTH
+#       }); 
+#     });
+#   }
+# });
+# Highcharts.each(chart.series[1].points, function(state) {
+#   chart.addSeries({
+# 		xAxis: 1,
+# 		yAxis: 1,
+#     type: 'mapcolumn',
+# 		grouping: false,
+#     name: state.id,
+#     zIndex: 6, // Keep pies above connector lines
+#     showInLegend: false,
+#     data: [{
+#       x: 0,
+#       y: 1000,
+#       color: demColor
+#     }, {
+#       x: 0,
+#       y: 700,
+#       color: repColor
+#     }]
+#   }, false);
+# });
+# 
+# chart.redraw();
+# }"
+# )
+# )
+# )
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+#             
+# 
+#             
+#             // Custom      
+#     var series = this,
+#       points = series.points,
+#       firstSeries = series.chart.series[0];
+# 
+#     Highcharts.each(points, function(point, index) {
+#       var pfaName = firstSeries.points[series.index - 3];
+# 		
+#              
+#               chart.series[0].points.forEach(pfaName => {
+#                 chart.addSeries({
+#                 type: 'pie',
+#                 name: pfaName.id,
+#                 zIndex: 6, // Keep pies above connector lines
+#                 minSize: 15,
+#                 maxSize: 55,
+#                 onPoint: {
+#                 id: pfaName.id,
+#                 z: (() => {
+#                     const mapView = chart.mapView,
+#                         zoomFactor = mapView.zoom / mapView.minZoom;
+# 
+#                     return Math.max(
+#                         chart.chartWidth / 45 * zoomFactor, // Min size
+#                         chart.chartWidth /
+#                         11 * zoomFactor * pfaName.numberOfSearches 
+#                     );
+#                 })()
+#             },
+#             states: {
+#               inactive: {
+#                 enabled: false
+#               }
+#             },
+#             accessibility: {
+#               enabled: false
+#             },
+#             data: [{
+#                 name: 'Democrats',
+#                 y: pfaName.Black,
+#                 color: demColor
+#             }, {
+#                 name: 'Republicans',
+#                 y: pfaName.White,
+#                 color: repColor
+#             }
+#             }]
+#             
+#         }, false);
+#     });
+#              
+#              
+# 
+#     // Only redraw once all pies and connectors have been added
+#     //chart.redraw();
+#     }"
+#     
+#     
+# 
+# )
+# )
+# )
+#           
+# #https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/maps/demo/map-pies    
+# #    https://www.highcharts.com/blog/tutorials/working-with-highcharts-javascript-syntax-in-r/
+# #          
+#             
+#      #            data: [{
+#     name: 'Democrats',
+#     y: state.demVotes,
+#     color: demColor
+#   }, {
+#     name: 'Republicans',
+#     y: state.repVotes,
+#     color: repColor
+#   }, {
+#     name: 'Libertarians',
+#     y: state.libVotes,
+#     color: libColor
+#   }, {
+#     name: 'Green',
+#     y: state.grnVotes,
+#     color: grnColor
+#   }]       
+#             
+#                     
+#             chart.series[0].points.forEach(pfa => {
+#         // Add the pie for this state
+#         chart.addSeries({
+#           type: 'pie',
+#           name: pfaName,
+#           zIndex: 6, // Keep pies above connector lines
+#           minSize: 15,
+#           maxSize: 55
+#         });
+#       });
+#       "
+#           )
+#             
+#             
+#           )
+#         
+#       )
+#     
+#     )
+#       
+#       
+#       
+#    # https://stackoverflow.com/questions/42235455/highcharter-setextremes-function-in-r/42439506#42439506
+#    # https://jsfiddle.net/gh/get/jquery/3.1.1/highslide-software/highcharts.com/tree/master/samples/maps/demo/map-pies/
+#   #https://stackoverflow.com/questions/58240474/highcharter-linked-map-and-line-plot
+#       hc_add_series(
+#         data=merged_geojson,type = "mappoint" #type='pie',
+#         #mapping = hcaes(selfDefinedEthnicityGroup, numberOfSearches)
+#         
+#       )
+#     
+#     
+#     
+#     highchart(type = "map") %>%
+#       hc_add_series(mapData = bounds_pfa, showInLegend = FALSE,
+#                     borderColor='#323232', borderWidth=.1, showInLegend=F, dataLabels = list(enabled = TRUE, format = "{point.pfa16nm}",
+#                                                                                              style=list(fontSize='10'))) %>%
+#       hc_add_series(
+#         data=dfm, type='pie',
+#         mapping = hcaes(selfDefinedEthnicityGroup, numberOfSearches)
+#         
+#       )
+#     
+#     #browser()
+#     #group_categories <- dplyr::n_distinct(df_pfa[group])
+#     
+#     #600000 #e10000 #f29191
+#     #pal <- colorRampPalette(rev(c("#600000", "#e10000", "#f29191")))
+#     #colors <- pal(group_categories)
+#     #range01 <- function(x)(x-min(x))/diff(range(x))
+#     #year_colors <- colorRamp(pal(group_categories))(range01(df_pfa$numberOfSearches))#(range01(year_widths))
+#     #year_colors <- apply(year_colors, 1, function(xt)rgb(xt[1], xt[2], xt[3], maxColorValue=255))
+#     #browser()
+#     #browser()
+#     
+#     if (nchar(year_range_scr)>8) {
+#       df_pfa_plot <- df_pfa %>%
+#         group_by(.data[[group]]) %>%
+#         summarise(numberOfSearches = sum(numberOfSearches, na.mrm=T)) %>%
+#         #summarise(numberOfSearches_fmt = case_when(
+#         #   max(numberOfSearches)>1000000~round(sum(numberOfSearches, na.rm=T)/1000000, 2),
+#         #   T~round(sum(numberOfSearches, na.rm=T)/1000, 2)
+#         # )) %>%
+#         ungroup() %>%
+#         arrange(-numberOfSearches) 
+#       max <-  max(df_pfa_plot$numberOfSearches)*1.1
+#       
+#     }
+#     else {
+#       max <- max(tapply(df_pfa$numberOfSearches, df_pfa[group], max))*1.1
+#       df_pfa_plot <- df_pfa %>%
+#         filter(year==year_range_scr) %>%
+#         # filter(selfDefinedEthnicityGroup %in% ethnic_group) %>%
+#         arrange(-numberOfSearches) 
+#     }
+#     
+#     
+#     
+#     
+#     
+#     
+#     df_pfa_plot <- df_pfa_plot %>%
+#       mutate(format = case_when(max(numberOfSearches) > 1000000~ "M", T~ "k")) %>%
+#       mutate(numberOfSearches = case_when(format=="M"~ round(numberOfSearches/1000000,1), T~ round(numberOfSearches/1000,0)))
+#     fmt <- unique(df_pfa_plot$format)
+#     if (fmt == "M") {
+#       max <- max/1000000
+#     }
+#     else {
+#       max <- max/1000
+#     }
+#     
+#     plot <- df_pfa_plot %>%
+#       hchart(
+#         'bar', hcaes(x=.data[[group]], y=numberOfSearches)
+#       ) %>%
+#       hc_yAxis(
+#         #reversedStacks=F,
+#         #visible=F,
+#         title=list(text=""),
+#         min=0, max=max,
+#         labels=list(
+#           format=paste0("{value}",fmt)
+#         ),
+#         gridLineWidth=0
+#         
+#       ) %>%
+#       hc_xAxis(title=list(text="")) %>%
+#       
+#       hc_colors("#e10000") %>%
+#       # hc_plotOptions(
+#       #   'bar' = list(
+#       #     dataLabels = list(
+#       #       enabled=T,
+#       #       format=paste0("{y}",fmt),
+#       #       x=.5, y=.5,
+#       #       style = list(
+#       #         fontSize = "14px", 
+#       #         textOutline = FALSE,
+#       #         
+#       #         color = "#5b5b5b",
+#     #         fontWeight = "normal"
+#     #       )
+#     #     )
+#     #   )
+#     # ) %>%
+#     
+#     hc_title(
+#       text= paste0("Number of stop-searches, ",year_range_scr,"<br>''"),
+#       align = "center",style = list(
+#         fontSize ="18px",color = "#333333", 
+#         fontFamily = "Arial", fontWeight = "400" )) 
+#     
+#     
+#     
+#     
+#     
+#     # 
+#     # if (length(year_range_scr)>2) {
+#     #   max <-  df_pfa_plot$numberOfSearches
+#     # }
+#     # max <- max(df_pfa_plot$numberOfSearches*)
+#     
+#     
+#     # hc_legend(itemStyle=list(fontSize="1.6vh"))
+#     
+#     
+#     return(plot)
+#     
+#   }
+#   
+# }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 
+plot__pfa_quintiles <- function(df_pfa, year_range, pfa_select) {
+  
+  #if (is.null(pfa_select)) {
+    #browser()
+ # }
+  
+  if (!is.null(pfa_select)) {
+    #browser()
+  year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+  #browser()
+  df_pfa_plot1 <- df_pfa %>%
+    group_by(pfaName) %>%
+    mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+    #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+    ungroup() %>%
+    distinct(pfaName, .keep_all=T) %>%
+    mutate(numberOfSearches_median = median(numberOfSearches)) %>%
+    filter(pfaName == pfa_select) %>%
+    uncount(2) %>%
+    select(pfaName, contains('numberOfSearches'))
+  
+  df_pfa_plot1[2, c('pfaName', 'numberOfSearches')] <- c('UK median', df_pfa_plot1[2, 'numberOfSearches_median'])
+  df_pfa_plot1 <- df_pfa_plot1[c('pfaName', 'numberOfSearches')]
+  
+  
+  
+  
+  
+    # mutate(quintile = ntile(numberOfSearches, 5)) %>%
+    # mutate(tokeep=case_when(pfaName==pfa_select~1, T~0))  %>%
+    # group_by(quintile) %>%
+    # filter(tokeep==max(tokeep, na.rm=T)) %>%
+    # mutate(numberOfSearches_q = nth(numberOfSearches, which.min(abs(numberOfSearches-median(numberOfSearches))))) %>%
+    # ungroup() %>%
+    # filter(numberOfSearches == numberOfSearches_q) %>%
+    # distinct(quintile, .keep_all=T) %>%
+    # select(pfaName, numberOfSearches, quintile) %>%
+    # arrange(numberOfSearches)
+  
+  # df_pfa_plot <- df_pfa %>%
+  #   group_by(pfaName) %>%
+  #   mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+  #   #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+  #   ungroup() %>%
+  #   distinct(pfaName, .keep_all=T) %>%
+  #   mutate(quintile = ntile(numberOfSearches, 5)) %>%
+  #   mutate(tokeep=case_when(pfaName==pfa_select~1, T~0))  %>%
+  #   group_by(quintile) %>%
+  #   filter(tokeep==max(tokeep, na.rm=T)) %>%
+  #   mutate(numberOfSearches_q = nth(numberOfSearches, which.min(abs(numberOfSearches-median(numberOfSearches))))) %>%
+  #   ungroup() %>%
+  #   filter(numberOfSearches == numberOfSearches_q) %>%
+  #   distinct(quintile, .keep_all=T) %>%
+  #   select(pfaName, numberOfSearches, quintile) %>%
+  #   arrange(numberOfSearches)
+  # 
+  
+  
+
+  #
+  #browser()
+    
+    plot1 <- df_pfa_plot1 %>%
+      hchart(
+        'column', hcaes(x=pfaName, y=numberOfSearches)
+      ) %>%
+      hc_yAxis(
+        #reversedStacks=F,
+        #visible=F,
+        title=list(text=""),
+        min=0, 
+        labels=list(
+          enabled=F
+        ),
+        #   format=paste0("{value}",fmt)
+        # ),
+        gridLineWidth=0
+        
+      ) %>%
+      hc_xAxis(title=list(text=""), labels=list(style=list(fontSize='11'))) %>%
+      
+      hc_colors("#e10000") %>%
+      hc_plotOptions(
+        'column' = list(
+          dataLabels = list(
+            enabled=T,
+            x=.5, y=.5, crop=F,
+            overflow= 'none',
+            style = list(
+              fontSize = "11",
+              textOutline = FALSE,
+              fontWeight='normal'
+            )
+          ),
+          pointPadding = 0
+        )
+      )
+      #         
+      #         color = "#5b5b5b",
+    #         fontWeight = "normal"
+    #       )
+      # hc_plotOptions(
+      #   'bar' = list(
+      #     dataLabels = list(
+      #       enabled=T,
+      #       format=paste0("{y}",fmt),
+      #       x=.5, y=.5,
+      #       style = list(
+      #         fontSize = "14px", 
+      #         textOutline = FALSE,
+      #         
+      #         color = "#5b5b5b",
+    #         fontWeight = "normal"
+    #       )
+    #     )
+    #   )
+    # ) %>%
+    
+    # hc_title(
+    #   text= "Number of stop-searches<br>",
+    #   align = "center",style = list(
+    #     fontSize ="18px",color = "#333333", 
+    #     fontFamily = "Arial", fontWeight = "400" )) 
+    
+    
+    df_pfa_plot2 <- df_pfa %>%
+      group_by(pfaName) %>%
+      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+      ungroup() %>%
+      distinct(pfaName, .keep_all=T) %>%
+      select(pfaName, year, contains('numberOfSearches'))  %>%
+      mutate(year = "")
+      #filter(pfaName != "Metropolitan Police")
+    
+    
+  
+    y1 <- df_pfa_plot2$numberOfSearches[df_pfa_plot2$pfaName==pfa_select]
+    #browser()
+    plot2 <- hcboxplot(
+      outliers = FALSE,
+      x = df_pfa_plot2$numberOfSearches,
+      var = df_pfa_plot2$year,
+      name = paste0(year_range[1],"-",year_range[2]),
+      color='#ced1d6'
+    ) %>%
+      hc_title(text = "") %>%
+      hc_yAxis(
+        title = list(text = ""), gridLineWidth=0,
+        labels=list(style=list(fontSize='11'))
+        )  %>%
+      hc_chart(type = "bar") %>%
+      hc_add_series(
+        data = df_pfa_plot2 %>% filter(pfaName != "Metropolitan Police"),
+        type = "scatter",
+        hcaes(x = "year", y = "numberOfSearches")
+      ) %>%
+      hc_annotations(
+        list(
+          labelOptions = list(
+          backgroundColor = 'white',
+          verticalAlign = 'top',
+          y=-40,
+          style=list(fontSize='12')
+          ),
+          labels = list(
+            list(
+              point = list(xAxis = 0, yAxis = 0, x = 0, y = y1),
+              text = paste0(pfa_select),
+              shape= 'connector', align='top'
+            )
+          )
+        )
+      )%>%
+      hc_plotOptions(scatter = list(
+        color = "#e10000",
+        marker = list(
+          radius = 3,
+          symbol = "circle",
+          lineWidth = 1
+        )
+      ))
+    
+    
+    plot <- combineWidgets(plot1, plot2, nrow=1, colsize=c(1.1,2))
+    #browser()
+    return(plot)
+    
+    
+    
+    
+    
+    
+    # %>%
+      #hc_colors('white')
+      # ))  %>%
+      # hc_plotOptions(scatter = list(jitter = list(x = .06, y = 0)))
+    
+
+    
+    
+    
+    
+
+
+  }
+
 }
 
 
@@ -395,6 +1135,63 @@ plot__pfa_map <- function(df_pfa, bounds_pfa, year_range) {
 
 
 
+
+
+
+
+
+
+
+
+countUp_pfa <- function(count_to, count_from) {
+  
+  print(count_to)
+  print(as.numeric(count_to))
+  count_to <- as.numeric(count_to)
+ # browser()
+  countup(
+    count = count_to,
+    start_at = count_from,
+    options = NULL,
+    duration = 2.5,
+    start = TRUE,
+    width = NULL,
+    height = NULL,
+    elementId = 'countUp-pfa'
+)
+  
+  
+
+  
+  
+}
+# 
+# mapNavigation: {
+#   enabled: true,
+#   buttonOptions: {
+#     theme: {
+#       fill: 'white',
+#       'stroke-width': 1,
+#       stroke: 'silver',
+#       r: 0,
+#       states: {
+#         hover: {
+#           fill: '#a4edba'
+#         },
+#         select: {
+#           stroke: '#039',
+#           fill: '#a4edba'
+#         }
+#       }
+#     },
+#     verticalAlign: 'bottom'
+#   }
+# },
+# 
+# 
+# 
+# 
+# 
 
 
 
@@ -460,29 +1257,19 @@ text <- function(num){
 
 
 text2 <- HTML("<H2>Ethnic disparties</H2>
-              <br> <p> Workers with <font color='#A00042'>no formal education credential</font> have a median income of $25,636.
-              <br> On average, those occupations have a <b>90% chance</b> of job automation.
-              <br><br> There are 23,765,700 workers with <font color='#A00042'>no formal education credential</font>.<p>")
+              <br> <p> White people are far less likely to be stopped and searched in relation to people from all other Ethnic Groups. The likelyhood of being searched is X%, compared to a chance of X% being search for any other Ethnic Group.")
 
 text3 <- HTML("<H2>Regional disparities</H2>
-              <br> <p>Workers with <font color='#F56C42'>high school diplomas</font> have a median income of $25,636.
-              <br> On average, those occupations have a <b>60% chance</b> of job automation.
-              <br><br> There are 33,129,910 workers with a <font color='#F56C42'>high school diploma</font>.<p>")
+              <br> <p>People from X area more X times more likely to be stop and searched, in comparision to the rest of the country. <p>")
 
 text4 <- HTML("<H2>Legislation</H2>
-              <br> <p>Workers with <font color='#008640'>postsecondary nondegree awards</font> (e.g. actors) have a median income of $39,990.
-              <br> On average, those occupations have a <b>52% chance</b> of job automation.
-              <br><br> There are 5,904,150 workers with a <font color='#008640'>postsecondary nondegree award</font>.<p>")
+              <br><p>Section 1 (PACE) Section 44/47a (TACT) is the most likely legislation for being stopped and searched. With over X amount of searched compared to all other legislations combined<p>")
 
 text5 <- HTML("<H2>Reason for search</H2>
-              <br> <p>Workers with <font color='#3487BD'>associate's degrees</font> have a median income of $41,496.
-              <br> On average, those occupations have a <b>50% chance</b> of job automation.
-              <br><br> There are 1,869,840 workers with an <font color='#3487BD'>associate's degree</font>.<p>")
+             <br> <p>Drugs is the most likely reason for being stopped and searched. With over X amount of searched compared to all other regions combined.<p>")
 
 text6 <- HTML("<H2>Outcome of search</H2>
-              <br> <p>Workers with <font color='#C71C7E'>bachelor's degrees</font> have a median income of $59,124.
-              <br> On average, those occupations have a <b>20% chance</b> of job automation.
-              <br><br> There are 18,399,270 workers with a <font color='#C71C7E'>bachelor's degree</font>.<p>")
+              <br> <p>The most likely outcome of being stopped and searched would be Arrest, with X amount of searches resulting in an arrest, a percentage of X%<p>")
 
 text7 <- HTML("<H2> Master's degrees </H2>
               <br> <p>Workers with <font color='#5E4FA2'>master's degrees</font> have a median income of $69,732.
@@ -502,3 +1289,6 @@ text8 <- HTML("<H2> In Sum </H2>
               <span style='font-size:11px'><sup>1</sup><a href='https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf' target='_blank'>Frey and Osborne (2013)</a>
                write that 'associated occupations are potentially automatable over
               some unspecified number of years, <i>perhaps a decade or two.'</i></span>")
+
+
+

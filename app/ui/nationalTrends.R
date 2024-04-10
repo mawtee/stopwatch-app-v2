@@ -2,6 +2,7 @@
 
 nationalTrends <- (
   
+  
   # Create National Trends tabPanel and link to Home 
   #========================================================
   tabPanel(
@@ -13,6 +14,7 @@ nationalTrends <- (
     #============================================
     useShinyjs(),
     fluidPage(
+      #style='background-color:#eeeeee;',
       
       
       div(
@@ -167,7 +169,7 @@ nationalTrends <- (
                 choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
                 animationOptions(interval=3500, loop=T)
               ),
-              style="position: absolute; top: 40%; right: 12%; z-index:1"
+              style="position: absolute; top: 8%; right: 60%; z-index:1"
               )
             ),
             #div(wellPanel(h1("panel")), style="width=100%", height="10%"),
@@ -253,7 +255,7 @@ nationalTrends <- (
                 # ),
                 pickerInput(
                   inputId = "ethnic_group_scr",
-                            label = " Select ethnicity (click and press backspace to filter - working on a more user-friendly solution)",
+                            label = " Select ethnicity",
                             choices=c(unique(df_pfa$selfDefinedEthnicityGroup)),
                             selected=c(unique(df_pfa$selfDefinedEthnicityGroup)), options = list(
                               `actions-box` = TRUE), 
@@ -266,7 +268,7 @@ nationalTrends <- (
                 id = 'region', render_text(3),
                 pickerInput(
                   inputId = "region_group_scr",
-                  label = " Select region (click and press backspace to filter - working on a more user-friendly solution)",
+                  label = " Select region",
                   choices=c(unique(df_pfa$region)),
                   selected=c(unique(df_pfa$region)),
                   options = list(
@@ -281,7 +283,7 @@ nationalTrends <- (
                 id = 'legislation', render_text(4),
                 pickerInput(
                   inputId = "legislation_group_scr",
-                  label = " Select legislation (click and press backspace to filter - working on a more user-friendly solution)",
+                  label = " Select legislation",
                   choices=c(unique(df_pfa$legislation)),
                   selected=c(unique(df_pfa$legislation)),
                   options = list(
@@ -296,7 +298,7 @@ nationalTrends <- (
                 id = 'reasonForSearch', render_text(5),
                 pickerInput(
                   inputId = "reason_group_scr",
-                  label = " Select reason (click and press backspace to filter - working on a more user-friendly solution)",
+                  label = " Select reason",
                   choices=c(unique(df_pfa$reasonForSearch)),
                   selected=c(unique(df_pfa$reasonForSearch)),
                   options = list(
@@ -312,7 +314,7 @@ nationalTrends <- (
                 div(style="height:1vh",
                 pickerInput(
                   inputId = "outcome_group_scr",
-                  label = " Select outcome (click and press backspace to filter - working on a more user-friendly solution)",
+                  label = " Select outcome",
                   choices=c(unique(df_pfa$outcome)),
                   selected=c(unique(df_pfa$outcome)),
                   options = list(
@@ -382,16 +384,197 @@ nationalTrends <- (
         br(),
         br(),
         br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
+        br(),
         
-        fluidRow(
-          highchartOutput("map", height='85vh')
-        )
+        fluidRow(#style='background-color:#eeeeee;',
+          column(5,
+            div(style='height:3vh'),
+            div(style="position: absolute; left: 3vw; align-items: left;",
+            # pickerInput(
+            #   inputId = "pfa_select",
+            #   label = "Select a Police Force to visualise",
+            #   choices = unique(df_pfa$pfaName),
+            #   selected=character(0),
+            #   options = list(
+            #     `actions-box` = T,
+            #     `live-search` = T,
+            #     onInitialize = I('function() { this.setValue(""); }')
+            #   )
+            # ),
+            selectizeInput(
+              inputId = "pfa_select",
+              label = tags$span(style="color: #333333;","Select a Police Force to visualise"),
+              choices = unique(df_pfa$pfaName),
+              multiple = T,
+                options = list(
+                placeholder = 'Please select an option below',
+                maxItems = 1
+               # onInitialize = I('function() { this.setValue(null); }')
+              )
+            ),
+            div(id='countUp-pfa-ui'),
+            #div(style='height:5vh'),
+           # h4("plot goes here")
+            #div(highchartOutput('column__pfa_scr_nattrend_agg'), style='height: 1vh')
+            )
+            
+            #countupOutput("countUp_pfa")
+          ),
+          column(7, 
+            align='center', highchartOutput("map__pfa_scr_nattrend_agg", height='85vh', width='95%'),
+            tagAppendAttributes(
+              div(
+            dropMenu(
+              actionButton("go", "Plot options", icon = icon('plus')),
+              tags$h3("Some inputs"),
+              sliderInput(
+                "obs", "Number of observations:",
+                min = 0, max = 1000, value = 500
+              ),
+              selectInput(
+                "variable", "Variable:",
+                c("Cylinders" = "cyl",
+                  "Transmission" = "am",
+                  "Gears" = "gear")
+              ),
+              pickerInput(
+                inputId = "pckr",
+                label = "Select all option",
+                choices = rownames(mtcars),
+                multiple = TRUE,
+                options = list(`actions-box` = TRUE)
+              ),
+              radioButtons(
+                "dist", "Distribution type:",
+                c("Normal" = "norm",
+                  "Uniform" = "unif",
+                  "Log-normal" = "lnorm",
+                  "Exponential" = "exp")
+              )
+            ),
+            style="position: absolute; top: 20%; right: 12%; z-index:1"
+              )
+            ),
+            conditionalPanel(
+              condition =  "input.pfa_select.length > 0",
+              div(style='float:right; position: relative; top: -10vh',
+                icon("fas fa-chevron-down fa-bounce", "fa-3x", style = "color: #333333; margin-left: 30px; margin-bottom: 5px;")
+              )
+            )
+          )
+        ),
+        # ),
+        # # conditionalPanel(
+        # #   #condition =  'paste('[',paste(paste('"',unique(df_pfa$pfaName),'"',sep=''),collapse=','),']').includes(input.pfa_select)',
+        # #   #condition = 'input.pfa_select == "Avon and Somerset"',
+        # #   #condition = "array1.includes(input.pfa_select)",
+        # #  # condition = "input.pfa_select && ['Avon and Somerset', 'Essex', 'Bedfordshire'].indexOf(input.pfa_select) > -1",
+        # #  #condition = paste0(paste0("[",toString(paste0("'",df_pfa$pfaName,"'")),"]"),".includes(input.pfa_select)"),
+        # #   #condition = "input.pfa_select.indexOf(array1) > -1",
+        # #  #condition = paste0("[", unique(df_pfa$pfaName), "]===input.pfa_select"),
+        # #  #condition='paste0("[", unique(df_pfa$pfaName), "]===input.pfa_select;',
+        # #   #includes(["Avon and Somerset","Essex"])',
+        # #   condition =  "typeof input.pfa_select !== 'string'",
+        # #   br(),
+        # #   br(),
+        # #   h2("NULLLL")
+        # # ),
+        conditionalPanel(
+          condition =  "input.pfa_select.length > 0",
+
+           h2("PFA SCROLLY!!!!")#,
+          #   scrolly_container(
+          #     "scrcon_nattrend_agg2",
+          #     scrolly_graph(
+          #       div(style="height: 10vh"),
+          #       fluidRow(
+          #         column(12,
+          #           div(
+          #             highchartOutput("plot__pfa_scr_nattrend_agg", height = '100%'),
+          #             style = "height: 65vh; margin: auto; padding-top: 2vh;"
+          #           )
+          #         )
+          #       ), width="63.5%",
+          #     )
+          #   )
+          )
+          #     #style="margin-left:0.5vw" # need to div it
+          #   ),
+          #   scrolly_sections(
+          #     
+          #     HTML('<center>'),
+          #     # scrolly_section(id = 0, render_text(0), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 1, render_text(1), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 2, render_text(2), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 3, render_text(3), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 4, render_text(4), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 5, render_text(5), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 6, render_text(6), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 7, render_text(7), br(), br(), br(), br(), br()),
+          #     # scrolly_section(id = 8, render_text(8), br(), br(), br(), br(), br()),
+          #     
+          #     #div(scrolly_section(id = 'year', render_text(1)),style = "height: 85vh;margin-top: 45vh;"),
+          #     div(scrolly_section(id = "buffer12", render_text(0), br())),
+          #     div(
+          #       scrolly_section(
+          #         id = 'selfDefinedEthnicityGroup',
+          #         render_text(2), 
+          #         # shinyWidgets::multiInput(
+          #         #   inputId = "ethnic_group_scr", label = "Select ethnicity",
+          #         #   choices=unique(df_pfa$selfDefinedEthnicityGroup),
+          #         #   selected = unique(df_pfa$selfDefinedEthnicityGroup) ,
+          #         # ),
+          #         # selectInput(
+          #         #   inputId="ethnic_group_scr",
+          #         #   label="Select ethnicity",
+          #         #   choices=unique(df_pfa$selfDefinedEthnicityGroup),
+          #         #   selected = unique(df_pfa$selfDefinedEthnicityGroup) ,
+          #         #   multiple = T
+          #         # ),
+          #         # selectizeInput('season', "", choices = shots$SeasonNr, selected = TRUE, multiple = TRUE),
+          #       ) ,style = "height: 125vh;margin-top: 45vh;"),
+          #     div(
+          #       scrolly_section(
+          #         id = 'region', render_text(3),
+          #       ),
+          #       style = "height: 125vh;margin-top: 45vh;"
+          #     )
+          #   )
+          # )
+        # TODO add year-slider on map page
+        # TODO link year-slider to map
+        # TODO linkmap year-slider to countup, with year text (ignore formatting for now)
+        # TODO add metric selectorUI
+        # TODO add rate of searches to map plot function
+        # TODO adjust count up for rate
+        
+        # TODO on scrolly show text for all categories, and allow it to vary by year
+        # TODO potentially add current page into scrolly container
+        
+
+        
+        
+        # TODO add hc item chart when user switches to rate of stop and search
+        # TODO add year slider, to play through years
+        # TODO add some option to keep existing filters (drop-down to view existing filters), or refresh, or maybe even edit?
+        
       )
     )
   )
 )
- 
 
+ 
 
 # Number of searches
 # By ethnicity
