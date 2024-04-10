@@ -141,12 +141,14 @@ p{
 /***************************************/
 .navbar-default {
   font-family:  'Public Sans', sans-serif;
-  border: none;
+  /*border-bottom: 10px #333333;*/
+  border-bottom: #333333 solid 1px;
   margin: 0 !important;
-  font-weight:bold; 
+  font-weight:450; 
   padding: 5px;
-  background-color: white;
-  font-size: 16px;
+  background-color:white;
+  font-size: 2.7vh;
+  color: #333333;
 }
 
 .navbar-brand, .navbar-default:hover .navbar-brand:hover {
@@ -156,15 +158,17 @@ p{
 
 /* Changes font to black in nav bar */
 .navbar-default .navbar-nav > li > a {
-  color: black;
+  color: #333333;
+  background-color: white;
 
 }
 
 /* Changes colour of active (clicked) tab on the nav bar */
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
-  outline: 1px solid black;
+  /*outline: 1px solid #333333;*/
   background-color: white;
-  color: black;
+  font-weight:650; 
+  color: #333333;
 }
 
 
@@ -250,14 +254,16 @@ Filter: "Black"
   display: inline-block;
   vertical-align: text-top;
   height: 95%;
-  width: 19%;
+  width: 16%;
   border-radius: 20px;
   margin-top: 0px;
-  margin-left: 10px;
+  margin-left: 55px;
   margin-right: 10px;
+  padding-inline: 10px;
+  padding-block: 10px;
   background: #f6f7f8;
-    box-shadow: -5px -5px 9px
-  rgba(255,255,255,0.45), 5px 5px 9px
+  box-shadow: -3px -3px 5px
+  rgba(255,255,255,0.45), 3px 3px 5px
   rgba(94,104,121,0.3);
 
 
@@ -277,11 +283,13 @@ Filter: "Black"
   height: 95%;
   width: 12%;
   border-radius: 20px;
-  margin-left: 10px;
+  margin-left: 55px;
   margin-right: 10px;
-    background: #f6f7f8;
-      box-shadow: inset -5px -5px 9px
-  rgba(255,255,255,0.45), inset 5px 5px 9px
+  padding-inline: 10px;
+  padding-block: 10px;
+  background: #f6f7f8;
+  box-shadow: inset -3px -3px 5px
+  rgba(255,255,255,0.45), inset 3px 3px 5px
   rgba(94,104,121,0.3); 
 
 
@@ -401,15 +409,22 @@ Filter: "Black"
   z-index: 99 !important;
   width: 103vw;
   height: 18vh;
+  padding-left: 100px;
   margin-left: -5vw;
   margin-right: -5vw;
   background: #f6f7f8;
   justify-content: center;
   align-items: center;
+  border-top: 1px solid #999;
   
+}
 
 
-
+.selectize-dropdown  {
+  text-align:left
+}
+.selectize-input  {
+  text-align:left
 }
 
 
@@ -419,7 +434,47 @@ Filter: "Black"
 }
 
 
+#countUp-pfa {
+  font-size: 11vh;
+  color: #e10000;
+  float: center;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: normal;
+}
 
+/*.selectize-input {
+  border-color: #f0f2f4; 
+  border-radius: 2vh;
+  border-width: .55vh;
+ /* inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6) */
+  
+.selectize-input {
+  border-color: #f0f2f4; 
+  border-radius: 1.8vh;
+  border-width: .3vh;
+  border-color: #f0f2f4;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 6px 18px;
+}
+
+.selectize-input.focus {
+  border-radius: 1.8vh;
+  border-width: .3vh;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 6px 18px;
+}
+
+.btn-default {
+  border-color: #f0f2f4; 
+  border-radius: 1.8vh;
+  border-width: .3vh;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 6px 18px;
+}
+
+* {
+    font-family: 'Public Sans', sans-serif;
+  }
+  
+
+/* #e7aee */
 
 
 

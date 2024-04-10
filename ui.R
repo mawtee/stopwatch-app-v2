@@ -25,6 +25,8 @@ library(shiny.fluent)
 library(shinybrowser)
 library(plotly)
 library(geojsonio)
+library(countup)
+library(manipulateWidget)
 
 
 source("app/ui/home.R")
@@ -39,6 +41,7 @@ df_pfa <- read_csv("data/dfPFA_clean_231009.csv")
 df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 
                                ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
 df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
+df_pfa <- df_pfa[df_pfa$pfaName != "British Transport Police",]
 
 #library(here)
 #source(here("scripts_scr/source_code_for_shiny.R"))
@@ -46,11 +49,33 @@ json_pfa <- "data/smoothed.geojson"
 bounds_pfa <- geojsonio::geojson_read(json_pfa, what = "list")
 
 
+# sf_use_s2(FALSE)
+# bounds_pfa__sf <- geojsonsf::geojson_sf(json_pfa) 
+# bounds_pfa__df <- st_as_sf(bounds_pfa__sf, coords = c('long', 'lat')) 
+# bounds_pfa__df <- st_make_valid(bounds_pfa__df)
+# 
+# centroids <- bounds_pfa__df %>%
+#   group_by(pfa16nm) %>% 
+#   summarize(geometry = st_union(geometry)) %>% 
+#   st_centroid %>%
+#   st_coordinates() %>%
+#   as.data.frame()
+# centroids$pfaName <- unique(df_pfa$pfaName)
+# names(centroids)[1:2] <- c("long", "lat")
+
+
+
+
+
+
+
 # Define the UI
 #==============================================================================
 
 ui <- 
   tagList(
+
+
   useShinyjs(), 
   # Get user browser size for scaling outputs
   shinybrowser::detect(),
@@ -73,6 +98,7 @@ ui <-
     
    # Declare CSS styles
    includeCSS("www/styles_old.css"),
+  
    
    
 

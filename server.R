@@ -16,8 +16,8 @@ function(input, output, session) {
     plot__pfa_tsline_nat_hc(df_pfa, input$year_range, input$legislation_select)
   })
   
-  output$map <- renderHighchart({
-    plot__pfa_map(df_pfa, bounds_pfa, input$year_range)
+  output$map__pfa_scr_nattrend_agg <- renderHighchart({
+    plot__pfa_map(df_pfa, bounds_pfa, input$year_range, input$pfa_select)
   })
   
   output$hc_rep2 <- renderHighchart({
@@ -258,7 +258,13 @@ function(input, output, session) {
   )
   
 
+  # output$pfa_countUp <- renderCountUp({
+  #   countUp("", 1671794, color = "#fff")
+  # })
+  # 
   
+  
+
   
   browser_width <- reactive({
     shinybrowser::get_width()
@@ -268,7 +274,130 @@ function(input, output, session) {
     shinybrowser::get_height()
   })
   
+  # countUP PFA
+  #############################################################################
   
+  reactive__numberOfSearches_pfa <- reactive({
+    
+    year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+    df_pfa <- df_pfa %>%
+         group_by(pfaName) %>%
+         mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+         mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+         ungroup() %>% 
+         distinct(pfaName, .keep_all=T) %>%
+         select(pfaName, numberOfSearches)
+    countTo <- df_pfa$numberOfSearches[df_pfa$pfaName==input$pfa_select]
+    
+  })
+  
+  reactiveVal__countFromTo_pfa <-  reactiveValues(countFrom=0, countTo=0)
+ 
+  observeEvent( 
+    reactive__numberOfSearches_pfa(),{
+      reactiveVal__countFromTo_pfa$countFrom <- reactiveVal__countFromTo_pfa$countTo; 
+      #print(reactiveVal__countFromTo_pfa$countFrom)
+      reactiveVal__countFromTo_pfa$countTo <- reactive__numberOfSearches_pfa()
+      #print(reactiveVal__countFromTo_pfa$countTo)
+    }
+  )
+ 
+  reactive__countTo_pfa <- reactive({req(reactive__numberOfSearches_pfa());  reactive__numberOfSearches_pfa(); reactiveVal__countFromTo_pfa$countTo})
+  reactive__countFrom_pfa <- reactive({req(reactive__numberOfSearches_pfa()); reactive__numberOfSearches_pfa(); reactiveVal__countFromTo_pfa$countFrom})
+  
+  
+  output$countTo_pfa <- renderPrint({sprintf("countTo:%d", reactive__countTo_pfa())})
+  output$countFrom_pfa <- renderPrint({sprintf("countFrom:%d", reactive__countFrom_pfa())})
+  
+  
+  # output$countUp_pfa_0 <- renderCountup({
+  #   #print()
+  #   #browser()
+  #   #if(input$pfa_select %in% unique(df_pfa$pfaName)){
+  #     countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
+  #   #}
+  # }
+  # )
+  
+  output$countUp_pfa_text <- renderUI({
+    tagList(
+      h3(paste0("were recorded by ",input$pfa_select, " Police between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 2.75vw; margin-top: -1vh; color: #333333;")
+    )
+  })
+  
+  output$column__pfa_scr_nattrend_agg <- renderCombineWidgets({
+    plot__pfa_quintiles(df_pfa, input$year_range, input$pfa_select)
+  }
+  )
+  
+  observeEvent(
+    input$pfa_select,once=T, ignoreNULL=T, {
+      if(input$pfa_select %in% unique(df_pfa$pfaName)){
+        insertUI(
+          selector = "#countUp-pfa-ui",
+          where = "afterEnd",
+          ui = tagList(
+            fluidRow(style='margin-top: 1.5vh',
+              div(countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom),style='margin-left:.5vw'),
+              h2("stop-searches", style="font-size: 5.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
+              uiOutput('countUp_pfa_text'),
+              div(style='height:9vh'),
+              div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
+              # h2("stop-searches", style="font-size: 7vh; color: #e10000; font-weight:bold; margin-top: -4vh; margin-left: 3vw; font-family: 'Public Sans', sans-serif;"),
+              # h3(paste0("were recorded in ",input$pfa_select, " between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 3vh; margin-left: 3vw; margin-top: -1vh;")
+            )
+          )
+        )
+      }
+    }
+  )
+    
+  observeEvent(reactiveVal__countFromTo_pfa$countTo, {
+    countupProxy("countUp-pfa") %>% 
+      countup_update(reactiveVal__countFromTo_pfa$countTo)
+  })
+  
+
+  
+  
+################################################################################  
+  
+
+
+  
+  
+  #h3("stop-searches were recorded in x between t and t1")
+  # output$countUp_pfa <- renderCountup({
+  #   countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
+  # })
+  # 
+  # 
+  # observeEvent(input$pfa_select!, {
+  #   browser()
+  #   if(input$pfa_select %in% unique(df_pfa$pfaName)){
+  #     browser()
+  #     insertUI(
+  #       selector = "#add_ui_here",
+  #       where = "afterEnd",
+  #       ui = countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
+  #       
+  #     )
+  #   }
+  # },
+  # once=T, ignoreNULL=T
+  # )
+  # 
+  # # observeEvent()
+  # 
+  # 
+  # 
+  # observeEvent(reactiveVal__countFromTo_pfa$countTo, {
+  #   if(input$pfa_select %in% unique(df_pfa$pfaName)){
+  #     countupProxy("countUp_pfa") %>% 
+  #       countup_update(reactiveVal__countFromTo_pfa$countTo)
+  #   }
+  # })
+  # 
   
   
   output$introPlot <- renderPlotly({
@@ -329,11 +458,11 @@ function(input, output, session) {
   output$sidebar_ui <- renderUI({
 
     myvalue <- input$scrcon_nattrend_agg
-    ethnic_group <- ifelse(length(input$ethnic_group_scr)==length(unique(df_pfa$selfDefinedEthnicityGroup)), "All", input$ethnic_group_scr)
-    region_group <-  ifelse(length(input$region_group_scr)==length(unique(df_pfa$region)), "All", input$region_group_scr)
-    legislation_group <- ifelse(length(input$legislation_group_scr)==length(unique(df_pfa$legislation)), "All", input$legislation_group_scr)
-    reason_group <- ifelse(length(input$reason_group_scr)==length(unique(df_pfa$reasonForSearch)), "All", input$reason_group_scr)
-    outcome_group <- ifelse(length(input$outcome_group_scr)==length(unique(df_pfa$outcome)), "All", input$outcome_group_scr)
+    ethnic_group <- ifelse(length(input$ethnic_group_scr)==length(unique(df_pfa$selfDefinedEthnicityGroup)), "All", ifelse(length(input$ethnic_group_scr)==0, "None", input$ethnic_group_scr))
+    region_group <-  ifelse(length(input$region_group_scr)==length(unique(df_pfa$region)), "All", ifelse(length(input$region_group_scr)==0, "None", input$region_group_scr))
+    legislation_group <- ifelse(length(input$legislation_group_scr)==length(unique(df_pfa$legislation)), "All", ifelse(length(input$legislation_group_scr)==0, "None" ,input$legislation_group_scr))
+    reason_group <- ifelse(length(input$reason_group_scr)==length(unique(df_pfa$reasonForSearch)), "All", ifelse(length(input$reason_group_scr)==0, "None" ,input$reason_group_scr))
+    outcome_group <- ifelse(length(input$outcome_group_scr)==length(unique(df_pfa$outcome)), "All", ifelse(length(input$outcome_group_scr)==0, "None", input$outcome_group_scr))
     
     if(is.null(myvalue)) {
     }
