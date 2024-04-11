@@ -252,10 +252,10 @@ Filter: "Black"
   height: 95%;
   width: 16%;
   margin-top: 0px;
-  margin-left: 55px;
+  margin-left: 2vw;
   margin-right: 10px;
-  padding-inline: 10px;
-  padding-block: 10px;
+  padding-inline: 1%;
+  padding-block: 1%;
   background: #f6f7f8;
     box-shadow: -3px -3px 5px
   rgba(255,255,255,0.45), 3px 3px 5px
@@ -278,10 +278,10 @@ Filter: "Black"
   height: 95%;
   width: 16%;
   border-radius: 20px;
-  margin-left: 55px;
+  margin-left: 2vw;
   margin-right: 10px;
-  padding-inline: 10px;
-  padding-block: 10px;
+  padding-inline: 1%;
+  padding-block: 1%;
     background: #f6f7f8;
       box-shadow: inset -3px -3px 5px
   rgba(255,255,255,0.45), inset 3px 3px 5px
