@@ -167,7 +167,7 @@ nationalTrends <- (
                 choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
                 animationOptions(interval=3500, loop=T)
               ),
-              style="position: absolute; top: 8%; right: 40vw; z-index:1"
+              style="position: absolute; bottom: 4vh; right: 2vw; z-index:1"
               )
             ),
             #div(wellPanel(h1("panel")), style="width=100%", height="10%"),
