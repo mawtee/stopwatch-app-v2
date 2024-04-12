@@ -20,6 +20,10 @@ function(input, output, session) {
     plot__pfa_map(df_pfa, bounds_pfa, input$year_range, input$pfa_select)
   })
   
+  output$map__pfa_pie <- renderHighchart({
+    plot__pfa_map_pie(df_pfa, bounds_pfa, input$year_range, input$pfa_select)
+  })
+  
   output$hc_rep2 <- renderHighchart({
     plot__pfa_tsline_nat_hc(df_pfa, input$year_range, input$legislation_select)
   })
@@ -459,7 +463,7 @@ function(input, output, session) {
 
     myvalue <- input$scrcon_nattrend_agg
     ethnic_group <- ifelse(length(input$ethnic_group_scr)==length(unique(df_pfa$selfDefinedEthnicityGroup)), "All", ifelse(length(input$ethnic_group_scr)==0, "None", input$ethnic_group_scr))
-    region_group <-  ifelse(length(input$region_group_scr)==length(unique(df_pfa$region)), "All", ifelse(length(input$region_group_scr)==0, "None", input$region_group_scr))
+    #region_group <-  ifelse(length(input$region_group_scr)==length(unique(df_pfa$region)), "All", ifelse(length(input$region_group_scr)==0, "None", input$region_group_scr))
     legislation_group <- ifelse(length(input$legislation_group_scr)==length(unique(df_pfa$legislation)), "All", ifelse(length(input$legislation_group_scr)==0, "None" ,input$legislation_group_scr))
     reason_group <- ifelse(length(input$reason_group_scr)==length(unique(df_pfa$reasonForSearch)), "All", ifelse(length(input$reason_group_scr)==0, "None" ,input$reason_group_scr))
     outcome_group <- ifelse(length(input$outcome_group_scr)==length(unique(df_pfa$outcome)), "All", ifelse(length(input$outcome_group_scr)==0, "None", input$outcome_group_scr))
@@ -470,17 +474,6 @@ function(input, output, session) {
     else if(myvalue == "selfDefinedEthnicityGroup") {
       div(class="parent",
           div(class="divy2", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
-          
-          style="width:95%; height:15vh;")
-    }
-    else if(myvalue == "region") {
-      div(class="parent",
-          div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
-          div(class="divy2", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
@@ -490,7 +483,6 @@ function(input, output, session) {
     else if(myvalue == "legislation") {
       div(class="parent",
           div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
           div(class="divy2", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
@@ -500,7 +492,6 @@ function(input, output, session) {
     else if(myvalue == "reasonForSearch") {
       div(class="parent",
           div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
           div(class="divy2", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),
@@ -510,7 +501,6 @@ function(input, output, session) {
     else if(myvalue == "outcome") {
       div(class="parent",
           div(class="divy", HTML(paste0(HTML("<b>Ethnic Group</b><br>Selected: "), HTML(ethnic_group)))),
-          div(class="divy", HTML(paste0(HTML("<b>Region</b><br>Selected: "), HTML(region_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Legislation</b><br>Selected: "), HTML(legislation_group)))),
           div(class="divy", HTML(paste0(HTML("<b>Reason for Search</b><br>Selected: "), HTML(reason_group)))),
           div(class="divy2", HTML(paste0(HTML("<b>Outcome of Search</b><br>Selected:"), HTML(outcome_group)))),

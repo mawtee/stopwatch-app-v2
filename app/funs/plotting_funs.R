@@ -5,9 +5,10 @@ colour_list <- c()
 #===============================================================================
 plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_height) {
   
-  # INPUTS AND SHIT
+  # INPUTS AND SHIT (IMPORTAMT LINKS)
   #----------------------
-  
+  #https://jsfiddle.net/BlackLabel/ytrfd4xn/
+ # https://jkunst.com/blog/posts/2021-01-07-minimalistic-toolptips-with-highcharter-and-highcharts/index.html
   
   # Define width of timeline events by number of stop-searches (emulating stacked bar chart)
   #-------------------------------------------------------------------------------------------
@@ -328,8 +329,7 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
       # ) %>%
       
     hc_title(
-      text= paste0("Number of stop-searches, ",year_range_scr,"<br>''"),
-      text= paste0("Number of stop-searches, ",year_range_scr,"<br><br><br>","⠀."),
+      text= paste0("Number of stop-searches, ",year_range_scr),
       align = "center",style = list(
         fontSize ="18px",color = "#333333", 
         fontFamily = "Arial", fontWeight = "400" )) %>%
@@ -362,8 +362,10 @@ plot__pfa_scr_nattrend_agg <- function(df_pfa, year_range, year_range_scr, group
 plot__pfa_map <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
   
   #browser()
+  #https://jkunst.com/highcharter/reference/hc_add_event_point.html
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+ # browser()
   #browser()
   df_pfa <- df_pfa %>%
     group_by(pfaName) %>%
@@ -398,7 +400,7 @@ plot__pfa_map <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
   pfa_select_index <- which(vec==1)
   bounds_pfa_select <-   list('type'=bounds_pfa$type, 'features'=list(bounds_pfa$features[[pfa_select_index]]))
     
-  br
+  #browser()
   #rownames(df_pfa) <- df_pfa$pfaName
   highchart() %>%
      # hc_title(
@@ -1292,3 +1294,241 @@ text8 <- HTML("<H2> In Sum </H2>
 
 
 
+
+plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
+    year_range_int <- which(levels(df_pfa$year) %in% year_range)
+    df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+    
+    
+    df <- df_pfa %>%
+      filter(selfDefinedEthnicityGroup!='Not Stated / Unknown') %>%
+      group_by(pfaName, selfDefinedEthnicityGroup) %>%
+      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+      ungroup() %>% 
+      distinct(pfaName, selfDefinedEthnicityGroup, .keep_all=T) %>%
+      select(pfaName, selfDefinedEthnicityGroup, numberOfSearches) %>%
+      pivot_wider(id_cols='pfaName', names_from='selfDefinedEthnicityGroup', values_from='numberOfSearches') 
+    names(df)[-1] <- paste0("g", 1:6)
+    df$null <- 1
+    df <-  df %>% rowwise() %>% mutate(total = sum(c_across(g1:g4)))
+    
+    df$totalz <- (df$total - min(df$total))/(sort(df$total, TRUE)[3]-min(df$total)) * (55 - 13) + 13
+    df <- df %>% mutate(totalz = case_when(pfaName=="West Midlands"~60, 
+                                           pfaName=='Metropolitan Police'~65, T~totalz))
+    df <- df %>% filter(pfaName != 'London, City of') %>% arrange(-totalz)
+    df$ntile <- ntile(df$total, 10)
+    
+    min <- min(df$total)
+    max <- sort(df$total, TRUE)[1]+sort(df$total, TRUE)[1]
+    
+    #df <- df %>% mutate(total = case_when(pfaName=='Metropolitan Police'~NA_real_, T~total))
+    
+    #df$name <- paste0('name', 1:43)
+    stops <- data.frame(
+      c=seq(.1,1, 0.1),
+      q=rev(paste0(c('#200000', '#4a0000', '#710000', '#9b0000', '#c70000', '#e73131', '#ed6868', '#f29191', '#f6b7b7', '#fadada'),'99'))
+    )
+    
+    stops <- list_parse2(stops)
+    
+    
+    
+    df$ntile2 <- (df$ntile*1.2)+5
+    df$ntile3 <- df$ntile2*2.2
+    
+    df <- df %>% select(-c(null,total, totalz))
+    
+    
+    highchart() %>%
+      hc_add_series_map(
+        id='map',
+        bounds_pfa, df, value='ntile', joinBy=c("pfa16nm", "pfaName"),
+        keys =c('pfaName', 'g1', 'g2', 'g3', 'g4', 'g5', 'null', 'ntile', 'ntile2', 'ntile3'),
+        borderColor='#FAFAFA', borderWidth=.1, 
+        dataLabels = list(enabled = F, format = "{point.g1}",
+                          style=list(fontSize='10'))
+      )%>%
+      hc_mapNavigation(
+        enabled = T, enableMouseWheelZoom = T, enableDoubleClickZoom = F,
+        style=list(
+          fill='white', color='white'
+        ),
+        
+        buttonOptions = list(
+          align='right', x=-110,
+          theme=list(
+            fill='white', `stroke-width`= 3,
+            stroke='#f0f2f4', r=10,
+            states=list(
+              hover=list(
+                fill = '#ced1d6'
+              )
+            )
+          )
+          
+          
+        )
+        
+      ) %>%
+      
+      
+      hc_colorAxis(
+        stops=stops
+        # dataClasses=list(
+        #   list(
+        #     name='Asian',
+        #     color='#a0dfb9'
+        #   ),
+        #   list(
+        #     name='Black',
+        #     color='#7fabaa'
+        #   ),
+        #   list(
+        #     name='Mixed',
+        #     color='#5f7a9c'
+        #   ),
+        #   
+        #   list(
+        #     name='White',
+        #     color='#40498e'
+        #   )
+        # 
+        #   
+        # )#5f7a9c
+      ) %>%
+      # hc_tooltip(
+      #  # hideDelay=0
+      # ) %>%
+      hc_plotOptions(
+        map = list(
+          enableMouseTracking = T
+        ),
+        pie = list(
+          point=list(
+            stickyTracking=F,
+            allowPointSelect = T,
+            events = list(
+              mouseOver = JS("function(){ if(this.radius !== this.ntile3){ this.update({radius: this.ntile3})} } "),
+              mouseLeave =  JS("function(){ if(this.size === this.ntile3){ this.update({size: this.ntile2})} } ")
+            )
+            #   #   # mouseOver = JS("function() { if(this.options.size !== 50) {this.update({size: 50})} }"),
+            #   #   # mouseOut = JS("function() { if(this.options.size === 50) {this.update({size: 20})} }")
+          ),
+          
+          states = list(
+            hover = list(
+              enabled = TRUE,
+              lineWidth = 10
+            )
+          )
+        )
+      ) %>%
+      
+      #   minColor = "#fadada",
+      #   maxColor = "#e10000",
+      #   min=min,
+      #   max=max
+      # )%>%
+      # hc_add_series(mapData = bounds_pfa, showInLegend = FALSE, nullColor='#f7f7f7') %>%
+      hc_add_dependency("modules/series-on-point.js")%>%
+      # highcharter::hc_colorAxis(
+      # minColor='#f7f7f7', maxColor='#f7f7f7'#,
+      #   dataClasses=list(
+      #     list(
+      #       color = '#551e4F',
+      #       id='g4',
+      #       name = 'Asian'
+      #     ),
+      #     list(
+      #       color = '#F06043',
+      #       id='g2',
+    #       name = 'Black'
+    #     ),
+    #     
+    #     list(
+    #       color = '#B41658',
+    #       id='g3',
+    #       name = 'Mixed'
+    #     ),
+    #     list(
+    #       color = '#F6C09E',
+    #       id='g1',
+    #       name = 'White'
+    #     ),
+    #     list(
+    #       #color='#f7f7f7',
+    #       id='null',
+    #       name=""
+    #     )
+    #   )
+    # ) %>%
+    hc_chart(
+      events = list(
+        load = highcharter::JS(
+          "function() {
+           var chart = this;
+           chart.series[0].points.forEach(pfa => {
+             if (!pfa.isNull) {
+               chart.addSeries({
+                 type: 'pie',
+                 //innerSize: '67%',
+                 //borderColor: 'black',
+                 borderWidth: .2,
+                 borderRadius: 8,
+                 name: pfa.pfaName,
+                 zIndex: 25,
+                 size: pfa.ntile2,
+                 dataLabels: {
+                   enabled: false
+                 },
+                 onPoint: {
+                   id: pfa.id
+                 },
+                 states: {
+                   inactive: {
+                     enabled: false
+                   }
+                 },
+                 data: [
+                   {
+                     name: 'White',
+                     y: pfa.g1,
+                     color: '#40498e',
+                     selected: true
+                   },
+                   {
+                     name: 'Black',
+                     y: pfa.g2,
+                     color: '#5f7a9c',
+                     selected: true
+                   },
+                   {
+                     name: 'Mixed',
+                     y: pfa.g3,
+                     color: '#7fabaa',
+                     selected: true
+                   },
+                   {
+                     name: 'Asian',
+                     y: pfa.g4,
+                     color: '#a0dfb9',
+                     selected: true
+                   }//,
+                   //{
+                     //name: 'g5',
+                     //y: pfa.g5,
+                     //color: '#f7f71a'
+                   //}
+                 ]
+               },false
+               );
+             }
+          });
+          chart.redraw();
+        }"
+        )
+      )
+    ) 
+
+}
