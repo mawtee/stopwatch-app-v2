@@ -373,8 +373,9 @@ plot__pfa_map <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
     #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
     ungroup() %>% 
     distinct(pfaName, .keep_all=T) %>%
-    select(pfaName, numberOfSearches)
-  
+    select(pfaName, numberOfSearches) %>%
+    filter(pfaName != 'London, City of')
+   
  # 
   #browser()
   if (!is.null(pfa_select)) {
@@ -1407,11 +1408,11 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
         pie = list(
           point=list(
             stickyTracking=F,
-            allowPointSelect = T,
-            events = list(
-              mouseOver = JS("function(){ if(this.radius !== this.ntile3){ this.update({radius: this.ntile3})} } "),
-              mouseLeave =  JS("function(){ if(this.size === this.ntile3){ this.update({size: this.ntile2})} } ")
-            )
+            allowPointSelect = T#,
+            # events = list(
+            #   mouseOver = JS("function(){ if(this.radius !== this.ntile3){ this.update({radius: this.ntile3})} } "),
+            #   mouseLeave =  JS("function(){ if(this.size === this.ntile3){ this.update({size: this.ntile2})} } ")
+            # )
             #   #   # mouseOver = JS("function() { if(this.options.size !== 50) {this.update({size: 50})} }"),
             #   #   # mouseOut = JS("function() { if(this.options.size === 50) {this.update({size: 20})} }")
           ),
@@ -1477,7 +1478,7 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
                  borderWidth: .2,
                  borderRadius: 8,
                  name: pfa.pfaName,
-                 zIndex: 25,
+                 zIndex: 6,
                  size: pfa.ntile2,
                  dataLabels: {
                    enabled: false
