@@ -169,7 +169,7 @@ nationalTrends <- (
                 choices=levels(df_pfa$year), selected=levels(df_pfa$year)[1],
                 animationOptions(interval=3500, loop=T)
               ),
-              style="position: absolute; top: 8%; right: 60%; z-index:1"
+              style="position: absolute; width: 18vw; bottom: 6vh; right: 2vw; z-index:1"
               )
             ),
             #div(wellPanel(h1("panel")), style="width=100%", height="10%"),
@@ -263,21 +263,21 @@ nationalTrends <- (
                 ),
                 # selectizeInput('season', "", choices = shots$SeasonNr, selected = TRUE, multiple = TRUE),
               ) ,style = "height: 125vh;margin-top: 45vh;"),
-            div(
-              scrolly_section(
-                id = 'region', render_text(3),
-                pickerInput(
-                  inputId = "region_group_scr",
-                  label = " Select region",
-                  choices=c(unique(df_pfa$region)),
-                  selected=c(unique(df_pfa$region)),
-                  options = list(
-                    `actions-box` = TRUE), 
-                  multiple = TRUE
-                )
-              ),
-              style = "height: 125vh;margin-top: 45vh;"
-            ),
+            # div(
+            #   scrolly_section(
+            #     id = 'region', render_text(3),
+            #     pickerInput(
+            #       inputId = "region_group_scr",
+            #       label = " Select region",
+            #       choices=c(unique(df_pfa$region)),
+            #       selected=c(unique(df_pfa$region)),
+            #       options = list(
+            #         `actions-box` = TRUE), 
+            #       multiple = TRUE
+            #     )
+            #   ),
+            #   style = "height: 125vh;margin-top: 45vh;"
+            # ),
             div(
               scrolly_section(
                 id = 'legislation', render_text(4),
@@ -492,8 +492,16 @@ nationalTrends <- (
         # # ),
         conditionalPanel(
           condition =  "input.pfa_select.length > 0",
-
-           h2("PFA SCROLLY!!!!")#,
+           fluidRow(
+             column(2,
+             h2("PFA SCROLLY!!!!")
+             ),
+          column(7, 
+                 align='center', highchartOutput("map__pfa_pie", height='85vh', width='95%')
+          )
+           )
+          
+          #map__pfa_pie
           #   scrolly_container(
           #     "scrcon_nattrend_agg2",
           #     scrolly_graph(
