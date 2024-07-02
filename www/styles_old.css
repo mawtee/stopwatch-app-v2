@@ -32,7 +32,7 @@ p{
  }
  
 #boxxy-value {
-  font-size: 30vh;
+  font-size: 2vh;
 }
 
 
@@ -469,6 +469,14 @@ Filter: "Black"
   border-width: .3vh;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 6px 18px;
 }
+
+
+.highcharts-pie-series .highcharts-point-hover,
+/*.highcharts-pie-series .highcharts-point-select:hover,*/
+.highcharts-pie-series:hover .highcharts-halo {
+  transform: scale(1.3, 1.3);
+}
+
 
 * {
     font-family: 'Public Sans', sans-serif;

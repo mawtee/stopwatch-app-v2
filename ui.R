@@ -27,7 +27,7 @@ library(plotly)
 library(geojsonio)
 library(countup)
 library(manipulateWidget)
-
+library(sf)
 
 source("app/ui/home.R")
 source("app/ui/nationalTrends.R")
@@ -49,19 +49,21 @@ json_pfa <- "data/smoothed.geojson"
 bounds_pfa <- geojsonio::geojson_read(json_pfa, what = "list")
 
 
-# sf_use_s2(FALSE)
-# bounds_pfa__sf <- geojsonsf::geojson_sf(json_pfa) 
-# bounds_pfa__df <- st_as_sf(bounds_pfa__sf, coords = c('long', 'lat')) 
-# bounds_pfa__df <- st_make_valid(bounds_pfa__df)
-# 
+sf_use_s2(FALSE)
+bounds_pfa__sf <- geojsonsf::geojson_sf(json_pfa)
+bounds_pfa__df <- st_as_sf(bounds_pfa__sf, coords = c('long', 'lat'))
+bounds_pfa__df <- st_make_valid(bounds_pfa__df) %>% select(long, lat, pfa16nm)
+bounds_pfa__df <- bounds_pfa__df[1:3]
+
+
 # centroids <- bounds_pfa__df %>%
-#   group_by(pfa16nm) %>% 
-#   summarize(geometry = st_union(geometry)) %>% 
+#   group_by(pfa16nm) %>%
+#   summarize(geometry = st_union(geometry)) %>%
 #   st_centroid %>%
 #   st_coordinates() %>%
 #   as.data.frame()
 # centroids$pfaName <- unique(df_pfa$pfaName)
-# names(centroids)[1:2] <- c("long", "lat")
+# names(centroids)[1:2] <- c("lon", "lat")
 
 
 

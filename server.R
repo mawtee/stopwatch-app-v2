@@ -12,6 +12,13 @@ library(shiny)
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
+  
+  output$line__pfa_scr_nattrend <- renderHighchart({
+    plot__nattrend_line(df_pfa, input$year_range)
+  }
+  )
+  
+  
   output$hc_more <- renderHighchart({
     plot__pfa_tsline_nat_hc(df_pfa, input$year_range, input$legislation_select)
   })
@@ -234,29 +241,80 @@ function(input, output, session) {
   observeEvent(input$render_hc, {
     
     #  boxxyOutput("subs")
-    
-    
+    delay(1000,
+    # insert ui, removeUI
+    #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
     #random_numbers_items_batch <- generate_random_numbers_divs(100)
     insertUI(
       selector = "#end",
-      where = "afterEnd",
+      where = "beforeEnd",
       ui = 
+        tags$div(
+          id='phase1',
         fluidPage(
-        fluidRow(
-          column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: 3vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
+          div(style="height:70vh",
+          fluidRow(
+            column(2),
+            column(8, highchartOutput('line__pfa_scr_nattrend', width='90%', height="90%")),
+            column(2)
+            #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
           ),
-      fluidRow(
-        column(1),
-          column(10, highchartOutput("hc")),
-        column(10)
-      )
-    )
+        # fluidRow(
+        #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
+        #   )
+        )
       
       #    ui = tags$div(
       #      includeCSS("counter.css"),
       # highchartOutput("hc")
       #   )
     )
+        )
+    )
+    )
+  
+    
+    delay(10000,
+          # insert ui, removeUI
+          #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
+          #random_numbers_items_batch <- generate_random_numbers_divs(100)
+          removeUI(
+            selector = "#phase1"
+          )
+    )
+    
+    #  boxxyOutput("subs")
+    delay(10500,
+          # insert ui, removeUI
+          #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
+          #random_numbers_items_batch <- generate_random_numbers_divs(100)
+          insertUI(
+            selector = "#end",
+            where = "beforeEnd",
+            ui = 
+              tags$div(id='phase2',
+              fluidPage(
+                div(style="height:90vh",
+                    fluidRow(
+                      column(2),
+                      column(8, highchartOutput('hc', width='90%', height="100%")),
+                      column(2)
+                      #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
+                    ),
+                    # fluidRow(
+                    #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
+                    # )
+                )
+                
+                #    ui = tags$div(
+                #      includeCSS("counter.css"),
+                # highchartOutput("hc")
+                #   )
+              )
+              )
+          )
+    )
+    
   },
   once=T
   )

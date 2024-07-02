@@ -1,6 +1,130 @@
 colour_list <- c()
 
 
+
+
+plot__nattrend_line <- function(df_pfa, year_range) {
+  
+  year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+  df_pfa_plot <- df_pfa %>%
+    group_by(year) %>%
+    mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+    #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+    ungroup() %>%
+    distinct(year, .keep_all=T) %>%
+    mutate(numberOfSearches_cumsum = cumsum(numberOfSearches)) %>%
+    select(year, numberOfSearches, numberOfSearches_cumsum)
+
+
+plot <-
+  highchart() %>%
+  hc_xAxis(categories = df_pfa_plot$year) %>%
+  hc_add_series(
+    type='column', name='In-year', data=df_pfa_plot$numberOfSearches, color="#e10000"
+  ) %>%
+  hc_add_series(
+    type='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 1
+  ) %>%
+  hc_yAxis_multiples(
+    list(title=list(text=""),min=0, labels=list(enabled=F),gridLineWidth=0),
+    list(title=list(text=""),min=0, labels=list(enabled=F),gridLineWidth=0)
+    ) %>%
+    hc_xAxis(
+      title=list(text=""),
+      labels=list(style=list(fontSize='11'))
+    ) %>%
+    hc_colors("#e10000") 
+    # hc_plotOptions(
+    #   'column' = list(
+    #     dataLabels = list(
+    #       enabled=T,
+    #       x=.5, y=.5, crop=F,
+    #       overflow= 'none',
+    #       style = list(
+    #         fontSize = "11",
+    #         textOutline = FALSE,
+    #         fontWeight='normal'
+    #       )
+    #     ),
+    #     pointPadding = 0
+    #   )
+    # )
+  return(plot)
+   
+}
+
+
+
+plot__nattrend_item <- function(df_pfa, year_range) {
+  
+  # year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  # df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+  # df_pfa_plot <- df_pfa %>%
+  #   mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+  #   mutate(arrest = case_when(outcome == "Arrest"~1, T~0)) %>%
+  #   mutate(numberArrest = sum(arrest)) %>%
+  #   summarise(propArrest = (numberArrest/numberOfSearches)*100) %>%
+  #   slice(1)
+  # 13% result in an arrest
+  df_pfa_plot <- data.frame(
+    name = c('Arrest', 'No Arrest'),
+    value = c(13, 87)
+  )
+    
+# https://stackoverflow.com/questions/57999667/changing-output-after-delay-in-r-shiny-app
+  plot <-
+    highchart() %>%
+    hc_chart(type='item') %>%
+    hc_add_series(data=df_pfa_plot$value) 
+  
+  # bubble plot
+  # 
+  # 
+  # %>%
+  #   hc_add_series(data=df_pfa_plot$nonarrests)
+  #     
+  #     
+  #   )
+  #   hc_xAxis(categories = df_pfa_plot$year) %>%
+  #   hc_add_series(
+  #     type='column', name='In-year', data=df_pfa_plot$numberOfSearches, color="#e10000"
+  #   ) %>%
+  #   hc_add_series(
+  #     type='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 1
+  #   ) %>%
+  #   hc_yAxis_multiples(
+  #     list(title=list(text=""),min=0, labels=list(enabled=F),gridLineWidth=0),
+  #     list(title=list(text=""),min=0, labels=list(enabled=F),gridLineWidth=0)
+  #   ) %>%
+  #   hc_xAxis(
+  #     title=list(text=""),
+  #     labels=list(style=list(fontSize='11'))
+  #   ) %>%
+  #   hc_colors("#e10000") 
+  # hc_plotOptions(
+  #   'column' = list(
+  #     dataLabels = list(
+  #       enabled=T,
+  #       x=.5, y=.5, crop=F,
+  #       overflow= 'none',
+  #       style = list(
+  #         fontSize = "11",
+  #         textOutline = FALSE,
+  #         fontWeight='normal'
+  #       )
+  #     ),
+  #     pointPadding = 0
+  #   )
+  # )
+  return(plot)
+  
+}
+
+
+
+
+
 # National Trends timeline plot
 #===============================================================================
 plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_height) {
@@ -55,7 +179,9 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
   
   
   # Define timeline year list
-  #---------------------------
+  #--------------------------
+  
+  # separate lists = separate labels, rendering sequentially
   
   timeline_list <- list(
     list(
@@ -147,12 +273,12 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
   timeline_anim_duration <-  455*length(timeline_list_select) # duration for full 11-year series = 5 seconds -> (5000/11=455)
   #browser()
   
-  
+  # single series for eeach year = sequential labels
   # Plot timeline
   #--------------------------------------------
   plot <- highchart() %>%
     hc_add_dependency("modules/timeline.js") %>%
-    hc_chart(type="timeline") %>%
+    hc_chart(type="timeline") %>% #, inverted=T
     hc_xAxis(visible=F) %>%
     hc_yAxis(visible=F) %>%
     hc_title(text="") %>%
@@ -169,9 +295,82 @@ plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_h
       ),
       data = timeline_list_select
     ) %>%
+    # hc_add_series(
+    #   dataLabels = list(
+    #     enabled = TRUE,
+    #     animation=list(
+    #       defer=8000),
+    #     connectorColor= 'silver',
+    #     connectorWidth= 2,
+    #     style=list(
+    #       fontSize='0.7em',
+    #       textOverflow= 'clip'
+    #     )
+    #   ),
+    #   data = timeline_list_select[[2]]
+    # ) %>%
+    # hc_add_series(
+    #   dataLabels = list(
+    #     enabled = TRUE,
+    #     animation=list(
+    #       defer=8000),
+    #     connectorColor= 'silver',
+    #     connectorWidth= 2,
+    #     style=list(
+    #       fontSize='0.7em',
+    #       textOverflow= 'clip'
+    #     )
+    #   ),
+    #   data = timeline_list_select[[3]]
+    # ) %>%
+    # hc_add_series(
+    #   dataLabels = list(
+    #     enabled = TRUE,
+    #     animation=list(
+    #       defer=8000),
+    #     connectorColor= 'silver',
+    #     connectorWidth= 2,
+    #     style=list(
+    #       fontSize='0.7em',
+    #       textOverflow= 'clip'
+    #     )
+    #   ),
+    #   data = timeline_list_select[[4]]
+    # ) %>%
+    # hc_add_series(
+    #   dataLabels = list(
+    #     enabled = TRUE,
+    #     animation=list(
+    #       defer=8000),
+    #     connectorColor= 'silver',
+    #     connectorWidth= 2,
+    #     style=list(
+    #       fontSize='0.7em',
+    #       textOverflow= 'clip'
+    #     )
+    #   ),
+    #   data = timeline_list_select[[5]]
+    # ) %>%
+    # hc_add_series(
+    #   dataLabels = list(
+    #     enabled = TRUE,
+    #     animation=list(
+    #       defer=8000),
+    #     connectorColor= 'silver',
+    #     connectorWidth= 2,
+    #     style=list(
+    #       fontSize='0.7em',
+    #       textOverflow= 'clip'
+    #     )
+    #   ),
+    #   data = timeline_list_select[[6]]
+    # ) %>%
     hc_plotOptions(series=list(
       animation=list(duration=timeline_anim_duration),
-      lineWidth=1))
+      lineWidth=1)) #%>%
+    # hc_annotations(animation=list(defer=1000))
+  
+  #https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/annotations/defer/
  
   
   return(plot)
@@ -1310,7 +1509,7 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
       distinct(pfaName, selfDefinedEthnicityGroup, .keep_all=T) %>%
       select(pfaName, selfDefinedEthnicityGroup, numberOfSearches) %>%
       pivot_wider(id_cols='pfaName', names_from='selfDefinedEthnicityGroup', values_from='numberOfSearches') 
-    names(df)[-1] <- paste0("g", 1:6)
+    names(df)[-1] <- paste0("g", 1:5)
     df$null <- 1
     df <-  df %>% rowwise() %>% mutate(total = sum(c_across(g1:g4)))
     
@@ -1318,7 +1517,7 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
     df <- df %>% mutate(totalz = case_when(pfaName=="West Midlands"~60, 
                                            pfaName=='Metropolitan Police'~65, T~totalz))
     df <- df %>% filter(pfaName != 'London, City of') %>% arrange(-totalz)
-    df$ntile <- ntile(df$total, 10)
+    df$ntile <- ntile(df$total, 12)
     
     min <- min(df$total)
     max <- sort(df$total, TRUE)[1]+sort(df$total, TRUE)[1]
@@ -1330,26 +1529,47 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
       c=seq(.1,1, 0.1),
       q=rev(paste0(c('#200000', '#4a0000', '#710000', '#9b0000', '#c70000', '#e73131', '#ed6868', '#f29191', '#f6b7b7', '#fadada'),'99'))
     )
-    
+    ##4a0000, #c70000 ##f29191 #fadada
     stops <- list_parse2(stops)
     
     
     
-    df$ntile2 <- (df$ntile*1.2)+5
-    df$ntile3 <- df$ntile2*2.2
+    df$ntile2 <- (df$ntile*1.15)+5
+    df$ntile3 <- df$ntile2*1.8
     
     df <- df %>% select(-c(null,total, totalz))
     
+  df <- df %>%
+    mutate(
+      max = pmax.int(g1, g2, g3, g4),
+      type = case_when(
+        max == g1 ~ 1,
+        max == g2 ~ 2,
+        max == g3 ~ 3,
+        TRUE     ~ 4)
+    )
+
+    
+    
+    #browser()
+    
+    df_t <- df %>% group_by(pfaName) %>% rowwise() %>% summarise(total = sum(c_across(g1:g4))) %>% ungroup()
+    df_t <- merge(df_t, bounds_pfa__df[1:3], by.x='pfaName', by.y='pfa16nm')
+    df_tg <- data.frame(name=df_t$pfaName, lat = df_t$lat, lon = df_t$long, z=c(runif(42, 10000 , 1000000)))
+    
+
     
     highchart() %>%
       hc_add_series_map(
         id='map',
-        bounds_pfa, df, value='ntile', joinBy=c("pfa16nm", "pfaName"),
-        keys =c('pfaName', 'g1', 'g2', 'g3', 'g4', 'g5', 'null', 'ntile', 'ntile2', 'ntile3'),
+        bounds_pfa, df, value='type', joinBy=c("pfa16nm", "pfaName"),
+        keys =c('pfaName', 'g1', 'g2', 'g3', 'g4', 'g5', 'null', 'ntile', 'ntile2', 'ntile3', 'max', 'type', 'total'),
         borderColor='#FAFAFA', borderWidth=.1, 
         dataLabels = list(enabled = F, format = "{point.g1}",
                           style=list(fontSize='10'))
       )%>%
+      hc_add_series(data=df_tg, type= 'mapbubble',
+                    color= 'blue', maxSize='0.0001%') %>%
       hc_mapNavigation(
         enabled = T, enableMouseWheelZoom = T, enableDoubleClickZoom = F,
         style=list(
@@ -1375,7 +1595,34 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
       
       
       hc_colorAxis(
-        stops=stops
+        dataClasses=list(
+          list(
+            name='Asian',
+            color = '#f29191',
+            from=1, 
+            to=1
+          ),
+          list(
+            name='Black',
+            color = '#e73131',
+            from=2,
+            to=2
+          ),
+          list(
+            name='Other',
+            color = '#9b0000',
+            from=3,
+            to=3
+          ),
+          list(
+            name='Mixed',
+            color = '#4a0000', 
+            from=4,
+            to=4
+          )
+        )
+      ) %>%
+       # stops=stops
         # dataClasses=list(
         #   list(
         #     name='Asian',
@@ -1387,17 +1634,17 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
         #   ),
         #   list(
         #     name='Mixed',
-        #     color='#5f7a9c'
+        #     color='Mixed'
         #   ),
         #   
         #   list(
         #     name='White',
-        #     color='#40498e'
+        #     color='#Other'
         #   )
         # 
         #   
         # )#5f7a9c
-      ) %>%
+      #) %>%
       # hc_tooltip(
       #  # hideDelay=0
       # ) %>%
@@ -1408,23 +1655,75 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
         pie = list(
           point=list(
             stickyTracking=F,
-            allowPointSelect = T#,
-            # events = list(
-            #   mouseOver = JS("function(){ if(this.radius !== this.ntile3){ this.update({radius: this.ntile3})} } "),
-            #   mouseLeave =  JS("function(){ if(this.size === this.ntile3){ this.update({size: this.ntile2})} } ")
-            # )
-            #   #   # mouseOver = JS("function() { if(this.options.size !== 50) {this.update({size: 50})} }"),
-            #   #   # mouseOut = JS("function() { if(this.options.size === 50) {this.update({size: 20})} }")
-          ),
-          
-          states = list(
-            hover = list(
-              enabled = TRUE,
-              lineWidth = 10
-            )
+             allowPointSelect = T,
+             states = list(
+               hover = list(
+                 enabled=T,
+                 size=80
+               )
+            
           )
         )
+        )
+        #     
+        #     events=list(
+        #     mouseOver = JS("function() { 
+        #                    this.series.data.forEach(function(point) {
+        #                    if(point.size !== point.ntile3){ point.update({size: point.ntile3})}}}"),
+        #     mouseOut = JS("function() { 
+        #                    this.series.data.forEach(function(point) {
+        #                    if(point.size === point.ntile3){ point.update({size: point.ntile2})}}}")
+        #   )
+        #   )
+        # )
+            
+                           
+                           
+        #                    if(this.options.size !== this.ntile3) {this.update({size: this.ntile3})} }"),
+        #     mouseOut = JS("function() { if(this.options.size === this.ntile3) {this.update({size: this.ntile2})} }")
+        #   )
+        # #)
+            #  events = list(
+            #    mouseOver = JS("function(){this.series.data.forEach(function(point) { if(point.size != )
+            #                   
+            #                   if(this.options.size !== this.ntile3){ this.update({size: this.ntile3})} } "),
+            #    mouseLeave =  JS("function(){ if(this.options.size === this.ntile3){ this.update({size: 80})} } ")
+            # # )
+          #        mouseOver = JS("function() { if(this.options.size !== 50) {this.update({size: 50})} }"),
+          #        mouseOut = JS("function() { if(this.options.size === 50) {this.update({size: 20})} }")
+                  #TODO Chnage pie size on hover
+                  #https://stackoverflow.com/questions/52066731/highcharter-change-highlight-color-on-hover
+        #https://jsfiddle.net/r890aact/1/
+            # )
+           #)#,
+          #https://stackoverflow.com/questions/55884521/alternative-way-to-change-hovered-series-and-its-points-properties-in-a-highchar
+          # states = list(
+          #   hover = list(
+          #     enabled = F#,
+          #     #lineWidth = 10
+          #   )
+           #),
+        #)
       ) %>%
+      hc_legend(backgroundColor='#FFFFFF',
+                bubbleLegend=list(enabled=T,
+                                  borderWidth= .4,
+                                  borderColor='#000000',
+                                  color= '#ffffff',
+                                  connectorColor= '#000000',
+                                  align = "right",
+                                  maxSize=35,
+                                  ranges=list(
+                                    list(value=1000),
+                                    list(value=10000),
+                                    list(value=50000),
+                                    list(value=500000),
+                                    list(value=1000000)
+                                  ),
+                                  labels=list(align='right')))%>%
+      # hc_legend(enabled = TRUE, layout = "vertical", 
+      #           align = "right", bubbleLegend =  list(enabled = TRUE)) %>%
+      hc_add_theme(hc_theme(chart = list(backgroundColor = '#FFFFFF'))) %>%
       
       #   minColor = "#fadada",
       #   maxColor = "#e10000",
@@ -1475,8 +1774,9 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
                  type: 'pie',
                  //innerSize: '67%',
                  //borderColor: 'black',
-                 borderWidth: .2,
+                 borderWidth: .4,
                  borderRadius: 8,
+                 borderColor:'#000000',
                  name: pfa.pfaName,
                  zIndex: 6,
                  size: pfa.ntile2,
@@ -1493,27 +1793,27 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
                  },
                  data: [
                    {
-                     name: 'White',
+                     name: 'Asian',
                      y: pfa.g1,
-                     color: '#40498e',
+                     color: '#f29191',
                      selected: true
                    },
                    {
                      name: 'Black',
                      y: pfa.g2,
-                     color: '#5f7a9c',
+                     color: '#e73131',
+                     selected: true
+                   },
+                   {
+                     name: 'Other',
+                     y: pfa.g3,
+                     color: '#9b0000',
                      selected: true
                    },
                    {
                      name: 'Mixed',
-                     y: pfa.g3,
-                     color: '#7fabaa',
-                     selected: true
-                   },
-                   {
-                     name: 'Asian',
                      y: pfa.g4,
-                     color: '#a0dfb9',
+                     color: '#4a0000',
                      selected: true
                    }//,
                    //{
@@ -1531,5 +1831,7 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
         )
       )
     ) 
+      
+      
 
 }
