@@ -100,30 +100,89 @@ nationalTrends <- (
       # Scrolly 
       conditionalPanel(
         condition = "input.pageview_toggle_nattre > 0",
+        div(style="height: 100vh",
+            div(style='height: 3vh'),
+    
+
+        # TODO add selector for years, and make subsequent stuff into conditional panel
+        # e.g. Which years would you like visualise: All, Custom Selection
+        # TODO position two new plots across in same col, with separate column for text and then another bigger one for timeline
+        # TODO possibly see if can execute render sequentially
+        # fluidRow(
+        #   column(2,
+        #   selectizeInput(
+        #     inputId = "cond",
+        #     label = tags$span(style="color: #333333;","conditional panel example"),
+        #     choices = c("show", "hide"),
+        #     multiple = T,
+        #     options = list(
+        #       placeholder = 'Please select an option below',
+        #       maxItems = 1
+        #       # onInitialize = I('function() { this.setValue(null); }')
+        #     )
+        #   )
+        #   ), 
+        #   column(2,
+        #     actionButton("btn", "Confirm selection")
+        #   )
+        # ), 
+        div(style="height:80vh",
         fluidRow(
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
-          br(),
+          div(id = "end", textOutput("yo")),# this is where ui renders
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
+          # br(),
           fluidRow(
-            column(3),
-            column(6,align="center",
-                   shinyWidgets::sliderTextInput(
-                     inputId="year_range", label="Which year(s) would like to visualise?",
-                     choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
-                     force_edges=TRUE
-                   )
-            ),
-            column(3)
-            
+            column(2,
+              actionButton("btn", "Confirm selection")
+            )
           ),
-          div(id = "end"),
+          div(id="begin", h2("yo")), # marker div for activation of animation
+
+
+          
+          
+          includeScript('js-assets/intersectionObserver/render_on_view1.js'), # AT SAME POINT WORK OUT HOW TO RENDER ONCE bottom of intro page has fully left the viewport
+          
+
+
          # fluidRow(
          #   column(3),
          #   column(6,align="center",
@@ -136,10 +195,15 @@ nationalTrends <- (
          #   column(3)
             
          # ),
-          div(id="begin"),
-
-          
-          includeScript('js-assets/intersectionObserver/render_on_view1.js') # AT SAME POINT WORK OUT HOW TO RENDER ONCE bottom of intro page has fully left the viewport
+)
+        ),
+        column(6,align="center",
+               shinyWidgets::sliderTextInput(
+                 inputId="year_range", label="Which year(s) would like to visualise?",
+                 choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
+                 force_edges=TRUE
+               )
+        )
         ),
         br(),
         br(),
