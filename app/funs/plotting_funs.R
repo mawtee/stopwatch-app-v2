@@ -3,7 +3,7 @@ colour_list <- c()
 
 
 
-plot__nattrend_line <- function(df_pfa, year_range) {
+plotFun__natS1_line <- function(df_pfa, year_range) {
   
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
@@ -21,20 +21,19 @@ plot <-
   highchart() %>%
   hc_xAxis(categories = df_pfa_plot$year) %>%
   hc_add_series(
-    type='column', name='In-year', data=df_pfa_plot$numberOfSearches, color="#e10000"
-  ) %>%
-  hc_add_series(
-    type='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 1
+    type='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 0, zIndex=2
   ) %>%
   hc_yAxis_multiples(
-    list(title=list(text=""),min=0, labels=list(enabled=F),gridLineWidth=0),
-    list(title=list(text=""),min=0, labels=list(enabled=F),gridLineWidth=0)
+    list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0, opposite=T),
+    list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0)
     ) %>%
     hc_xAxis(
       title=list(text=""),
       labels=list(style=list(fontSize='11'))
     ) %>%
-    hc_colors("#e10000") 
+    hc_colors("#e10000")  %>%
+  hc_plotOptions(series=list(
+    animation=list(duration=3500)))
     # hc_plotOptions(
     #   'column' = list(
     #     dataLabels = list(
@@ -127,7 +126,7 @@ plot__nattrend_item <- function(df_pfa, year_range) {
 
 # National Trends timeline plot
 #===============================================================================
-plot__nattrend_timeline <- function(df_pfa, year_range, browser_width, browser_height) {
+plotFun__natS1_timeline <- function(df_pfa, year_range, browser_width, browser_height) {
   
   # INPUTS AND SHIT (IMPORTAMT LINKS)
   #----------------------
@@ -1322,10 +1321,7 @@ plot__pfa_quintiles <- function(df_pfa, year_range, pfa_select) {
     
 
     
-    
-    
-    
-
+  
 
   }
 
@@ -1338,35 +1334,84 @@ plot__pfa_quintiles <- function(df_pfa, year_range, pfa_select) {
 
 
 
+# countUp_intro <- function(count_to, count_from) {
+#   
+#   print(count_to)
+#   print(as.numeric(count_to))
+#   count_to <- as.numeric(count_to)
+#   # browser()
+#   countup(
+#     count = count_to,
+#     start_at = count_from,
+#     options = NULL,
+#     duration = 2.5,
+#     start = TRUE,
+#     width = NULL,
+#     height = NULL,
+#     elementId = 'countUp-intro'
+#   )
+# }
+# 
 
-
-
-
-
-
-
-countUp_pfa <- function(count_to, count_from) {
+countUp <- function(count_to, count_from, duration) {
   
   print(count_to)
   print(as.numeric(count_to))
   count_to <- as.numeric(count_to)
- # browser()
+  # browser()
   countup(
     count = count_to,
     start_at = count_from,
     options = NULL,
-    duration = 2.5,
+    duration = duration,
     start = TRUE,
     width = NULL,
     height = NULL,
     elementId = 'countUp-pfa'
-)
-  
-  
-
-  
-  
+  )
 }
+
+
+
+
+
+countUp_pfa <- function(count_to, count_from, duration) {
+
+  print(count_to)
+  print(as.numeric(count_to))
+  count_to <- as.numeric(count_to)
+  # browser()
+  countup(
+    count = count_to,
+    start_at = count_from,
+    options = list(useEasing = F),
+    duration = duration,
+    start = TRUE,
+    width = NULL,
+    height = NULL,
+    elementId = 'countUp-pfa'
+  )
+}
+# 
+# 
+# 
+# countUp_pfa <- function(count_to, count_from) {
+#   
+#   print(count_to)
+#   print(as.numeric(count_to))
+#   count_to <- as.numeric(count_to)
+#  # browser()
+#   countup(
+#     count = count_to,
+#     start_at = count_from,
+#     options = NULL,
+#     duration = 2.5,
+#     start = TRUE,
+#     width = NULL,
+#     height = NULL,
+#     elementId = 'countUp-pfa'
+#   )
+# }
 # 
 # mapNavigation: {
 #   enabled: true,

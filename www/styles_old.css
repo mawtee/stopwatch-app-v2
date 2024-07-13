@@ -306,7 +306,13 @@ Filter: "Black"
 }
 
 
-.intro-widget-box {
+/* National Trends */
+/*============================================================================*/
+
+/* Landing page*/
+/*----------------------------------------------------------------------------*/
+
+.landing-page {
   padding-top: 5px; 
   margin-top: 60px;
   margin-left: -30px;
@@ -318,11 +324,8 @@ Filter: "Black"
   min-height: 92vh;
   max-height: 92vh;
   width: 100vw;
-    
 }
-
-
-.page-title {
+.landing-page-title {
   margin-left: 30px;
   font-family: 'Public Sans', sans-serif;
   height: 18vh;
@@ -332,8 +335,7 @@ Filter: "Black"
   margin-bottom: 3vh;
   
 }
-
-.page-subtitle {
+.landing-page-subtitle {
   margin-left: 30px;
   margin-bottom: 0px;
   font-family: 'Public Sans', sans-serif;
@@ -343,49 +345,80 @@ Filter: "Black"
   font-weight: normal;
   margin-bottom: 10vh;
 }
-
 .pageview-togggle {
   margin-left: 30px;
   font-family: 'Public Sans', sans-serif;
 }
-
 #pageview_toggle_nattre-label {
   color: white;
   font-family: 'Public Sans', sans-serif;
   font-weight: normal;
   font-size: 24px;
 }
-
 #pageview_toggle_nattre-stateText {
   color: white;
   font-family: 'Public Sans', sans-serif;
   font-weight: normal;
   font-size: 24px;
 }
-
 .label-primary {
   background-color: #e10000;
 }
-  
 }
 #pageview_toggle_nattre.ms-Toggle-background {
 }
-
 #pageview_toggle_nattre.ms-Toggle-background.pill-56 {
   background-color: #e10000;
 }
 .label.switch.label-primary.bg-primary {
   background-color: #e10000;
 }
-
 #label.switch.label-primary.bg-primary {
   background-color: #e10000;
 }
-
 #pageview-desc-nattre {
   margin-left: 30px;
   color: white;
 }
+
+
+
+/* Intro page*/
+/*----------------------------------------------------------------------------*/
+
+#natS1 {
+  min-height: 92vh;
+  max-height: 92vh;
+  width: 100vw;
+}
+
+#natS1-buffer {
+  height: 10vh;
+  width: 100vw;
+}
+
+#natS1-contents {
+  height: 72vh;
+  width: 100vw;
+}
+
+#natS1-footer {
+  height:10vh;
+  width:100vw;
+}
+
+#countUp-natS1 {
+  font-size: 11vh;
+  color: #e10000;
+  float: center;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: normal;
+}
+
+
+
+
+
 
 
 #scrcon_nattrend_agg {

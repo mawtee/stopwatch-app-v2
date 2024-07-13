@@ -12,11 +12,7 @@ library(shiny)
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
-  
-  output$line__pfa_scr_nattrend <- renderHighchart({
-    plot__nattrend_line(df_pfa, input$year_range)
-  }
-  )
+
   
   
   output$hc_more <- renderHighchart({
@@ -75,170 +71,281 @@ function(input, output, session) {
   
   
   
+###############################################################################
+  # 
+  # output$hc4 <- renderHighchart({ 
+  #   
+  #   highchart() %>% 
+  #     hc_chart(type = "column", inverted=T) %>% 
+  #     hc_xAxis(categories=0,
+  #              gridLineColor= 'transparent',
+  #              labels=list(enabled=F),
+  #              lineColor= 'transparent', lineWidth= 0, tickLength=0) %>%
+  #     hc_yAxis(max = 7000000, min = 0, gridLineColor= 'transparent', lineColor= 'transparent', lineWidth= 0) %>% 
+  #     #hc_xAxis(categories = c(2011:2021)) %>% 
+  #     hc_add_series(index=10, id="anno1",  data = list(
+  #       list(sequence = rep(1189882, 11))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       #format=round()
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=9, id="anno2",  data = list(
+  #       list(sequence = c(rep(NA,1), rep(1017542, 10)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=8, id="anno3", data = list(
+  #       list(sequence = c(rep(NA, 2), rep(904038, 9)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=7, data = list(
+  #       list(sequence = c(rep(NA, 3), rep(541144, 8)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=6,  data = list(
+  #       list(sequence = c(rep(NA, 4), rep(383595, 7)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=5, data = list(
+  #       list(sequence = c(rep(NA, 5), rep(304132, 6)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=4, data = list(
+  #       list(sequence = c(rep(NA, 6), rep(282380, 5)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=3, data = list(
+  #       list(sequence = c(rep(NA, 7), rep(385154, 4)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=2, data = list(
+  #       list(sequence = c(rep(NA, 8), rep(579955, 3)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=1, data = list(
+  #       list(sequence = c(rep(NA, 9), rep(715987, 2)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_add_series(index=0, data = list(
+  #       list(sequence = c(rep(NA, 10), rep(530365, 1)))
+  #     ), dataLabels = list(
+  #       enabled = TRUE,
+  #       style = list(
+  #         textShadow = F,
+  #         textOutline = F,
+  #         fontWeight = 'bold',
+  #         opacity = 1
+  #       )), pointWidth=42) %>%
+  #     hc_annotations(
+  #       list(
+  #         labelOptions = list(
+  #           shape = "connector",
+  #           align = "right",
+  #           justify = FALSE,
+  #           crop = TRUE,
+  #           borderColor= '#e10000',
+  #           borderRadius=30,
+  #           backgroundColor='yellow',
+  #           style = list(
+  #             fontSize = "0.8em",
+  #             textOutline = "1px white",
+  #             backgroundColor='yellow'
+  #           )
+  #         ),
+  #         labels = list(
+  #           list(point = list(x = 0, y = 500000, xAxis = 0, yAxis = 0, linkedTo="anno1"), text = "value1"),
+  #           list(point = list(x = 0, y = 1500000, xAxis = 0, yAxis = 0, linkedTo="anno2"), text = "value2" ),
+  #           list(point = list(x = 0, y = 6000000, xAxis = 0, yAxis = 0, linkedTo="anno3"), text = "value3")
+  #         )
+  #       )
+  #     ) %>%
+  #   
+  #   
+  #     
+  #     hc_colors(rep("#e10000",2)) %>%
+  #     hc_motion(enabled = TRUE, labels = 2011:2021, series = 0:10, autoPlay=T, loop=F) %>%
+  #     hc_plotOptions(column = list(stacking = "normal"))
+  # }
+  # )
+  
+ # 1. Intro page
+  ##############################################################################
   
   
-  output$subs <- renderCountUp({
-    countUp("", 1671794, color = "#fff")
+  # Plot outputs
+  #=============================================================================
+  
+  # Line chart
+  output$plotOutput__natS1_line <- renderHighchart({
+    plotFun__natS1_line(df_pfa, input$year_range)
   })
   
-  output$hc4 <- renderHighchart({ 
-    
-    highchart() %>% 
-      hc_chart(type = "column", inverted=T) %>% 
-      hc_xAxis(categories=0,
-               gridLineColor= 'transparent',
-               labels=list(enabled=F),
-               lineColor= 'transparent', lineWidth= 0, tickLength=0) %>%
-      hc_yAxis(max = 7000000, min = 0, gridLineColor= 'transparent', lineColor= 'transparent', lineWidth= 0) %>% 
-      #hc_xAxis(categories = c(2011:2021)) %>% 
-      hc_add_series(index=10, id="anno1",  data = list(
-        list(sequence = rep(1189882, 11))
-      ), dataLabels = list(
-        enabled = TRUE,
-        #format=round()
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=9, id="anno2",  data = list(
-        list(sequence = c(rep(NA,1), rep(1017542, 10)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=8, id="anno3", data = list(
-        list(sequence = c(rep(NA, 2), rep(904038, 9)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=7, data = list(
-        list(sequence = c(rep(NA, 3), rep(541144, 8)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=6,  data = list(
-        list(sequence = c(rep(NA, 4), rep(383595, 7)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=5, data = list(
-        list(sequence = c(rep(NA, 5), rep(304132, 6)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=4, data = list(
-        list(sequence = c(rep(NA, 6), rep(282380, 5)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=3, data = list(
-        list(sequence = c(rep(NA, 7), rep(385154, 4)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=2, data = list(
-        list(sequence = c(rep(NA, 8), rep(579955, 3)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=1, data = list(
-        list(sequence = c(rep(NA, 9), rep(715987, 2)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_add_series(index=0, data = list(
-        list(sequence = c(rep(NA, 10), rep(530365, 1)))
-      ), dataLabels = list(
-        enabled = TRUE,
-        style = list(
-          textShadow = F,
-          textOutline = F,
-          fontWeight = 'bold',
-          opacity = 1
-        )), pointWidth=42) %>%
-      hc_annotations(
-        list(
-          labelOptions = list(
-            shape = "connector",
-            align = "right",
-            justify = FALSE,
-            crop = TRUE,
-            borderColor= '#e10000',
-            borderRadius=30,
-            backgroundColor='yellow',
-            style = list(
-              fontSize = "0.8em",
-              textOutline = "1px white",
-              backgroundColor='yellow'
-            )
-          ),
-          labels = list(
-            list(point = list(x = 0, y = 500000, xAxis = 0, yAxis = 0, linkedTo="anno1"), text = "value1"),
-            list(point = list(x = 0, y = 1500000, xAxis = 0, yAxis = 0, linkedTo="anno2"), text = "value2" ),
-            list(point = list(x = 0, y = 6000000, xAxis = 0, yAxis = 0, linkedTo="anno3"), text = "value3")
-          )
-        )
-      ) %>%
-    
-    
-      
-      hc_colors(rep("#e10000",2)) %>%
-      hc_motion(enabled = TRUE, labels = 2011:2021, series = 0:10, autoPlay=T, loop=F) %>%
-      hc_plotOptions(column = list(stacking = "normal"))
-  }
-  )
-  output$hc <- renderHighchart({ 
-    plot__nattrend_timeline(df_pfa, input$year_range, browser_width(), browser_height())
+  # Timeline chart
+  browser_width <- reactive({
+    shinybrowser::get_width()
+  })
+  browser_height <- reactive({
+    shinybrowser::get_height()
+  })
+  output$plotOutput__natS1_timeline <- renderHighchart({ 
+    plotFun__natS1_timeline(df_pfa, input$year_range, browser_width(), browser_height())
   }
   )
   
-  observeEvent(input$render_hc, {
+  
+  # countUp outputs
+  #=============================================================================
+  
+  # Number of searches
+  #--------------------
+
+  # Reactive based on current year selection
+  reactive__natS1_nSearches <- reactive({
+    year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+    df_stat <- df_pfa %>%
+      ungroup() %>%
+      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      slice(1) %>%
+      select(numberOfSearches)
+    countTo <- df_stat$numberOfSearches[1]
+  })
+
+  # Define countUp reactive values based on previous values
+  reactiveVal__natS1_nSearches_countFromTo <-  reactiveValues(countFrom=0, countTo=0)
+  observeEvent(
+    reactive__natS1_nSearches(),{
+      reactiveVal__natS1_nSearches_countFromTo$countFrom <- reactiveVal__natS1_nSearches_countFromTo$countTo;
+      reactiveVal__natS1_nSearches_countFromTo$countTo <- reactive__natS1_nSearches()
+    }
+  )
+  reactive__natS1_nSearches_countTo <- reactive({req(reactive__natS1_nSearches());  reactive__natS1_nSearches(); reactiveVal__natS1_nSearches_countFromTo$countTo})
+  reactive__natS1_nSearches_countFrom <- reactive({req(reactive__natS1_nSearches()); reactive__natS1_nSearches(); reactiveVal__natS1_nSearches_countFromTo$countFrom})
+  output$natS1_nSearches_countTo <- renderPrint({sprintf("countTo:%d", natS1_nSearches_countTo())})
+  output$natS1_nSearches_countFrom <- renderPrint({sprintf("countFrom:%d", natS1_nSearches_countFrom())})
+
+  output$natS1_nSearches_countUp_text <- renderUI({
+    tagList(
+      h3(paste0("were recorded in England and Wales between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 2.75vw; margin-top: -1vh; color: #333333;")
+    )
+  })
+
+
+
+
+
+
+
+#   # Arrest rate reactive
+#   reactive__nattre_intro_arrestRate <- reactive({
+#     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+#     df_stat <- df_pfa %>%
+#       ungroup() %>%
+#       mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+#       mutate(arrest = case_when(outcome == "Arrest"~1, T~0)) %>%
+#       mutate(numberOfArrests = sum(arrest)) %>%
+#       summarise(arrestRate = (numberArrest/numberOfSearches)*100) %>%
+#       slice(1)
+#     countTo <- df_stat$arrestRate[1]
+#   })
+#   
+#   
+#   
+#   # output$countUp_pfa_0 <- renderCountup({
+#   #   #print()
+#   #   #browser()
+#   #   #if(input$pfa_select %in% unique(df_pfa$pfaName)){
+#   #     countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
+#   #   #}
+#   # }
+#   # )
+#   
+#   output$countUp_pfa_text <- renderUI({
+#     tagList(
+#       h3(paste0("were recorded by ",input$pfa_select, " Police between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 2.75vw; margin-top: -1vh; color: #333333;")
+#     )
+#   })
+#   
+#   
+#   
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  observeEvent(input$render__natS1_ui, {
     
     #  boxxyOutput("subs")
     delay(1000,
@@ -246,17 +353,24 @@ function(input, output, session) {
     #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
     #random_numbers_items_batch <- generate_random_numbers_divs(100)
     insertUI(
-      selector = "#end",
+      selector = "#natS1-contents",
       where = "beforeEnd",
       ui = 
         tags$div(
-          id='phase1',
+          id='natS1-contents-phase1',
         fluidPage(
-          div(style="height:70vh",
+          div(
+            #div()
           fluidRow(
-            column(2),
-            column(8, highchartOutput('line__pfa_scr_nattrend', width='90%', height="90%")),
-            column(2)
+            column(6, highchartOutput('plotOutput__natS1_line', height='100%')),
+            column(5,
+                   div(countUp_pfa(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35),style='margin-left:.5vw'),
+                   h2("stop-searches", style="font-size: 5.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
+                   uiOutput('natS1_nSearches_countUp_text')
+                   
+                   ) 
+            # TODO PROXYYYYYY
+            #https://github.com/jbkunst/highcharter/blob/main/dev/sandbox/proxy-shiny.R
             #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
           ),
         # fluidRow(
@@ -272,32 +386,69 @@ function(input, output, session) {
         )
     )
     )
-  
     
-    delay(10000,
+    year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+    df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+    df_pfa_plot <- df_pfa %>%
+      group_by(year) %>%
+      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+      ungroup() %>%
+      distinct(year, .keep_all=T) %>%
+      select(year, numberOfSearches)
+    
+    df_pfa_high_plot <- df_pfa_plot
+    df_pfa_high_plot$index <- 1:nrow(df_pfa_high_plot)
+    df_pfa_high_plot$flag <- ifelse(df_pfa_high_plot$numberOfSearches == max(df_pfa_high_plot$numberOfSearches),1,0)
+    df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, 0)
+    df_pfa_low_plot <- df_pfa_plot
+    df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
+    df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
+    ind <- df_pfa_low_plot$index[1]
+    yy <- df_pfa_low_plot$numberOfSearches[1]
+    
+    delay(6500,
+          highchartProxy('plotOutput__natS1_line') %>%
+            hcpxy_add_series(
+              type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1
+            )# %>%
+    )    
+    delay(10500,
+          highchartProxy('plotOutput__natS1_line') %>%
+            hcpxy_update_point(
+              id='ts', id_point=ind, y=yy
+            )
+          # hcpxy_remove_point(
+          #   id='ts',i=0
+          # )
+          #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
+    )
+  # TODO insert highest year on record and lowest year on record ui, creating placeholder for that ui
+    
+    delay(15000,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
           removeUI(
-            selector = "#phase1"
+            selector = "#natS1-contents-phase1"
           )
     )
     
     #  boxxyOutput("subs")
-    delay(10500,
+    delay(15500,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
           insertUI(
-            selector = "#end",
+            selector = "#natS1-contents",
             where = "beforeEnd",
             ui = 
-              tags$div(id='phase2',
+              tags$div(id='natS1-contents-phase2',
               fluidPage(
-                div(style="height:90vh",
+                div(
                     fluidRow(
                       column(2),
-                      column(8, highchartOutput('hc', width='90%', height="100%")),
+                      column(4, highchartOutput('plotOutput__natS1_timeline')),
                       column(2)
                       #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
                     ),
@@ -319,6 +470,54 @@ function(input, output, session) {
   once=T
   )
   
+  
+  observeEvent(input$render__natS1_ui, {
+    delay(21000,show("year_range", anim=T, animType='slide', time=2))
+  })
+  
+  # TODO move below into above event by adding processing code at start
+  # 
+  # observeEvent(input$render__natS1_ui, {
+  #   year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+  #   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+  #   df_pfa_plot <- df_pfa %>%
+  #     group_by(year) %>%
+  #     mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+  #     #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+  #     ungroup() %>%
+  #     distinct(year, .keep_all=T) %>%
+  #     select(year, numberOfSearches)
+  #   
+  #   df_pfa_high_plot <- df_pfa_plot
+  #   df_pfa_high_plot$index <- 1:nrow(df_pfa_high_plot)
+  #   df_pfa_high_plot$flag <- ifelse(df_pfa_high_plot$numberOfSearches == max(df_pfa_high_plot$numberOfSearches),1,0)
+  #   df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, 0)
+  #   df_pfa_low_plot <- df_pfa_plot
+  #   df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
+  #   df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
+  #   ind <- df_pfa_low_plot$index[1]
+  #   yy <- df_pfa_low_plot$numberOfSearches[1]
+  #   delay(8000,
+  # 
+  #   highchartProxy('plotOutput__natS1_line') %>%
+  #     hcpxy_add_series(
+  #       type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1
+  #     )# %>%
+  #     )    
+  #   
+  #   delay(12000,
+  #     highchartProxy('plotOutput__natS1_line') %>%
+  #     hcpxy_update_point(
+  #       id='ts', id_point=ind, y=yy
+  #     )
+  #     # hcpxy_remove_point(
+  #     #   id='ts',i=0
+  #     # )
+  #       #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
+  #   )
+  # }
+  # )
+  
 
   # output$pfa_countUp <- renderCountUp({
   #   countUp("", 1671794, color = "#fff")
@@ -328,13 +527,7 @@ function(input, output, session) {
   
 
   
-  browser_width <- reactive({
-    shinybrowser::get_width()
-  })
-  
-  browser_height <- reactive({
-    shinybrowser::get_height()
-  })
+
   
   # countUP PFA
   #############################################################################
