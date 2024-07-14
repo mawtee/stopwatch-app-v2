@@ -15,7 +15,7 @@ plotFun__natS1_line <- function(df_pfa, year_range) {
     distinct(year, .keep_all=T) %>%
     mutate(numberOfSearches_cumsum = cumsum(numberOfSearches)) %>%
     select(year, numberOfSearches, numberOfSearches_cumsum)
-
+#browser()
 
 plot <-
   highchart() %>%
@@ -23,6 +23,9 @@ plot <-
   hc_add_series(
     type='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 0, zIndex=2
   ) %>%
+  # hc_add_series(
+  #   type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1
+  # ) %>%
   hc_yAxis_multiples(
     list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0, opposite=T),
     list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0)
@@ -32,6 +35,27 @@ plot <-
       labels=list(style=list(fontSize='11'))
     ) %>%
     hc_colors("#e10000")  %>%
+    hc_annotations(
+      list(
+        labelOptions = list(
+          shape = "connector",
+          align = "right",
+          justify = FALSE,
+          crop = TRUE,
+          style = list(
+            textOutline = "1px white"
+          )
+        ),
+        labels = list(
+          list(
+            point = list(x = 15, y = 1200000, xAxis = 0, yAxis = 0), text = ""
+          )
+
+      )
+    )
+) %>%
+  hc_tooltip(shared=TRUE) %>%
+  
   hc_plotOptions(series=list(
     animation=list(duration=3500)))
     # hc_plotOptions(
@@ -272,12 +296,13 @@ plotFun__natS1_timeline <- function(df_pfa, year_range, browser_width, browser_h
   timeline_anim_duration <-  455*length(timeline_list_select) # duration for full 11-year series = 5 seconds -> (5000/11=455)
   #browser()
   
+  #browser()
   # single series for eeach year = sequential labels
   # Plot timeline
   #--------------------------------------------
   plot <- highchart() %>%
     hc_add_dependency("modules/timeline.js") %>%
-    hc_chart(type="timeline") %>% #, inverted=T
+    hc_chart(type="timeline", inverted=T) %>% #, inverted=T
     hc_xAxis(visible=F) %>%
     hc_yAxis(visible=F) %>%
     hc_title(text="") %>%
@@ -292,7 +317,20 @@ plotFun__natS1_timeline <- function(df_pfa, year_range, browser_width, browser_h
           textOverflow= 'clip'
         )
       ),
-      data = timeline_list_select
+      data = timeline_list_select[1]
+    ) %>%
+    hc_add_series(
+      dataLabels = list(
+        enabled = TRUE,
+        animation=T,
+        connectorColor= 'silver',
+        connectorWidth= 2,
+        style=list(
+          fontSize='0.7em',
+          textOverflow= 'clip'
+        )
+      ),
+      data = timeline_list_select[2]
     ) %>%
     # hc_add_series(
     #   dataLabels = list(

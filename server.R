@@ -358,21 +358,30 @@ function(input, output, session) {
       ui = 
         tags$div(
           id='natS1-contents-phase1',
-        fluidPage(
           div(
             #div()
           fluidRow(
-            column(6, highchartOutput('plotOutput__natS1_line', height='100%')),
-            column(5,
-                   div(countUp_pfa(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35),style='margin-left:.5vw'),
-                   h2("stop-searches", style="font-size: 5.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
-                   uiOutput('natS1_nSearches_countUp_text')
+            column(7, 
+              div(countUp_pfa(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35),style='margin-left:.5vw'),
+              h2("stop-searches", style="font-size: 4.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
+              uiOutput('natS1_nSearches_countUp_text')
+            ),
+            column(5)
+          ),
+          div(
+          fluidRow(
+            column(7,
+              highchartOutput('plotOutput__natS1_line', height='55vh')
+            ),
+            column(5)
+          )#,
+          #style='height:3vh'
+          )
                    
-                   ) 
+                   
             # TODO PROXYYYYYY
             #https://github.com/jbkunst/highcharter/blob/main/dev/sandbox/proxy-shiny.R
             #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
-          ),
         # fluidRow(
         #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
         #   )
@@ -382,11 +391,11 @@ function(input, output, session) {
       #      includeCSS("counter.css"),
       # highchartOutput("hc")
       #   )
-    )
         )
     )
     )
     
+    # TODO Might wanna put this into a function
     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
     df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
     df_pfa_plot <- df_pfa %>%
@@ -398,34 +407,59 @@ function(input, output, session) {
       select(year, numberOfSearches)
     
     df_pfa_high_plot <- df_pfa_plot
-    df_pfa_high_plot$index <- 1:nrow(df_pfa_high_plot)
+    df_pfa_high_plot$index <- paste(1:nrow(df_pfa_high_plot))
     df_pfa_high_plot$flag <- ifelse(df_pfa_high_plot$numberOfSearches == max(df_pfa_high_plot$numberOfSearches),1,0)
-    df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, 0)
+    df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, NA_real_)
+    #browser()
+    max <- df_pfa_high_plot$numberOfSearches[[1]]
     df_pfa_low_plot <- df_pfa_plot
     df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
     df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
     ind <- df_pfa_low_plot$index[1]
-    yy <- df_pfa_low_plot$numberOfSearches[1]
+    min <- df_pfa_low_plot$numberOfSearches[1]
+    
+    df_pfa_plot$text[1] <- ""
+    anno <- df_pfa_plot %>%
+      select()
     
     delay(6500,
           highchartProxy('plotOutput__natS1_line') %>%
             hcpxy_add_series(
-              type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1
-            )# %>%
+              type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1#, dataLabels=list(enabled=T)
+            ) %>%
+            hcpxy_update(
+              annotations=
+                list(
+                  labels = list(
+                    list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record')
+                  )
+                )
+            )
+            
     )    
-    delay(10500,
+    delay(11000,
           highchartProxy('plotOutput__natS1_line') %>%
             hcpxy_update_point(
-              id='ts', id_point=ind, y=yy
+              id='ts', id_point=ind, y=min
+            ) %>%
+            hcpxy_update(
+              annotations=
+                list(
+                  labels = list(
+                    #list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333"; font-size: 2vh; >2011/12 was the highest year on record'),
+                    list(point = list(x = 7, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2018/19 was the lowest year on record')
+                  )
+                )
             )
           # hcpxy_remove_point(
           #   id='ts',i=0
           # )
           #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
     )
-  # TODO insert highest year on record and lowest year on record ui, creating placeholder for that ui
     
-    delay(15000,
+    # TODO change to data label https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/plotoptions/series-datalabels-shape/
+    # TODO possibly add area spline https://stackoverflow.com/questions/36610669/highcharts-areaspline-highlight-a-column-on-hover-effect
+    delay(18000,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
@@ -435,7 +469,7 @@ function(input, output, session) {
     )
     
     #  boxxyOutput("subs")
-    delay(15500,
+    delay(18000,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)

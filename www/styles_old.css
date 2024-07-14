@@ -398,23 +398,22 @@ Filter: "Black"
 }
 
 #natS1-contents {
-  height: 72vh;
+  height: 78vh;
   width: 100vw;
 }
 
 #natS1-footer {
-  height:10vh;
+  height:5vh;
   width:100vw;
 }
 
 #countUp-natS1 {
-  font-size: 11vh;
+  font-size: 9vh;
   color: #e10000;
   float: center;
   font-family: 'Public Sans', sans-serif;
   font-weight: normal;
 }
-
 
 
 
