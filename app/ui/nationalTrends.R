@@ -80,6 +80,34 @@ nationalTrends <- (
         condition = "input.pageview_toggle_nattre > 0",
         div(id='natS1',
             div(id='natS1-buffer'),
+            fluidRow(
+              column(6,  div(id='natS1-contents')),
+              column(6,  div(id='natS1-contents-phase2', style='height:65vh'))
+            ),
+            div(id='natS1-footer',
+                fluidRow(
+                  column(6),
+                  column(2,
+                         shinyjs::hidden(actionButton("btn", "Confirm selection"))
+                  ),
+                  column(2,
+                         div(
+                           shinyjs::hidden(
+                             shinyWidgets::sliderTextInput(
+                               inputId="year_range", label="Which year(s) would like to visualise?",
+                               choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]), force_edges=TRUE
+                             )
+                           ),
+                           style='height:1vh; width:1vw; font-size: 3px'
+                         )
+                  )#,
+                  # column(2,
+                  # div(id="begin", h2("yo"))
+                  # ), # marker div for activation of animation
+                )
+            ),
+            
+                     
     
 
         # TODO add selector for years, and make subsequent stuff into conditional panel
@@ -104,26 +132,8 @@ nationalTrends <- (
         #     actionButton("btn", "Confirm selection")
         #   )
         # ), 
-           div(id='natS1-contents'),# this is where ui renders
-        div(id='natS1-footer',
-          fluidRow(
-            column(6),
-            column(2,
-              shinyjs::hidden(actionButton("btn", "Confirm selection"))
-            ),
-            column(2,
-                   shinyjs::hidden(shinyWidgets::sliderTextInput(
-                            inputId="year_range", label="Which year(s) would like to visualise?",
-                            choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
-                            force_edges=TRUE
-                         ))
-            )#,
-            # column(2,
-            # div(id="begin", h2("yo"))
-            # ), # marker div for activation of animation
-            )
-          ),
-          
+           #div(id='natS1-contents'),# this is where ui renders
+ 
 
 
           

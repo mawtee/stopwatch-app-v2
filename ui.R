@@ -28,6 +28,8 @@ library(geojsonio)
 library(countup)
 library(manipulateWidget)
 library(sf)
+library(typedjs)
+library(shinyglide)
 
 source("app/ui/home.R")
 source("app/ui/nationalTrends.R")

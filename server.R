@@ -366,14 +366,14 @@ function(input, output, session) {
               h2("stop-searches", style="font-size: 4.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
               uiOutput('natS1_nSearches_countUp_text')
             ),
-            column(5)
+            #column(5, div(id='natS1-contents-phase2', style='height:65vh'))
           ),
           div(
           fluidRow(
-            column(7,
+            column(6,
               highchartOutput('plotOutput__natS1_line', height='55vh')
             ),
-            column(5)
+            column(6, div(id='natS1-contents-phase3', style='height:10vh')) # , style='height:90vh'
           )#,
           #style='height:3vh'
           )
@@ -409,15 +409,31 @@ function(input, output, session) {
     df_pfa_high_plot <- df_pfa_plot
     df_pfa_high_plot$index <- paste(1:nrow(df_pfa_high_plot))
     df_pfa_high_plot$flag <- ifelse(df_pfa_high_plot$numberOfSearches == max(df_pfa_high_plot$numberOfSearches),1,0)
-    df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, NA_real_)
+    df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, 0)
     #browser()
-    max <- df_pfa_high_plot$numberOfSearches[[1]]
-    df_pfa_low_plot <- df_pfa_plot
-    df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
-    df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
-    ind <- df_pfa_low_plot$index[1]
-    min <- df_pfa_low_plot$numberOfSearches[1]
+    #browser()
+    df_pfa_high_low_plot <- df_pfa_plot
+    df_pfa_high_low_plot$flag <- ifelse(df_pfa_high_low_plot$numberOfSearches == max(df_pfa_high_low_plot$numberOfSearches),1,
+                                        ifelse(df_pfa_high_low_plot$numberOfSearches == min(df_pfa_high_low_plot$numberOfSearches),1,0))
+    df_pfa_high_low_plot$numberOfSearches <- ifelse(df_pfa_high_low_plot$flag==1, df_pfa_high_low_plot$numberOfSearches, 0)
     
+    max <- max(df_pfa_plot$numberOfSearches)
+    min <- min(df_pfa_plot$numberOfSearches)
+    median <- median(df_pfa_plot$numberOfSearches)
+    # df_pfa_low_plot <- df_pfa_plot
+    # df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
+    # df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
+    # ind <- df_pfa_low_plot$index[1]
+    # min <- df_pfa_low_plot$numberOfSearches[1]
+    
+    #browser()
+    # df_pfa_plot$index <-  paste(1:nrow(df_pfa_plot))
+    # df_pfa_plot <- df_pfa_plot[df_pfa_plot$numberOfSearches!=max(df_pfa_plot$numberOfSearches) & df_pfa_plot$numberOfSearches!=min(df_pfa_plot$numberOfSearches), ] 
+    # indices <- df_pfa_plot$index
+    # yy <- df_pfa_plot$numberOfSearches
+    #browser()
+    
+    #browser()
     df_pfa_plot$text[1] <- ""
     anno <- df_pfa_plot %>%
       select()
@@ -432,22 +448,28 @@ function(input, output, session) {
                 list(
                   labels = list(
                     list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record')
+                    #list(point = list(x = 7, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2018/19 was the lowest year on record')
                   )
                 )
             )
-            
+          # hc
+          
     )    
     delay(11000,
           highchartProxy('plotOutput__natS1_line') %>%
-            hcpxy_update_point(
-              id='ts', id_point=ind, y=min
+            hcpxy_update_series(
+              id = "ts",
+              data=df_pfa_high_low_plot$numberOfSearches
             ) %>%
+            # hcpxy_update_point(
+            #   id='ts', id_point=ind, y=min, shift = TRUE
+            # ) %>%
             hcpxy_update(
               annotations=
                 list(
                   labels = list(
-                    #list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333"; font-size: 2vh; >2011/12 was the highest year on record'),
-                    list(point = list(x = 7, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2018/19 was the lowest year on record')
+                    list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record'),
+                    list(point = list(x = 6, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2017/18 was the lowest year on record')
                   )
                 )
             )
@@ -457,19 +479,88 @@ function(input, output, session) {
           #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
     )
     
+    delay(15500,
+          highchartProxy('plotOutput__natS1_line') %>%
+            hcpxy_update_series(
+              id = "ts",
+              data=df_pfa_plot$numberOfSearches
+            ) %>%
+            # hcpxy_update(
+            #   yAxis=list(
+            #     
+            #     plotLines= list(
+            #       list(
+            #         color= '#333333',
+            #         label = list(text = "Median"),
+            #         width= 2,
+            #         value= median,
+            #         yAxis=1,
+            #         zIndex= 5
+            #       )
+            #     )
+            #   )
+              #   
+              # ) %>%
+            hcpxy_update(
+              annotations= list(
+                labels = list(
+                )
+              )
+            )
+    )
+    
+    
     # TODO change to data label https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/plotoptions/series-datalabels-shape/
     # TODO possibly add area spline https://stackoverflow.com/questions/36610669/highcharts-areaspline-highlight-a-column-on-hover-effect
-    delay(18000,
+    delay(21000,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
-          removeUI(
-            selector = "#natS1-contents-phase1"
+          # removeUI(
+          #   selector = "#natS1-contents-phase1"
+          # )
+          insertUI(
+            selector = "#natS1-contents-phase2",
+            where = "beforeEnd",
+            ui = 
+              tags$div(
+                id='natS1-contents-phase2',
+                div(
+                  div(style='height: 4.5vh'),
+                  div(style='margin-left: 4vw;',
+                  fluidRow(
+                    column(11, 
+                      typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>For more detailed insight on each year, take a scroll through our stop and search timeline below</span"),
+                                             contentType = "html", typeSpeed = 20),
+                      glide(
+                        screen(
+                          tags$iframe(style="height:45vh; width:90%; scrolling=yes",
+                                      src="2011.html"),
+                          # tags$iframe(style="height:45vh; width:60%; scrolling=yes",
+                          #             src="https://www.theguardian.com/law/2011/feb/24/stop-and-search-fall-counterterrorism-powers"),
+                          # HTML('<iframe width="500px" height="500px" src="https://www.theguardian.com/law/2011/feb/24/stop-and-search-fall-counterterrorism-powers"></iframe>'),
+                          # includeHTML("html-pages/2011.html"),
+                          next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
+                          previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
+                        ),
+                        screen(
+                          p("Second screen."),
+                          next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
+                          previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
+                        )
+                      )
+                      
+                    )
+                  )
+                  )
+      
+                )
+              )
           )
     )
-    
+    # Take a look below!
     #  boxxyOutput("subs")
-    delay(18000,
+    delay(60000000,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
@@ -478,24 +569,24 @@ function(input, output, session) {
             where = "beforeEnd",
             ui = 
               tags$div(id='natS1-contents-phase2',
-              fluidPage(
-                div(
-                    fluidRow(
-                      column(2),
-                      column(4, highchartOutput('plotOutput__natS1_timeline')),
-                      column(2)
-                      #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
-                    ),
-                    # fluidRow(
-                    #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
-                    # )
-                )
-                
-                #    ui = tags$div(
-                #      includeCSS("counter.css"),
-                # highchartOutput("hc")
-                #   )
-              )
+                       fluidPage(
+                         div(
+                           fluidRow(
+                             column(2),
+                             column(4, highchartOutput('plotOutput__natS1_timeline')),
+                             column(2)
+                             #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
+                           ),
+                           # fluidRow(
+                           #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
+                           # )
+                         )
+                         
+                         #    ui = tags$div(
+                         #      includeCSS("counter.css"),
+                         # highchartOutput("hc")
+                         #   )
+                       )
               )
           )
     )
@@ -504,10 +595,10 @@ function(input, output, session) {
   once=T
   )
   
-  
   observeEvent(input$render__natS1_ui, {
-    delay(21000,show("year_range", anim=T, animType='slide', time=2))
+    delay(25000,show("year_range", anim=T, animType='slide', time=2))
   })
+  #21000
   
   # TODO move below into above event by adding processing code at start
   # 
