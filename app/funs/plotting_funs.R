@@ -413,25 +413,7 @@ plotFun__natS1_timeline <- function(df_pfa, year_range, browser_width, browser_h
   return(plot)
 }
   
-  
-  
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 

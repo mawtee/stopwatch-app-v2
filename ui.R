@@ -30,6 +30,7 @@ library(manipulateWidget)
 library(sf)
 library(typedjs)
 library(shinyglide)
+library(bslib)
 
 source("app/ui/home.R")
 source("app/ui/nationalTrends.R")

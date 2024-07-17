@@ -468,7 +468,7 @@ Filter: "Black"
 
 
 #countUp-pfa {
-  font-size: 11vh;
+  font-size: 8vh;  /* 11vh for pfa section */
   color: #e10000;
   float: center;
   font-family: 'Public Sans', sans-serif;

@@ -251,6 +251,70 @@ function(input, output, session) {
   )
   
   
+  output$plotOutput__natS1_2011timeline <- renderHighchart({ 
+  df <- data.frame(
+    date=as.Date(c("01-04-2011", "01-06-2011", "01-11-2011", "01-02-2012"),format = "%d-%m-%Y"),
+    event=c("X was searched", "X policy was introduced", "Z was stopped and falsey arrested", "Data showed 2011 was highest on record"),
+    type=c("#E10000", "#F6B7B7","#E10000", "#F6B7B7"),
+    description=c(paste0("description blah", 1:4))
+  )  
+  df %>% 
+    hchart("timeline", hcaes(x = date,
+                             label = paste0("<b>", event, "</b>"),
+                             color = type,
+                             name = paste0(date),
+                             description=description
+    ),
+    dataLabels = list(allowOverlap = FALSE),
+    linkedTo = "color",
+    showInLegend = F) %>% 
+    hc_yAxis(visible = FALSE) %>% 
+    hc_xAxis(dateTimeLabelFormats = list(month = "%d-%m-%Y"), 
+             type = "datetime"   
+             
+    )
+  }
+  )
+  
+  
+  output$plotOutput__natS1_2012timeline <- renderHighchart({ 
+    df <- data.frame(
+      date=as.Date(c("01-04-2012", "01-06-2012", "01-11-2012", "01-02-2013"),format = "%d-%m-%Y"),
+      event=c("X was searched", "X policy was introduced", "Z was stopped and falsey arrested", "Data showed 2011 was highest on record"),
+      type=c("#E10000", "#F6B7B7","#E10000", "#F6B7B7"),
+      description=c(paste0("description blah", 1:4))
+    )  
+    df %>% 
+      hchart("timeline", hcaes(x = date,
+                               label = paste0("<b>", event, "</b>"),
+                               color = type,
+                               name = paste0(date),
+                               description=description
+      ),
+      dataLabels = list(allowOverlap = FALSE),
+      linkedTo = "color",
+      showInLegend = F) %>% 
+      hc_yAxis(visible = FALSE) %>% 
+      hc_xAxis(dateTimeLabelFormats = list(month = "%d-%m-%Y"), 
+               type = "datetime"   
+               
+      )
+  }
+  )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   # countUp outputs
   #=============================================================================
   
@@ -362,7 +426,7 @@ function(input, output, session) {
             #div()
           fluidRow(
             column(7, 
-              div(countUp_pfa(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35),style='margin-left:.5vw'),
+              div(countUp_pfa(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35),style='margin-left:.5vw; font-size:6vh'),
               h2("stop-searches", style="font-size: 4.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
               uiOutput('natS1_nSearches_countUp_text')
             ),
@@ -485,6 +549,7 @@ function(input, output, session) {
               id = "ts",
               data=df_pfa_plot$numberOfSearches
             ) %>%
+            #TODO Add median line before rending all series - because axis_multiples is problem try setting line to axis 1 and and column to axis 0
             # hcpxy_update(
             #   yAxis=list(
             #     
@@ -532,10 +597,32 @@ function(input, output, session) {
                     column(11, 
                       typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>For more detailed insight on each year, take a scroll through our stop and search timeline below</span"),
                                              contentType = "html", typeSpeed = 20),
+                      div(style='height:2vh'),
+                      shinyjs::hidden(
+                        div(id='glideshit',
                       glide(
                         screen(
-                          tags$iframe(style="height:45vh; width:90%; scrolling=yes",
-                                      src="2011.html"),
+                          navset_card_tab(
+                            title='2011/12',
+                            # TODO move title alignment to right (!proven v difficult so far)
+                            #id='navv',
+                            nav_panel("Timeline", align='left',
+                                      highchartOutput('plotOutput__natS1_2011timeline', height='45vh')
+                            ),
+                            nav_menu(
+                              title = 'Sources', align='left',
+                              nav_panel(' Event 1',
+                                        tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
+                              ),
+                              nav_panel(' Event 2',
+                                        tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
+                              ),
+                              nav_panel(' Event 3',
+                                        tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
+                              )
+                              
+                            )
+                          ),
                           # tags$iframe(style="height:45vh; width:60%; scrolling=yes",
                           #             src="https://www.theguardian.com/law/2011/feb/24/stop-and-search-fall-counterterrorism-powers"),
                           # HTML('<iframe width="500px" height="500px" src="https://www.theguardian.com/law/2011/feb/24/stop-and-search-fall-counterterrorism-powers"></iframe>'),
@@ -547,6 +634,8 @@ function(input, output, session) {
                           p("Second screen."),
                           next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
                           previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
+                        )
+                      )
                         )
                       )
                       
@@ -596,10 +685,18 @@ function(input, output, session) {
   )
   
   observeEvent(input$render__natS1_ui, {
-    delay(25000,show("year_range", anim=T, animType='slide', time=2))
+    delay(29000,show("year_range", anim=T, animType='slide', time=2))
   })
   #21000
   
+  observeEvent(input$render__natS1_ui, {
+    delay(26000,show("glideshit", anim=T, animType='fade', time=1))
+  })
+
+  
+  # shinyjs::addClass(id = "glide-navset", class = "navbar-right")#moves navbar right
+  # #this next line is the one APPENDING text to the navbar, thanks to "add = TRUE"
+  # shinyjs::html(id = "glide-navset", html = "<p>companyName</p><p>company@place.com</p>", add = TRUE)
   # TODO move below into above event by adding processing code at start
   # 
   # observeEvent(input$render__natS1_ui, {
