@@ -383,7 +383,7 @@ Filter: "Black"
 
 
 
-/* Intro page*/
+/* National Trends Section One ('Introduction') */
 /*----------------------------------------------------------------------------*/
 
 #natS1 {
@@ -418,6 +418,34 @@ Filter: "Black"
 }
 
 
+
+/* National Trends Section Two ('Stop and search is not working') */
+/*----------------------------------------------------------------------------*/
+
+#natS2 {
+  min-height: 92vh;
+  max-height: 92vh;
+  width: 100vw;
+}
+
+#natS2-buffer {
+  height: 4vh;
+  width: 100vw;
+}
+
+#natS2-contents {
+  height: 86vh;
+  width: 100vw;
+  margin-right: 5.5vw;
+  margin-left:.5vw
+}
+
+#natS2-footer {
+  height:8vh;
+  width:100vw;
+}
+
+/*----------------------------------------------------------------------------*/
 
 
 

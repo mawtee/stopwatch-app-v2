@@ -508,7 +508,7 @@ function(input, output, session) {
     anno <- df_pfa_plot %>%
       select()
     
-    delay(6500,
+    delay(1000,#6500,
           highchartProxy('plotOutput__natS1_line') %>%
             hcpxy_add_series(
               type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 0, zIndex=1#, dataLabels=list(enabled=T)
@@ -525,7 +525,7 @@ function(input, output, session) {
           # hc
           
     )    
-    delay(11000,
+    delay(1000,#11000,
           highchartProxy('plotOutput__natS1_line') %>%
             hcpxy_update_series(
               id = "ts",
@@ -549,7 +549,7 @@ function(input, output, session) {
           #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
     )
     
-    delay(13000,
+    delay(1000,#13000,
           highchartProxy('plotOutput__natS1_line') %>%
           hcpxy_update(
             yAxis=list(
@@ -571,7 +571,7 @@ function(input, output, session) {
     
     
     
-    delay(15500,
+    delay(1000,#15500,
           highchartProxy('plotOutput__natS1_line') %>%
             hcpxy_update_series(
               id = "ts",
@@ -604,7 +604,7 @@ function(input, output, session) {
     
     
     # TODO possibly add area spline https://stackoverflow.com/questions/36610669/highcharts-areaspline-highlight-a-column-on-hover-effect
-    delay(18500,
+    delay(1000,#18500,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
@@ -671,7 +671,7 @@ function(input, output, session) {
           )
     )
     
-    delay(28000,
+    delay(1000,#28000,
       insertUI(
       selector = "#natS1-contents-phase3-text",
       where = "beforeEnd",
@@ -720,11 +720,11 @@ function(input, output, session) {
   )
   
   observeEvent(input$render__natS1_ui, {
-    delay(30500,
+    delay(1000,#30500,
           show("year_range", anim=T, animType='fade', time=1)
           
           )
-    delay(30500,
+    delay(1000,#30500,
           show("year_range_confirm", anim=T, animType='fade', time=1)
           
     )
@@ -733,7 +733,8 @@ function(input, output, session) {
   #21000
   
   observeEvent(input$render__natS1_ui, {
-    delay(24000,show("glideshit", anim=T, animType='fade', time=1))
+    delay(1000, # 24000
+          show("glideshit", anim=T, animType='fade', time=1)) 
   })
   
   observeEvent(input$year_range, {
@@ -780,6 +781,44 @@ function(input, output, session) {
       )
   }
   )
+  
+  
+  
+  # Section Two
+  #=============================================================================
+  
+  
+  observeEvent(input$render__natS2_ui, {
+    #browser()
+    delay(1000,
+          insertUI(
+            selector = "#natS2-contents",
+            where = "beforeEnd",
+            ui = 
+              tags$div(id='natS1-contents-phase1',
+                div(style='height: 35vh'),
+                fluidRow(
+                  column(2),
+                  column(8,
+                    typedjs::typed(
+                      c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span"),
+                      contentType = "html", typeSpeed = 20, showCursor=F),
+                  ),
+                  column(2)
+                )
+                
+                
+              )
+          )
+    )
+  },
+  once=T
+  )
+  
+  
+  
+  
+  
   
 
   # countUP PFA
