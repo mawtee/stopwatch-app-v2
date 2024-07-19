@@ -235,8 +235,13 @@ function(input, output, session) {
   
   # Line chart
   output$plotOutput__natS1_line <- renderHighchart({
-    plotFun__natS1_line(df_pfa, input$year_range)
+    isolate({ #'* Isolates the initial render from the subsequent proxy updates, enabling slider functionality for both series *
+      plotFun__natS1_line(df_pfa, input$year_range) 
+    })
   })
+  
+  
+
   
   # Timeline chart
   browser_width <- reactive({
@@ -351,7 +356,23 @@ function(input, output, session) {
     )
   })
 
+  
+  
+  
+  reactiveVal__stage <- reactiveVal(0) 
+  
+  observeEvent(input$year_range_confirm, {
+    newstage <- reactiveVal__stage() + 1     
+    reactiveVal__stage(newstage)  
+  },
+  once=T)
+  
+  
 
+  
+  output$typd <- renderTyped(
+    type(reactiveVal__stage())
+  )
 
 
 
@@ -435,9 +456,8 @@ function(input, output, session) {
           div(
           fluidRow(
             column(6,
-              highchartOutput('plotOutput__natS1_line', height='55vh')
-            ),
-            column(6, div(id='natS1-contents-phase3', style='height:10vh')) # , style='height:90vh'
+              highchartOutput('plotOutput__natS1_line', height='65vh')
+            ) # , style='height:90vh'
           )#,
           #style='height:3vh'
           )
@@ -484,20 +504,6 @@ function(input, output, session) {
     max <- max(df_pfa_plot$numberOfSearches)
     min <- min(df_pfa_plot$numberOfSearches)
     median <- median(df_pfa_plot$numberOfSearches)
-    # df_pfa_low_plot <- df_pfa_plot
-    # df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
-    # df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
-    # ind <- df_pfa_low_plot$index[1]
-    # min <- df_pfa_low_plot$numberOfSearches[1]
-    
-    #browser()
-    # df_pfa_plot$index <-  paste(1:nrow(df_pfa_plot))
-    # df_pfa_plot <- df_pfa_plot[df_pfa_plot$numberOfSearches!=max(df_pfa_plot$numberOfSearches) & df_pfa_plot$numberOfSearches!=min(df_pfa_plot$numberOfSearches), ] 
-    # indices <- df_pfa_plot$index
-    # yy <- df_pfa_plot$numberOfSearches
-    #browser()
-    
-    #browser()
     df_pfa_plot$text[1] <- ""
     anno <- df_pfa_plot %>%
       select()
@@ -505,13 +511,13 @@ function(input, output, session) {
     delay(6500,
           highchartProxy('plotOutput__natS1_line') %>%
             hcpxy_add_series(
-              type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1#, dataLabels=list(enabled=T)
+              type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 0, zIndex=1#, dataLabels=list(enabled=T)
             ) %>%
             hcpxy_update(
               annotations=
                 list(
                   labels = list(
-                    list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record')
+                    list(point = list(x = 0, y = max, xAxis = 0, yAxis = 0), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record')
                     #list(point = list(x = 7, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2018/19 was the lowest year on record')
                   )
                 )
@@ -532,8 +538,8 @@ function(input, output, session) {
               annotations=
                 list(
                   labels = list(
-                    list(point = list(x = 0, y = max, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record'),
-                    list(point = list(x = 6, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2017/18 was the lowest year on record')
+                    list(point = list(x = 0, y = max, xAxis = 0, yAxis = 0), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record'),
+                    list(point = list(x = 6, y = min, xAxis = 0, yAxis = 0), text = '<div style="color:#333333; font-size: 2vh;" >2017/18 was the lowest year on record')
                   )
                 )
             )
@@ -542,6 +548,28 @@ function(input, output, session) {
           # )
           #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
     )
+    
+    delay(13000,
+          highchartProxy('plotOutput__natS1_line') %>%
+          hcpxy_update(
+            yAxis=list(
+
+              plotLines= list(
+                list(
+                  color= '#333333',
+                  label = list(text = paste0("Median = ",  median(df_pfa_plot$numberOfSearches)),
+                               align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline='none', color='#333333')),
+                  width= 3,
+                  value= median(df_pfa_plot$numberOfSearches),
+                  dashStyle='LongDash',
+                  zIndex= 5
+                )
+              )
+            )
+          )
+    )
+    
+    
     
     delay(15500,
           highchartProxy('plotOutput__natS1_line') %>%
@@ -575,9 +603,8 @@ function(input, output, session) {
     )
     
     
-    # TODO change to data label https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/plotoptions/series-datalabels-shape/
     # TODO possibly add area spline https://stackoverflow.com/questions/36610669/highcharts-areaspline-highlight-a-column-on-hover-effect
-    delay(21000,
+    delay(18500,
           # insert ui, removeUI
           #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
           #random_numbers_items_batch <- generate_random_numbers_divs(100)
@@ -592,11 +619,11 @@ function(input, output, session) {
                 id='natS1-contents-phase2',
                 div(
                   div(style='height: 4.5vh'),
-                  div(style='margin-left: 4vw;',
+                  #div(style='margin-left: 4.5vw;',
                   fluidRow(
                     column(11, 
                       typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>For more detailed insight on each year, take a scroll through our stop and search timeline below</span"),
-                                             contentType = "html", typeSpeed = 20),
+                                             contentType = "html", typeSpeed = 20, showCursor=F),
                       div(style='height:2vh'),
                       shinyjs::hidden(
                         div(id='glideshit',
@@ -623,10 +650,6 @@ function(input, output, session) {
                               
                             )
                           ),
-                          # tags$iframe(style="height:45vh; width:60%; scrolling=yes",
-                          #             src="https://www.theguardian.com/law/2011/feb/24/stop-and-search-fall-counterterrorism-powers"),
-                          # HTML('<iframe width="500px" height="500px" src="https://www.theguardian.com/law/2011/feb/24/stop-and-search-fall-counterterrorism-powers"></iframe>'),
-                          # includeHTML("html-pages/2011.html"),
                           next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
                           previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
                         ),
@@ -641,116 +664,124 @@ function(input, output, session) {
                       
                     )
                   )
-                  )
+                  #)
       
                 )
               )
           )
     )
-    # Take a look below!
-    #  boxxyOutput("subs")
-    delay(60000000,
-          # insert ui, removeUI
-          #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
-          #random_numbers_items_batch <- generate_random_numbers_divs(100)
-          insertUI(
-            selector = "#natS1-contents",
-            where = "beforeEnd",
-            ui = 
-              tags$div(id='natS1-contents-phase2',
-                       fluidPage(
-                         div(
-                           fluidRow(
-                             column(2),
-                             column(4, highchartOutput('plotOutput__natS1_timeline')),
-                             column(2)
-                             #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
-                           ),
-                           # fluidRow(
-                           #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
-                           # )
-                         )
-                         
-                         #    ui = tags$div(
-                         #      includeCSS("counter.css"),
-                         # highchartOutput("hc")
-                         #   )
-                       )
-              )
-          )
+    
+    delay(28000,
+      insertUI(
+      selector = "#natS1-contents-phase3-text",
+      where = "beforeEnd",
+      ui = 
+        tags$div(
+          id='natS1-contents-phase3-text',
+      div(style='height:3vh'),
+      fluidRow(
+        column(12,
+               typedOutput('typd')
+      # typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>When you're ready, confirm which years (or year) you want to visualise...</span"),
+      #                contentType = "html", typeSpeed = 20)
+        )
+      )
+      )
+      )
     )
+                     
+      
+      
+          
+# 
+#     delay(60000000,
+#           insertUI(
+#             selector = "#natS1-contents",
+#             where = "beforeEnd",
+#             ui = 
+#               tags$div(id='natS1-contents-phase2',
+#                        fluidPage(
+#                          div(
+#                            fluidRow(
+#                              column(2),
+#                              column(4, highchartOutput('plotOutput__natS1_timeline')),
+#                              column(2)
+#                           
+#                            ),
+#                          
+#                          )
+#                        )
+#               )
+#           )
+#     )
     
   },
   once=T
   )
   
   observeEvent(input$render__natS1_ui, {
-    delay(29000,show("year_range", anim=T, animType='slide', time=2))
+    delay(30500,
+          show("year_range", anim=T, animType='fade', time=1)
+          
+          )
+    delay(30500,
+          show("year_range_confirm", anim=T, animType='fade', time=1)
+          
+    )
+    
   })
   #21000
   
   observeEvent(input$render__natS1_ui, {
-    delay(26000,show("glideshit", anim=T, animType='fade', time=1))
+    delay(24000,show("glideshit", anim=T, animType='fade', time=1))
   })
-
   
-  # shinyjs::addClass(id = "glide-navset", class = "navbar-right")#moves navbar right
-  # #this next line is the one APPENDING text to the navbar, thanks to "add = TRUE"
-  # shinyjs::html(id = "glide-navset", html = "<p>companyName</p><p>company@place.com</p>", add = TRUE)
-  # TODO move below into above event by adding processing code at start
-  # 
-  # observeEvent(input$render__natS1_ui, {
-  #   year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
-  #   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
-  #   df_pfa_plot <- df_pfa %>%
-  #     group_by(year) %>%
-  #     mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-  #     #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
-  #     ungroup() %>%
-  #     distinct(year, .keep_all=T) %>%
-  #     select(year, numberOfSearches)
-  #   
-  #   df_pfa_high_plot <- df_pfa_plot
-  #   df_pfa_high_plot$index <- 1:nrow(df_pfa_high_plot)
-  #   df_pfa_high_plot$flag <- ifelse(df_pfa_high_plot$numberOfSearches == max(df_pfa_high_plot$numberOfSearches),1,0)
-  #   df_pfa_high_plot$numberOfSearches <- ifelse(df_pfa_high_plot$flag==1, df_pfa_high_plot$numberOfSearches, 0)
-  #   df_pfa_low_plot <- df_pfa_plot
-  #   df_pfa_low_plot$index <- 1:nrow(df_pfa_low_plot)
-  #   df_pfa_low_plot <- df_pfa_low_plot[df_pfa_low_plot$numberOfSearches==min(df_pfa_low_plot$numberOfSearches),]
-  #   ind <- df_pfa_low_plot$index[1]
-  #   yy <- df_pfa_low_plot$numberOfSearches[1]
-  #   delay(8000,
-  # 
-  #   highchartProxy('plotOutput__natS1_line') %>%
-  #     hcpxy_add_series(
-  #       type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1
-  #     )# %>%
-  #     )    
-  #   
-  #   delay(12000,
-  #     highchartProxy('plotOutput__natS1_line') %>%
-  #     hcpxy_update_point(
-  #       id='ts', id_point=ind, y=yy
-  #     )
-  #     # hcpxy_remove_point(
-  #     #   id='ts',i=0
-  #     # )
-  #       #id_point=df_pfa_low_plot$index[1],x=df_pfa_low_plot$year[1], y=df_pfa_low_plot$numberOfSearches[1]  
-  #   )
-  # }
-  # )
+  observeEvent(input$year_range, {
+    year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+    #browser()
+    if (length(year_range_int)==1) {
+      df_pfa <- df_pfa[df_pfa$year == levels(df_pfa$year)[year_range_int[1]],]
+    }
+    else {
+      df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+   }
+    df_pfa_plot <- df_pfa %>%
+      group_by(year) %>%
+      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+      ungroup() %>%
+      distinct(year, .keep_all=T) %>%
+      mutate(numberOfSearches_cumsum = cumsum(numberOfSearches)) %>%
+      select(year, numberOfSearches, numberOfSearches_cumsum)
+    highchartProxy('plotOutput__natS1_line') %>%
+      hcpxy_update_series(
+        id = "ts",
+        data=df_pfa_plot$numberOfSearches
+      ) %>%
+      hcpxy_update_series(
+        id = "line",
+        data=df_pfa_plot$numberOfSearches_cumsum
+      ) %>%
+      hcpxy_update(
+        yAxis=list(
+          
+          plotLines= list(
+            list(
+              color= '#333333',
+              label = list(text = paste0("Median = ",  median(df_pfa_plot$numberOfSearches)),
+                           align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline='none', color='#333333')),
+              width= 3,
+              value= median(df_pfa_plot$numberOfSearches),
+              dashStyle='LongDash',
+              zIndex= 5
+            )
+          )
+        )
+      )
+  }
+  )
   
 
-  # output$pfa_countUp <- renderCountUp({
-  #   countUp("", 1671794, color = "#fff")
-  # })
-  # 
-  
-  
-
-  
-
-  
   # countUP PFA
   #############################################################################
   

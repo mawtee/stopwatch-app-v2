@@ -400,10 +400,12 @@ Filter: "Black"
 #natS1-contents {
   height: 83vh;
   width: 100vw;
+  margin-right: 5.5vw;
+  margin-left:.5vw
 }
 
 #natS1-footer {
-  height:5vh;
+  height:2vh;
   width:100vw;
 }
 

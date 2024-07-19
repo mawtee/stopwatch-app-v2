@@ -22,7 +22,7 @@ nationalTrends <- (
           br(),
           br(),
           div(class="landing-page-title", 
-            span("National Trends")
+              span("National Trends")
           )
         ),
         fluidRow(
@@ -36,38 +36,38 @@ nationalTrends <- (
           div(
             class="pageview-togggle",
             column(1,
-              shinyWidgets::materialSwitch(
-                inputId = "pageview_toggle_nattre",
-                status = "primary",
-                value=T,
-                width='350px'
-              )
+                   shinyWidgets::materialSwitch(
+                     inputId = "pageview_toggle_nattre",
+                     status = "primary",
+                     value=T,
+                     width='350px'
+                   )
             )
           ),
           column(6,
-            conditionalPanel(
-              condition = "input.pageview_toggle_nattre > 0",
-              p(HTML("Narrative View (the full experience)"), style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif; margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;")
-            ),
-            conditionalPanel(
-              condition = "input.pageview_toggle_nattre == 0",
-              p("Dashboard View (just the data)",  style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif;margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;")
-            )
+                 conditionalPanel(
+                   condition = "input.pageview_toggle_nattre > 0",
+                   p(HTML("Narrative View (the full experience)"), style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif; margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;")
+                 ),
+                 conditionalPanel(
+                   condition = "input.pageview_toggle_nattre == 0",
+                   p("Dashboard View (just the data)",  style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif;margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;")
+                 )
           )
         ),
         fluidRow(
           column(1,
-            conditionalPanel(
-              condition = "input.pageview_toggle_nattre > 0",
-              icon("fas fa-chevron-down fa-bounce", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;")
-            ),
-            conditionalPanel(
-              condition = "input.pageview_toggle_nattre == 0",
-              icon("fas fa-chevron-down", "fa-6x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
-            ),
+                 conditionalPanel(
+                   condition = "input.pageview_toggle_nattre > 0",
+                   icon("fas fa-chevron-down fa-bounce", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;")
+                 ),
+                 conditionalPanel(
+                   condition = "input.pageview_toggle_nattre == 0",
+                   icon("fas fa-chevron-down", "fa-6x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
+                 ),
           ),
           column(6,
-            p("Scroll down to begin", style="color: white; font-size: 2.1vw; font-family: 'IBM Plex Mono', sans-serif;")
+                 p("Scroll down to begin", style="color: white; font-size: 2.1vw; font-family: 'IBM Plex Mono', sans-serif;")
           )
         )
       ),
@@ -81,83 +81,124 @@ nationalTrends <- (
         div(id='natS1',
             div(id='natS1-buffer'),
             fluidRow(
-              column(6,  div(id='natS1-contents')),
-              column(6,  div(id='natS1-contents-phase2', style='height:65vh'))
-            ),
-            div(id='natS1-footer',
-                fluidRow(
-                  column(6),
-                  column(2,
-                         shinyjs::hidden(actionButton("btn", "Confirm selection"))
-                  ),
-                  column(2,
-                         div(
-                           shinyjs::hidden(
-                             shinyWidgets::sliderTextInput(
-                               inputId="year_range", label="Which year(s) would like to visualise?",
-                               choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]), force_edges=TRUE
-                             )
-                           ),
-                           style='height:1vh; width:1vw; font-size: 3px'
-                         )
-                  )#,
-                  # column(2,
-                  # div(id="begin", h2("yo"))
-                  # ), # marker div for activation of animation
+              column(6,  
+                div(
+                  id='natS1-contents'
                 )
+              ),
+              column(6,
+                div(
+                  id='natS1-contents-phase2', style='height:65vh; margin-left: 5.5vw;margin-right:.5vw'
+                ),
+
+                div(
+                  id='natS1-contents-phase3',  style='height:15vh; margin-left: 5.5vw;margin-right:.5vw;margin-top: 2vh;',
+                    div(id='natS1-contents-phase3-text', style='height:8vh'),
+                  div(style='height:.5vh'),
+                  fluidRow(
+                    column(4,
+                    shinyjs::hidden(
+                    shinyWidgets::sliderTextInput(
+                      inputId="year_range", label="",
+                      choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]), force_edges=TRUE
+                    )
+                  )
+                    ),
+                  column(4,
+                         shinyjs::hidden(
+                         actionButton("year_range_confirm", "Confirm")
+                         )
+                  )
+                )
+              )
+            )
             ),
+            fluidRow(
+              div(
+                id='natS1-footer',
+                            conditionalPanel(
+                              condition =  "input.year_range_confirm > 0",
+                              div(style='float:right; position: relative; top: -10vh',
+                                icon("fas fa-chevron-down fa-bounce", "fa-3x", style = "color: #333333; margin-right: 5vw; margin-bottom: -2vh;")
+                              )
+                            )
+              )
+            ),
+            # div(id='natS1-footer',
+            #     fluidRow(
+            #       column(6),
+            #       column(2,
+            #              shinyjs::hidden(actionButton("btn", "Confirm selection"))
+            #       ),
+            #       column(2,
+            #              div(
+            #                shinyjs::hidden(
+            #                  shinyWidgets::sliderTextInput(
+            #                    inputId="year_range", label="Which year(s) would like to visualise?",
+            #                    choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]), force_edges=TRUE
+            #                  )
+            #                ),
+            #                style='height:1vh; width:1vw; font-size: 3px'
+            #              )
+            #       )#,
+            #       # column(2,
+            #       # div(id="begin", h2("yo"))
+            #       # ), # marker div for activation of animation
+            #     )
+            # ),
             
-                     
-    
-
-        # TODO add selector for years, and make subsequent stuff into conditional panel
-        # e.g. Which years would you like visualise: All, Custom Selection
-        # TODO position two new plots across in same col, with separate column for text and then another bigger one for timeline
-        # TODO possibly see if can execute render sequentially
-        # fluidRow(
-        #   column(2,
-        #   selectizeInput(
-        #     inputId = "cond",
-        #     label = tags$span(style="color: #333333;","conditional panel example"),
-        #     choices = c("show", "hide"),
-        #     multiple = T,
-        #     options = list(
-        #       placeholder = 'Please select an option below',
-        #       maxItems = 1
-        #       # onInitialize = I('function() { this.setValue(null); }')
-        #     )
-        #   )
-        #   ), 
-        #   column(2,
-        #     actionButton("btn", "Confirm selection")
-        #   )
-        # ), 
-           #div(id='natS1-contents'),# this is where ui renders
- 
-
-
-          
-          
-          includeScript('js-assets/intersectionObserver/render_on_view1.js'), # AT SAME POINT WORK OUT HOW TO RENDER ONCE bottom of intro page has fully left the viewport
+            
+            
+            
+            # TODO add selector for years, and make subsequent stuff into conditional panel
+            # e.g. Which years would you like visualise: All, Custom Selection
+            # TODO position two new plots across in same col, with separate column for text and then another bigger one for timeline
+            # TODO possibly see if can execute render sequentially
+            # fluidRow(
+            #   column(2,
+            #   selectizeInput(
+            #     inputId = "cond",
+            #     label = tags$span(style="color: #333333;","conditional panel example"),
+            #     choices = c("show", "hide"),
+            #     multiple = T,
+            #     options = list(
+            #       placeholder = 'Please select an option below',
+            #       maxItems = 1
+            #       # onInitialize = I('function() { this.setValue(null); }')
+            #     )
+            #   )
+            #   ), 
+            #   column(2,
+            #     actionButton("btn", "Confirm selection")
+            #   )
+            # ), 
+            #div(id='natS1-contents'),# this is where ui renders
+            
+            
+            
+            
+            
+            includeScript('js-assets/intersectionObserver/render_on_view1.js'), # AT SAME POINT WORK OUT HOW TO RENDER ONCE bottom of intro page has fully left the viewport
         )
+        
+        
+        # fluidRow(
+        #   column(3),
+        #   column(6,align="center",
+        #          shinyWidgets::sliderTextInput(
+        #            inputId="year_range", label="Which year(s) would like to visualise?",
+        #            choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
+        #            force_edges=TRUE
+        #         )
+        #   ),
+        #   column(3)
+        
+        # ),
+      )
+    )
+  )
+)
 
-
-         # fluidRow(
-         #   column(3),
-         #   column(6,align="center",
-         #          shinyWidgets::sliderTextInput(
-         #            inputId="year_range", label="Which year(s) would like to visualise?",
-         #            choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
-         #            force_edges=TRUE
-          #         )
-         #   ),
-         #   column(3)
-            
-         # ),
-)
-)
-)
-)
 # 
 # 
 # 

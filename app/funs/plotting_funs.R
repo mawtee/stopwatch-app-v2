@@ -21,14 +21,14 @@ plot <-
   highchart() %>%
   hc_xAxis(categories = df_pfa_plot$year) %>%
   hc_add_series(
-    type='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 0, zIndex=2
+    type='line', id='line', name='Cumulative', data=df_pfa_plot$numberOfSearches_cumsum, lineWidth=3, color="#333333", yAxis = 1, zIndex=2
   ) %>%
   # hc_add_series(
   #   type='column', id='ts', name='In-year', data=df_pfa_high_plot$numberOfSearches, color="#e10000", yAxis = 1, zIndex=1
   # ) %>%
   hc_yAxis_multiples(
-    list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0, opposite=T),
-    list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0)
+    list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0, opposite=F),
+    list(title=list(text=""),min=0, labels=list(enabled=T),gridLineWidth=0, opposite=T)
     ) %>%
     hc_xAxis(
       title=list(text=""),
@@ -48,7 +48,7 @@ plot <-
         ),
         labels = list(
           list(
-            point = list(x = 15, y = 1200000, xAxis = 0, yAxis = 0), text = ""
+            point = list(x = 15, y = 1200000, xAxis = 0, yAxis = 1), text = ""
           )
 
       )
@@ -1397,9 +1397,9 @@ countUp <- function(count_to, count_from, duration) {
 
 countUp_pfa <- function(count_to, count_from, duration) {
 
-  print(count_to)
-  print(as.numeric(count_to))
-  count_to <- as.numeric(count_to)
+  # print(count_to)
+  # print(as.numeric(count_to))
+  # count_to <- as.numeric(count_to)
   # browser()
   countup(
     count = count_to,
@@ -1412,6 +1412,24 @@ countUp_pfa <- function(count_to, count_from, duration) {
     elementId = 'countUp-pfa'
   )
 }
+
+
+type <- function(stage) {
+  
+  if (stage==0) {
+    sentence <- c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>When you're ready, confirm which years (or year) you want to visualise...</span")
+    typedjs::typed(c(sentence),
+                   contentType = "html", typeSpeed = 20, showCursor=T)
+  }
+  else {
+    sentence <- c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Scroll down to continue</span")
+    typedjs::typed(c("", sentence),
+                   contentType = "html", typeSpeed = 20, showCursor=FALSE, startDelay=250)
+  }
+  
+
+}
+#<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'></span
 # 
 # 
 # 
