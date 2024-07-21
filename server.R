@@ -558,7 +558,7 @@ function(input, output, session) {
                 list(
                   color= '#333333',
                   label = list(text = paste0("Median = ",  median(df_pfa_plot$numberOfSearches)),
-                               align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline='none', color='#333333')),
+                               align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline= '3px contrast', color='#333333')),
                   width= 3,
                   value= median(df_pfa_plot$numberOfSearches),
                   dashStyle='LongDash',
@@ -770,7 +770,7 @@ function(input, output, session) {
             list(
               color= '#333333',
               label = list(text = paste0("Median = ",  median(df_pfa_plot$numberOfSearches)),
-                           align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline='none', color='#333333')),
+                           align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline= '3px contrast', color='#333333')),
               width= 3,
               value= median(df_pfa_plot$numberOfSearches),
               dashStyle='LongDash',

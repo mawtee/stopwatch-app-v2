@@ -81,26 +81,45 @@ plot <-
 
 plot__nattrend_item <- function(df_pfa, year_range) {
   
-  # year_range_int <- which(levels(df_pfa$year) %in% year_range)
-  # df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
-  # df_pfa_plot <- df_pfa %>%
-  #   mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-  #   mutate(arrest = case_when(outcome == "Arrest"~1, T~0)) %>%
-  #   mutate(numberArrest = sum(arrest)) %>%
-  #   summarise(propArrest = (numberArrest/numberOfSearches)*100) %>%
-  #   slice(1)
-  # 13% result in an arrest
-  df_pfa_plot <- data.frame(
-    name = c('Arrest', 'No Arrest'),
-    value = c(13, 87)
-  )
-    
-# https://stackoverflow.com/questions/57999667/changing-output-after-delay-in-r-shiny-app
-  plot <-
-    highchart() %>%
-    hc_chart(type='item') %>%
-    hc_add_series(data=df_pfa_plot$value) 
+  # year_range <- c('2018/19', '2019/20')
+  # 
+  # # year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  # # df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+  # # df_pfa_plot <- df_pfa %>%
+  # #   mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+  # #   mutate(arrest = case_when(outcome == "Arrest"~1, T~0)) %>%
+  # #   mutate(numberArrest = sum(arrest)) %>%
+  # #   summarise(propArrest = (numberArrest/numberOfSearches)*100) %>%
+  # #   slice(1)
   
+  
+  plot <- highchart() %>%
+    hc_chart(type='item') %>%
+    hc_add_series(data=rev(list(list(name='No Arrest', y=87, marker=list(symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)')), list(name='Arrest',y= 13, marker=list(symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)')))),
+                  startAngle = -100,  endAngle = 100, center = list("50%", "75%")) %>%
+    hc_plotOptions(
+      # avoid hide series due bug
+      series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
+    ) |>
+    hc_legend(
+      labelFormat =  '{name} <span style="opacity: 0.4">{y}</span>'
+    ) %>%
+    hc_colors(c('#e10000', '#cacaca'))
+  
+  #https://elmah.io/tools/base64-image-encoder/
+  #https://jkunst.com/highcharter/articles/fontawesome.html?q=item%20chart#another-example
+  
+  
+ 
+  # Arrest straight on
+  #https://cdn-icons-png.freepik.com/512/1372/1372506.png?uid=R156312610&ga=GA1.1.909297863.1721482476
+  # Arreste to side
+  #https://cdn-icons-png.freepik.com/512/9929/9929962.png?uid=R156312610&ga=GA1.1.909297863.1721482476
+  
+ # https://cdn-icons-png.freepik.com/512/9929/9929962.png?uid=R156312610&ga=GA1.1.909297863.1721482476
+  
+  #https://cdn-icons-png.freepik.com/512/3431/3431807.png?uid=R156312610&ga=GA1.1.909297863.1721482476
+  #https://www.highcharts.com/samples/graphics/sun.png
   # bubble plot
   # 
   # 
@@ -143,6 +162,8 @@ plot__nattrend_item <- function(df_pfa, year_range) {
   return(plot)
   
 }
+
+
 
 
 
