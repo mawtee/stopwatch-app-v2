@@ -45,15 +45,15 @@ df_pfa <- df_pfa[df_pfa$pfaName != "British Transport Police",]
 
 #library(here)
 #source(here("scripts_scr/source_code_for_shiny.R"))
-json_pfa <- "data/smoothed.geojson"
-bounds_pfa <- geojsonio::geojson_read(json_pfa, what = "list")
+#json_pfa <- "data/smoothed.geojson"
+#bounds_pfa <- geojsonio::geojson_read(json_pfa, what = "list")
 
 
 sf_use_s2(FALSE)
-bounds_pfa__sf <- geojsonsf::geojson_sf(json_pfa)
-bounds_pfa__df <- st_as_sf(bounds_pfa__sf, coords = c('long', 'lat'))
-bounds_pfa__df <- st_make_valid(bounds_pfa__df) %>% select(long, lat, pfa16nm)
-bounds_pfa__df <- bounds_pfa__df[1:3]
+#bounds_pfa__sf <- geojsonsf::geojson_sf(json_pfa)
+#bounds_pfa__df <- st_as_sf(bounds_pfa__sf, coords = c('long', 'lat'))
+#bounds_pfa__df <- st_make_valid(bounds_pfa__df) %>% select(long, lat, pfa16nm)
+#bounds_pfa__df <- bounds_pfa__df[1:3]
 
 
 # centroids <- bounds_pfa__df %>%
