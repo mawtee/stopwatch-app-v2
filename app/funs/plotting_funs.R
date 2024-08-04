@@ -1,6 +1,44 @@
 colour_list <- c()
 
 
+plot__dashboard_chart <- function(df_pfa, year_range, metric, ethnic_group) {
+  
+  year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+  
+  if (metric=="Number of Searches") {
+  df_pfa_plot <- df_pfa %>%
+    filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
+    group_by(year) %>%
+    mutate(metric = sum(numberOfSearches, na.rm=T)) %>%
+    ungroup() %>%
+    distinct(year, .keep_all=T) %>%
+    select(year, metric)
+  }
+
+  if (metric=="Rate of Searches") {
+    df_pfa_plot <- df_pfa %>%
+      filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
+      group_by(year) %>%
+      summarise(across(c(numberOfSearches,population),~sum(.x,na.rm=TRUE))) %>%
+#      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      ungroup() %>%
+      mutate(metric = (numberOfSearches/population)*1000) %>%
+      select(year, metric)
+  }
+  
+  
+  plot <-     
+    highchart() %>%
+    hc_xAxis(categories = df_pfa_plot$year) %>%
+    hc_add_series(
+      type='column', name='In-year', data=df_pfa_plot$metric, color="#e10000"
+    )
+    
+  return(plot)
+  
+}
+
 
 
 plot__nattrend_line <- function(df_pfa, year_range) {
@@ -1435,70 +1473,64 @@ plot__pfa_tsline_nat_anim <- function(df_pfa, year_range, legislation_select) {
   
 }
 
-
-render_text <- function(num){
-  
-  div(
-    text(num), class = "text"
-  )
-  
-}
-
-text <- function(num){
-  p(
-    switch(num,
-           text1,
-           text2,
-           text3,
-           text4,
-           text5,
-           text6,
-           text7,
-           text8,
-           text9,
-           text10
-    )
-  )
-}
-
-
-text2 <- HTML("<H2>Ethnic disparties</H2>
-              <br> <p> White people are far less likely to be stopped and searched in relation to people from all other Ethnic Groups. The likelyhood of being searched is X%, compared to a chance of X% being search for any other Ethnic Group.")
-
-text3 <- HTML("<H2>Regional disparities</H2>
-              <br> <p>People from X area more X times more likely to be stop and searched, in comparision to the rest of the country. <p>")
-
-text4 <- HTML("<H2>Legislation</H2>
-              <br><p>Section 1 (PACE) Section 44/47a (TACT) is the most likely legislation for being stopped and searched. With over X amount of searched compared to all other legislations combined<p>")
-
-text5 <- HTML("<H2>Reason for search</H2>
-             <br> <p>Drugs is the most likely reason for being stopped and searched. With over X amount of searched compared to all other regions combined.<p>")
-
-text6 <- HTML("<H2>Outcome of search</H2>
-              <br> <p>The most likely outcome of being stopped and searched would be Arrest, with X amount of searches resulting in an arrest, a percentage of X%<p>")
-
-text7 <- HTML("<H2> Master's degrees </H2>
-              <br> <p>Workers with <font color='#5E4FA2'>master's degrees</font> have a median income of $69,732.
-              <br> On average, those occupations have a <b>10% chance</b> of job automation.
-              <br><br> There are 1,281,710 workers with a <font color='#5E4FA2'>master's degree</font>.<p>")
-
-text7 <- HTML("<H2> Doctoral degrees </H2>
-              <br> <p>Workers with <b>doctoral degrees</b> have a median income of $84,396.
-              <br> On average, those occupations have a <b>3% chance</b> of job automation.
-              <br><br> There are 1,386,850 workers with a <b>doctoral degree</b>.<p>")
-
-text8 <- HTML("<H2> In Sum </H2>
-              <br> <p>All things considered, the nominal median income of an average US worker is <b>$31,786</b>.
-              <br>
-              <br> 47% of jobs are expected to face a high risk of automatization in the near future.<sup>1</sup><p>
-              <br><br><br>
-              <span style='font-size:11px'><sup>1</sup><a href='https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf' target='_blank'>Frey and Osborne (2013)</a>
-               write that 'associated occupations are potentially automatable over
-              some unspecified number of years, <i>perhaps a decade or two.'</i></span>")
-
-text9 <- HTML("<H2>Dashboard View</H2>
-              <br> <p>The dashboard view gives a comprehensive view of all the data for easy to use and specific <p>")
-text10 <- HTML("<H2>Dashboard View</H2>")
+# 
+# render_text <- function(num){
+#   
+#   div(
+#     text(num), class = "text"
+#   )
+#   
+# }
+# 
+# text <- function(num){
+#   p(
+#     switch(num,
+#            text1,
+#            text2,
+#            text3,
+#            text4,
+#            text5,
+#            text6,
+#            text7,
+#            text8
+#     )
+#   )
+# }
+# 
+# 
+# text2 <- HTML("<H2>Ethnic disparties</H2>
+#               <br> <p> White people are far less likely to be stopped and searched in relation to people from all other Ethnic Groups. The likelyhood of being searched is X%, compared to a chance of X% being search for any other Ethnic Group.")
+# 
+# text3 <- HTML("<H2>Regional disparities</H2>
+#               <br> <p>People from X area more X times more likely to be stop and searched, in comparision to the rest of the country. <p>")
+# 
+# text4 <- HTML("<H2>Legislation</H2>
+#               <br><p>Section 1 (PACE) Section 44/47a (TACT) is the most likely legislation for being stopped and searched. With over X amount of searched compared to all other legislations combined<p>")
+# 
+# text5 <- HTML("<H2>Reason for search</H2>
+#              <br> <p>Drugs is the most likely reason for being stopped and searched. With over X amount of searched compared to all other regions combined.<p>")
+# 
+# text6 <- HTML("<H2>Outcome of search</H2>
+#               <br> <p>The most likely outcome of being stopped and searched would be Arrest, with X amount of searches resulting in an arrest, a percentage of X%<p>")
+# 
+# text7 <- HTML("<H2> Master's degrees </H2>
+#               <br> <p>Workers with <font color='#5E4FA2'>master's degrees</font> have a median income of $69,732.
+#               <br> On average, those occupations have a <b>10% chance</b> of job automation.
+#               <br><br> There are 1,281,710 workers with a <font color='#5E4FA2'>master's degree</font>.<p>")
+# 
+# text7 <- HTML("<H2> Doctoral degrees </H2>
+#               <br> <p>Workers with <b>doctoral degrees</b> have a median income of $84,396.
+#               <br> On average, those occupations have a <b>3% chance</b> of job automation.
+#               <br><br> There are 1,386,850 workers with a <b>doctoral degree</b>.<p>")
+# 
+# text8 <- HTML("<H2> In Sum </H2>
+#               <br> <p>All things considered, the nominal median income of an average US worker is <b>$31,786</b>.
+#               <br>
+#               <br> 47% of jobs are expected to face a high risk of automatization in the near future.<sup>1</sup><p>
+#               <br><br><br>
+#               <span style='font-size:11px'><sup>1</sup><a href='https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf' target='_blank'>Frey and Osborne (2013)</a>
+#                write that 'associated occupations are potentially automatable over
+#               some unspecified number of years, <i>perhaps a decade or two.'</i></span>")
 
 plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
