@@ -572,7 +572,9 @@ function(input, output, session) {
 
   })
 
-
+  output$dashboard_chart <- renderHighchart({
+    plot__dashboard_chart(df_pfa, input$year_range_dash, input$metric_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash)
+  })
 
 }
 

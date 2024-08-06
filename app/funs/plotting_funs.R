@@ -1,6 +1,49 @@
 colour_list <- c()
 
+plot__dashboard_chart <- function(df_pfa, year_range, metric, ethnic_group, legislation_group, reason_group, outcome_group) {
+  
+  year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
 
+  
+  if (metric=="Number of Searches") {
+    df_pfa_plot <- df_pfa %>%
+      filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
+      filter(legislation%in%legislation_group) %>%
+      filter(reasonForSearch%in%reason_group) %>%
+      filter(outcome%in%outcome_group) %>%
+      group_by(year) %>%
+      mutate(metric = sum(numberOfSearches, na.rm=T)) %>%
+      ungroup() %>%
+      distinct(year, .keep_all=T) %>%
+      select(year, metric)
+  }
+  
+  if (metric=="Rate of Searches") {
+    df_pfa_plot <- df_pfa %>%
+      filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
+      filter(legislation%in%legislation_group) %>%
+      filter(reasonForSearch%in%reason_group) %>%
+      filter(outcome%in%outcome_group) %>%
+      group_by(year) %>%
+      summarise(across(c(numberOfSearches,population),~sum(.x,na.rm=TRUE))) %>%
+      #      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      ungroup() %>%
+      mutate(metric = (numberOfSearches/population)*1000) %>%
+      select(year, metric)
+  }
+  
+  
+  plot <-     
+    highchart() %>%
+    hc_xAxis(categories = df_pfa_plot$year) %>%
+    hc_add_series(
+      type='column', name='In-year', data=df_pfa_plot$metric, color="#e10000"
+    )
+  
+  return(plot)
+  
+}
 
 
 plot__nattrend_line <- function(df_pfa, year_range) {
