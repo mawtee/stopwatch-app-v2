@@ -1,39 +1,42 @@
 colour_list <- c()
 
 plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, ethnic_group, legislation_group, reason_group, outcome_group) {
+
+  if (xaxis=="PFA"){
+    xFun <- 'pfaName'
+  } else if (xaxis=="Ethnicity"){
+    xFun <- 'selfDefinedEthnicityGroup'
+  } else  if (xaxis=="Legislation"){
+    xFun <- 'legislation'
+  } else  if (xaxis=="Reason for Search"){
+    xFun <- 'reasonForSearch'
+  } else  if (xaxis=="Outcome of Search"){
+    xFun <- 'outcome'
+  } else  {
+    xFun <- 'year'
+  }
+  
   
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
-   
   
   if (yaxis=="Number of Searches") {
-    if(xaxis=="Year"){
+    yearSelect <- unique(df_pfa['year']) 
+    yearSelect <- yearSelect %>% pull(year) 
     df_pfa_plot <- df_pfa %>%
+      filter(year%in% yearSelect) %>%
       filter(pfaName%in%pfa_group) %>%
       filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
       filter(legislation%in%legislation_group) %>%
       filter(reasonForSearch%in%reason_group) %>%
       filter(outcome%in%outcome_group) %>%
-      group_by(year) %>%
+      group_by_at(xFun) %>%
       mutate(yaxis = sum(numberOfSearches, na.rm=T)) %>%
       ungroup() %>%
-      distinct(year, .keep_all=T) %>%
-      select(year, yaxis)
-    }
-    if(xaxis=="PFA"){
-      df_pfa_plot <- df_pfa %>%
-        filter(year%in%year_range) %>%
-        filter(pfaName%in%pfa_group) %>%
-        filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
-        filter(legislation%in%legislation_group) %>%
-        filter(reasonForSearch%in%reason_group) %>%
-        filter(outcome%in%outcome_group) %>%
-        group_by(pfaName) %>%
-        mutate(yaxis = sum(numberOfSearches, na.rm=T)) %>%
-        ungroup() %>%
-        distinct(pfaName, .keep_all=T) %>%
-        select(pfaName, yaxis)
-    }
+      distinct(.data[[xFun]], .keep_all=T) %>%
+      select(xFun, yaxis)
+    
+    
     if (xaxis=="Year") {
       titleText <-  paste0("Number of stop-searches by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
     } else {
@@ -42,19 +45,21 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
   }
   
   if (yaxis=="Rate of Searches") {
+    yearSelect <- unique(df_pfa['year']) 
+    yearSelect <- yearSelect %>% pull(year) 
     df_pfa_plot <- df_pfa %>%
+      filter(year%in% yearSelect) %>%
       filter(pfaName%in%pfa_group) %>%
       filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
       filter(legislation%in%legislation_group) %>%
       filter(reasonForSearch%in%reason_group) %>%
       filter(outcome%in%outcome_group) %>%
-      group_by(year) %>%
+      group_by_at(xFun) %>%
       summarise(across(c(numberOfSearches,population),~sum(.x,na.rm=TRUE))) %>%
       #      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
       ungroup() %>%
       mutate(yaxis = (numberOfSearches/population)*1000) %>%
-      select(year, yaxis)
-    
+      select(xFun, yaxis)
     
     
     if (xaxis=="Year") {
@@ -64,24 +69,23 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
     }
   }
   
-
-# if (xaxis=="PFA"){
-#     xPlot <- df['pfaName']
-#   } else if (xaxis=="Ethnicity"){
-#     xPlot <- df['selfDefinedEthnicityGroup']
-#   } else  if (xaxis=="Legislation"){
-#     xPlot <- df['legislation']
-#   } else  if (xaxis=="Reason for Search"){
-#     xPlot <- df['reasonForSearch']
-#   } else  if (xaxis=="Outcome"){
-#     xPlot <- df['Outcome']
-#   } else  {
-#     xPlot <- df['year']
-#   }
-#   
+  if (xaxis=="PFA"){
+    xPlot <- df_pfa_plot$pfaName
+  } else if (xaxis=="Ethnicity"){
+    xPlot <- df_pfa_plot$selfDefinedEthnicityGroup
+  } else  if (xaxis=="Legislation"){
+    xPlot <- df_pfa_plot$legislation
+  } else  if (xaxis=="Reason for Search"){
+    xPlot <- df_pfa_plot$reasonForSearch
+  } else  if (xaxis=="Outcome"){
+    xPlot <- df_pfa_plot$Outcome
+  } else  {
+    xPlot <- df_pfa_plot$year
+  }
+  
   plot <-     
     highchart() %>%
-    hc_xAxis(categories = df_pfa_plot$year) %>%
+    hc_xAxis(categories = xPlot) %>%
     hc_add_series(
       type='column', name='In-year', data=df_pfa_plot$yaxis, color="#e10000")%>%
     hc_title(
@@ -92,7 +96,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
     hc_exporting(enabled=T) 
   
   return(plot)
-  
+
 }
 
 
