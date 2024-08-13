@@ -309,6 +309,13 @@ function(input, output, session) {
   
   
   
+  output$plotOutput__natS2_item <- renderHighchart({
+    #isolate({ #'* Isolates the initial render from the subsequent proxy updates, enabling slider functionality for both series *
+      plotFun__natS2_item(df_pfa, input$year_range) 
+    #})
+  })
+  
+  
   
   
   
@@ -356,6 +363,45 @@ function(input, output, session) {
     )
   })
 
+  
+  
+  # output$natS2_text <- renderUI({
+  #   tagList(
+  #     typedjs::typed(
+  #       c("<span style ='text-align:left;float: left;  margin-left: 2.75vw; margin-top: 4vh; font-family: Public Sans, sans-serif; font-size: 6.5vh; color: #cacaca;'>For every 100 searches</span"),
+  #       contentType = "html", typeSpeed = 20, showCursor=F
+  #     ),
+  #     br(),
+  #     #  h3(paste0("conducted between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 4.8vw; margin-top: 1.8vh; color: #333333;")
+  #     
+  #     typedjs::typed(
+  #       c("<span style ='text-align:left;float: left; font-size: 2.5vh; margin-left: 4.8vw; margin-top: 1.8vh;'>blah blah blah</span", "<span style ='text-align:left;float: left; font-family: IBM Plex Mono, sans-serif; font-size: 2.5vh; margin-left: 4.8vw; margin-top: 1.8vh; color: #333333;'>conducted between i and j</span"),
+  #       contentType = "html", typeSpeed = 20, showCursor=F, startDelay=4000, backdelay=4000
+  #     )
+  #     # typedjs::typed(
+  #     #   c("<span style ='text-align:left;float: left;  margin-left: 2.75vw; margin-top: 4vh; font-family: Public Sans, sans-serif; font-size: 6.5vh; color: #cacaca;'>For every 100 searches</span"),
+  #     #   contentType = "html", typeSpeed = 25, showCursor=F, backDelay=2000
+  #     # ),
+  #     # typedjs::typed(
+  #     #   c("<span style ='text-align:left;float: left; font-family: IBM Plex Mono, sans-serif; font-size: 2.5vh; margin-left: 4.8vw; margin-top: 1.8vh; color: #333333;'>conducted between i and j</span"),
+  #     #   contentType = "html", typeSpeed = 25, showCursor=F, startDelay=2000
+  #     # ),
+  #     # 
+  #     
+  #    #  
+  #    #  h3("For every 100 searches", style="text-align:left;float: left; font-family: 'Public Sans', sans-serif; font-size: 6.5vh; margin-left: 2.75vw; margin-top: 4vh; color: #cacaca;"),
+  #    # # h3("100 searches ", style="text-align:left;float: left; font-family: 'Public Sans', sans-serif; font-size: 6.5vh; margin-left: 2.75vw; margin-top: 4vh; color: #cacaca;"),
+  #    #  h3(paste0("conducted between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 4.8vw; margin-top: 1.8vh; color: #333333;")
+  #   )
+  #   
+  #    
+  # })
+  
+
+  typedjs::typed(
+    c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span",''),
+    contentType = "html", typeSpeed = 20, showCursor=F, backDelay=2000, backSpeed = 25
+  )
   
   
   
@@ -789,36 +835,154 @@ function(input, output, session) {
   
   
   observeEvent(input$render__natS2_ui, {
+  
+    year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+    df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+    
+    df_pfa_plot <- df_pfa %>%
+      group_by(outcome) %>%
+      summarise(numberOfSearches_N = sum(numberOfSearches, na.rm=T)) %>%
+      pivot_wider(names_from='outcome', values_from='numberOfSearches_N') %>%
+      mutate(arrestRate = round(Arrest/(Arrest+`No Arrest`)*100,0)) %>%
+      mutate(nonArrestRate = round(100-arrestRate,0))
+    
     #browser()
-    delay(1000,
-          insertUI(
-            selector = "#natS2-contents",
-            where = "beforeEnd",
-            ui = 
-              tags$div(id='natS1-contents-phase1',
-                div(style='height: 35vh'),
-                fluidRow(
-                  column(2),
-                  column(8,
-                    typedjs::typed(
-                      c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span"),
-                      contentType = "html", typeSpeed = 20, showCursor=F),
-                  ),
-                  column(2)
-                )
-                
-                
+    delay(
+      1000,
+      insertUI(
+        selector = "#natS2-contents",
+        where = "beforeEnd",
+        ui = tags$div(
+          id='natS2-contents-phase1',
+          div(style='height: 20vh'),
+          fluidRow(
+            column(2),
+            column(8,
+              typedjs::typed(
+                c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span",''),
+                contentType = "html", typeSpeed = 20, showCursor=F, backDelay=2000, backSpeed = 25
               )
+            ),
+            column(2)
           )
+        )
+      )
     )
+    delay(
+      6000,
+      removeUI(
+        selector = '#natS2-contents-phase1'
+      )
+    )
+    delay(
+      7000,
+      insertUI(
+        selector = '#natS2-content-phase2-textA',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-content-phase2-textA',
+          div(style='height: 5vh'),
+          typedjs::typed(
+            c("<span style ='text-align:left;float: left;  margin-left: 2.75vw; margin-top: 4vh; font-family: Public Sans, sans-serif; font-size: 6.5vh; color: #cacaca;'>For every 100 searches</span"),
+            contentType = "html", typeSpeed = 20, showCursor=F
+          )
+        )
+      )
+    )
+    delay(
+      7000,
+      insertUI(
+        selector = '#natS2-content-phase2-item',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-content-phase2-item',
+          div(style='height: 5vh'),
+          highchartOutput('plotOutput__natS2_item', height='35vh', width='40vw')
+        )
+      )
+    )
+    
+    delay(
+      7800,
+      insertUI(
+        selector = '#natS2-content-phase2-textB',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-content-phase2-textB',
+         # style='text-align:left;float: left; margin-left: 4.8vw; margin-top: 1.8vh;',
+          typedjs::typed(
+            c("<span style ='text-align:left;float: left; margin-left: 4.8vw; margin-top: 1.5vh; font-family: IBM Plex Mono, sans-serif; font-size: 2.5vh; color: #333333;'>conducted between i and j</span"),
+            contentType = "html", typeSpeed = 25, showCursor=F
+          )
+        )
+      )
+    )
+    
+    
+    
+    delay(
+      9000,
+      
+      highchartProxy('plotOutput__natS2_item') %>%
+        hcpxy_remove_point(
+          id='outcomes',
+          i=1,
+          redraw=F
+        ) %>%
+        
+      hcpxy_add_point(
+        id='outcomes',
+        point= list(
+          name ='Arrests',
+          y=df_pfa_plot$arrestRate[1],
+          color='#e10000',
+          marker=list(
+            symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+          )
+        ),
+        shift=F,
+        animation=list(
+          enabled=T, duration=0
+        )
+       ) %>%
+        hcpxy_remove_point(
+          id='outcomes',
+          i=0,
+          redraw=F
+        ) %>%
+
+        hcpxy_add_point(
+          id='outcomes',
+          point= list(
+            name ='No Arrests',
+            y=df_pfa_plot$nonArrestRate[1],
+            color='#333333',
+            marker=list(
+              symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
+              
+              #symbol='circle'
+            )
+          ),
+          shift=F,
+          animation=list(
+            enabled=T, duration=3000
+          )
+        ) 
+      # TODO update series rather than remove
+      # TODO try just adding individual series
+      
+      
+    )
+    
+    
+ 
+    
+    
+
   },
   once=T
   )
-  
-  
-  
-  
-  
+
   
 
   # countUP PFA
@@ -830,7 +994,7 @@ function(input, output, session) {
     df_pfa <- df_pfa %>%
          group_by(pfaName) %>%
          mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-         mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+         #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
          ungroup() %>% 
          distinct(pfaName, .keep_all=T) %>%
          select(pfaName, numberOfSearches)
@@ -1055,6 +1219,12 @@ function(input, output, session) {
       
     }
 
+  })
+  
+  
+  
+  output$dashboard_chart <- renderHighchart({
+    plot__dashboard_chart(df_pfa, input$year_range_dash, input$metric_dash, input$ethnic_group_dash) 
   })
 
 

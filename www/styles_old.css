@@ -422,6 +422,7 @@ Filter: "Black"
 /* National Trends Section Two ('Stop and search is not working') */
 /*----------------------------------------------------------------------------*/
 
+
 #natS2 {
   min-height: 92vh;
   max-height: 92vh;
@@ -429,7 +430,7 @@ Filter: "Black"
 }
 
 #natS2-buffer {
-  height: 4vh;
+  height: 3vh;
   width: 100vw;
 }
 
@@ -439,6 +440,15 @@ Filter: "Black"
   margin-right: 5.5vw;
   margin-left:.5vw
 }
+
+/*
+#natS2-contents-phase2 {
+  height: 75vh;
+  width: 100vw;
+  margin-right: 5.5vw;
+  margin-left:.5vw
+}
+*/
 
 #natS2-footer {
   height:8vh;

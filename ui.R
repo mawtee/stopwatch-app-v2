@@ -1,12 +1,3 @@
-# https://shiny.posit.co/r/gallery/government-public-sector/scotpho-profiles/
-# https://github.com/Public-Health-Scotland/scotpho-profiles-tool/blob/master/shiny_app/landing-page.html
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 
 
 # Libraries
@@ -40,7 +31,7 @@ source("app/funs/countUp_funs.R")
 source("app/funs/onOffToggle_funs.R")
 
 
-df_pfa <- read_csv("data/dfPFA_clean_231009.csv")
+df_pfa <- read_csv("data/dfPFA_clean_nopop_crime.csv")
 df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 
                                ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
 df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
@@ -57,8 +48,7 @@ bounds_pfa__sf <- geojsonsf::geojson_sf(json_pfa)
 bounds_pfa__df <- st_as_sf(bounds_pfa__sf, coords = c('long', 'lat'))
 bounds_pfa__df <- st_make_valid(bounds_pfa__df) %>% select(long, lat, pfa16nm)
 bounds_pfa__df <- bounds_pfa__df[1:3]
-
-
+`%ni%` <- Negate(`%in%`)
 # centroids <- bounds_pfa__df %>%
 #   group_by(pfa16nm) %>%
 #   summarize(geometry = st_union(geometry)) %>%

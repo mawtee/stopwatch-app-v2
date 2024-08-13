@@ -72,6 +72,12 @@ nationalTrends <- (
         )
       ),
       
+      
+      conditionalPanel(
+        condition="input.pageview_toggle_nattre==0",
+          # INSERT DASHBOARD
+        ),# Close panel, make sure include comma to move to narrative panel
+      
       # Intro page
       #-------------------------------------------------------------------------
       
@@ -133,8 +139,48 @@ nationalTrends <- (
         conditionalPanel(
           condition =  "input.year_range_confirm > 0",
           div(id='natS2',
-              div(id='natS2-buffer'),
-              div(id='natS2-contents'),
+            div(id='natS2-buffer'),
+            div(id='natS2-contents',
+              fluidRow(
+                div(
+                  id='natS2-contents-phase2',
+                  column(
+                    6,
+                    fluidRow(
+                      div(id='natS2-content-phase2-textA')
+                    ),
+                    fluidRow(
+                      div(id='natS2-content-phase2-textB')
+                    ),
+                    fluidRow(
+                      div(id='natS2-content-phase2-textC')
+                    )
+                  ),
+                  column(
+                    6,
+                    div(id='natS2-content-phase2-item')
+                  
+                    )
+                        
+                        
+                  
+                )
+              ),
+                fluidRow(
+                  column(
+                    6, 
+                    div(
+                     id='natS2-contents-phase3' 
+                    )
+                  ),
+                  column(
+                    6,
+                    div(
+                      id='natS2-contents-phase4'
+                    )
+                  )
+                )
+              ),
               div(id='natS2-footer'),
               
           )
@@ -154,7 +200,43 @@ nationalTrends <- (
         #   column(3)
         
         # ),
-      )
+      ),
+      conditionalPanel(condition = "input.pageview_toggle_nattre == 0", 
+                       div(style="height: 100vh", 
+                           div(style='height: 3vh'), 
+                           fluidRow(#style='background-color:#eeeeee;', 
+                             column(5, # starts here render_text(9), 
+                                    br(), 
+                                    shinyWidgets::sliderTextInput(
+                                      inputId="year_range_dash", 
+                                      label="Which year(s) would like to visualise?", 
+                                      choices=levels(df_pfa$year), 
+                                      selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]), 
+                                      force_edges=TRUE 
+                                    ), 
+                                    pickerInput(
+                                      inputId = "metric_dash", label = " Select metric", 
+                                      choices=c("Number of Searches" = "numberOfsearches","Rate of Searches" = "rateOfSearches"), 
+                                      selected=c("Number of Searches"), multiple = FALSE 
+                                    ), 
+                                    pickerInput(
+                                      inputId = "ethnic_group_dash", 
+                                      label = " Select ethnicity", 
+                                      choices=c(unique(df_pfa$selfDefinedEthnicGroup)), 
+                                      selected=c(unique(df_pfa$selfDefinedEthnicGroup)), 
+                                      options = list( `actions-box` = TRUE), multiple = TRUE )#,#,
+                                    # pickerInput( # inputId = "legislation_group_dash", 
+                                    # label = " Select legislation", # choices=c(unique(df_pfa$legislation)), 
+                                    # selected=c(unique(df_pfa$legislation)), # options = list( # `actions-box` = TRUE), 
+                                    # multiple = TRUE # ), # pickerInput( # inputId = "reason_group_dash", 
+                                    # label = " Select reason", # choices=c(unique(df_pfa$reasonForSearch)), 
+                                    # selected=c(unique(df_pfa$reasonForSearch)), # options = list( # `actions-box` = TRUE), 
+                                    # multiple = TRUE # ), # pickerInput( # inputId = "outcome_group_dash", 
+                                    # label = " Select outcome", # choices=c(unique(df_pfa$outcome)),
+                                    # selected=c(unique(df_pfa$outcome)), # options = list( # `actions-box` = TRUE), 
+                                    # multiple = TRUE # ) 
+                                    ), 
+                                    column(7, highchartOutput("dashboard_chart")) ) ) )
     )
   )
 )
