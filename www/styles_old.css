@@ -333,6 +333,14 @@ Filter: "Black"
   
 }
 
+.red-header {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 2vh;
+  color: #e10000;
+  font-weight: normal;
+}
+
+
 .page-subtitle {
   margin-left: 30px;
   margin-bottom: 0px;
