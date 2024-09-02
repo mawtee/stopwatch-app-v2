@@ -138,49 +138,55 @@ nationalTrends <- (
         #=======================================================================
         conditionalPanel(
           condition =  "input.year_range_confirm > 0",
+          div(class='section-buffer'),
           div(id='natS2',
             div(id='natS2-buffer'),
             div(id='natS2-contents',
-              fluidRow(
-                div(
-                  id='natS2-contents-phase2',
-                  column(
-                    6,
+                column(
+                  6,
+                  div(
+                    id='natS2-contents-phase2',
+                    
                     fluidRow(
-                      div(id='natS2-content-phase2-textA')
+                      div(id='natS2-contents-phase2-textA')
                     ),
                     fluidRow(
-                      div(id='natS2-content-phase2-textB')
+                      div(id='natS2-contents-phase2-textB')
                     ),
                     fluidRow(
-                      div(id='natS2-content-phase2-textC')
+                      div(id='natS2-contents-phase2-item', style='height:36vh')
+                    ),
+                    fluidRow(
+                      div(id='natS2-contents-phase2-textC')
+                    )
+                  )
+                ),
+                column(
+                  6, 
+                  div(
+                    id='natS2-contents-phase3' ,
+                    fluidRow(
+                      div(id='natS2-contents-phase3-text')
+                    ),
+                    fluidRow(
+                      shinyjs::hidden(
+                      div(id='natS2-contents-phase3-mirror',
+                        uiOutput('plot.ui')
+                        )
+                      )
                     )
                   ),
-                  column(
-                    6,
-                    div(id='natS2-content-phase2-item')
-                  
-                    )
-                        
-                        
-                  
-                )
-              ),
-                fluidRow(
-                  column(
-                    6, 
-                    div(
-                     id='natS2-contents-phase3' 
-                    )
-                  ),
-                  column(
-                    6,
-                    div(
-                      id='natS2-contents-phase4'
+                  div(
+                    id='natS2-contents-phase4',
+                    fluidRow(
+                      div(id='natS2-contents-phase4-text')
+                    ),
+                    fluidRow(
+                      div(id='natS2-contents-phase4-line')
                     )
                   )
                 )
-              ),
+            ),
               div(id='natS2-footer'),
               
           )

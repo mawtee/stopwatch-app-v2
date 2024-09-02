@@ -12,7 +12,7 @@ library(shiny)
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
-
+  
   
   
   output$hc_more <- renderHighchart({
@@ -36,11 +36,11 @@ function(input, output, session) {
     plot__pfa_tsline_nat_anim(df_pfa, input$year_range, input$legislation_select)
     list(src = "outfile.gif",
          contentType = 'image/gif',
-          #width = 400,
-          height = 300
+         #width = 400,
+         height = 300
          # alt = "This is alternate text"
     )
-    }, deleteFile = T)
+  }, deleteFile = T)
   
   
   output$hc_more2 <- renderHighchart({
@@ -71,7 +71,7 @@ function(input, output, session) {
   
   
   
-###############################################################################
+  ###############################################################################
   # 
   # output$hc4 <- renderHighchart({ 
   #   
@@ -226,7 +226,7 @@ function(input, output, session) {
   # }
   # )
   
- # 1. Intro page
+  # 1. Intro page
   ##############################################################################
   
   
@@ -241,7 +241,7 @@ function(input, output, session) {
   })
   
   
-
+  
   
   # Timeline chart
   browser_width <- reactive({
@@ -257,27 +257,27 @@ function(input, output, session) {
   
   
   output$plotOutput__natS1_2011timeline <- renderHighchart({ 
-  df <- data.frame(
-    date=as.Date(c("01-04-2011", "01-06-2011", "01-11-2011", "01-02-2012"),format = "%d-%m-%Y"),
-    event=c("X was searched", "X policy was introduced", "Z was stopped and falsey arrested", "Data showed 2011 was highest on record"),
-    type=c("#E10000", "#F6B7B7","#E10000", "#F6B7B7"),
-    description=c(paste0("description blah", 1:4))
-  )  
-  df %>% 
-    hchart("timeline", hcaes(x = date,
-                             label = paste0("<b>", event, "</b>"),
-                             color = type,
-                             name = paste0(date),
-                             description=description
-    ),
-    dataLabels = list(allowOverlap = FALSE),
-    linkedTo = "color",
-    showInLegend = F) %>% 
-    hc_yAxis(visible = FALSE) %>% 
-    hc_xAxis(dateTimeLabelFormats = list(month = "%d-%m-%Y"), 
-             type = "datetime"   
-             
-    )
+    df <- data.frame(
+      date=as.Date(c("01-04-2011", "01-06-2011", "01-11-2011", "01-02-2012"),format = "%d-%m-%Y"),
+      event=c("X was searched", "X policy was introduced", "Z was stopped and falsey arrested", "Data showed 2011 was highest on record"),
+      type=c("#E10000", "#F6B7B7","#E10000", "#F6B7B7"),
+      description=c(paste0("description blah", 1:4))
+    )  
+    df %>% 
+      hchart("timeline", hcaes(x = date,
+                               label = paste0("<b>", event, "</b>"),
+                               color = type,
+                               name = paste0(date),
+                               description=description
+      ),
+      dataLabels = list(allowOverlap = FALSE),
+      linkedTo = "color",
+      showInLegend = F) %>% 
+      hc_yAxis(visible = FALSE) %>% 
+      hc_xAxis(dateTimeLabelFormats = list(month = "%d-%m-%Y"), 
+               type = "datetime"   
+               
+      )
   }
   )
   
@@ -311,11 +311,29 @@ function(input, output, session) {
   
   output$plotOutput__natS2_item <- renderHighchart({
     #isolate({ #'* Isolates the initial render from the subsequent proxy updates, enabling slider functionality for both series *
-      plotFun__natS2_item(df_pfa, input$year_range) 
+    plotFun__natS2_item(df_pfa, input$year_range) 
     #})
   })
   
   
+  output$plotOutput__natS2_item2 <- renderHighchart({
+    #isolate({ #'* Isolates the initial render from the subsequent proxy updates, enabling slider functionality for both series *
+    plotFun__natS2_item(df_pfa, input$year_range) 
+    #})
+  })
+  
+  output$plotOutput__natS2_mirror <- renderCombineWidgets({
+    #isolate({ #'* Isolates the initial render from the subsequent proxy updates, enabling slider functionality for both series *
+    plotFun__natS2_mirror(df_pfa, input$year_range) 
+    #})
+  })
+  
+  
+  output$plotOutput__natS2_line <- renderHighchart({
+    #isolate({ #'* Isolates the initial render from the subsequent proxy updates, enabling slider functionality for both series *
+    plotFun__natS2_line(df_pfa, input$year_range, 'crimeSusceptibleToStopAndSearch') 
+    #})
+  })
   
   
   
@@ -332,7 +350,7 @@ function(input, output, session) {
   
   # Number of searches
   #--------------------
-
+  
   # Reactive based on current year selection
   reactive__natS1_nSearches <- reactive({
     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
@@ -343,7 +361,7 @@ function(input, output, session) {
       select(numberOfSearches)
     countTo <- df_stat$numberOfSearches[1]
   })
-
+  
   # Define countUp reactive values based on previous values
   reactiveVal__natS1_nSearches_countFromTo <-  reactiveValues(countFrom=0, countTo=0)
   observeEvent(
@@ -356,13 +374,14 @@ function(input, output, session) {
   reactive__natS1_nSearches_countFrom <- reactive({req(reactive__natS1_nSearches()); reactive__natS1_nSearches(); reactiveVal__natS1_nSearches_countFromTo$countFrom})
   output$natS1_nSearches_countTo <- renderPrint({sprintf("countTo:%d", natS1_nSearches_countTo())})
   output$natS1_nSearches_countFrom <- renderPrint({sprintf("countFrom:%d", natS1_nSearches_countFrom())})
-
+  
   output$natS1_nSearches_countUp_text <- renderUI({
     tagList(
       h3(paste0("were recorded in England and Wales between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 2.75vw; margin-top: -1vh; color: #333333;")
     )
   })
-
+  
+  # Arrest rate
   
   
   # output$natS2_text <- renderUI({
@@ -397,7 +416,7 @@ function(input, output, session) {
   #    
   # })
   
-
+  
   typedjs::typed(
     c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span",''),
     contentType = "html", typeSpeed = 20, showCursor=F, backDelay=2000, backSpeed = 25
@@ -414,51 +433,48 @@ function(input, output, session) {
   once=T)
   
   
-
+  
   
   output$typd <- renderTyped(
     type(reactiveVal__stage())
   )
-
-
-
-
-
-#   # Arrest rate reactive
-#   reactive__nattre_intro_arrestRate <- reactive({
-#     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
-#     df_stat <- df_pfa %>%
-#       ungroup() %>%
-#       mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-#       mutate(arrest = case_when(outcome == "Arrest"~1, T~0)) %>%
-#       mutate(numberOfArrests = sum(arrest)) %>%
-#       summarise(arrestRate = (numberArrest/numberOfSearches)*100) %>%
-#       slice(1)
-#     countTo <- df_stat$arrestRate[1]
-#   })
-#   
-#   
-#   
-#   # output$countUp_pfa_0 <- renderCountup({
-#   #   #print()
-#   #   #browser()
-#   #   #if(input$pfa_select %in% unique(df_pfa$pfaName)){
-#   #     countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
-#   #   #}
-#   # }
-#   # )
-#   
-#   output$countUp_pfa_text <- renderUI({
-#     tagList(
-#       h3(paste0("were recorded by ",input$pfa_select, " Police between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 2.75vw; margin-top: -1vh; color: #333333;")
-#     )
-#   })
-#   
-#   
-#   
   
   
-
+  
+  
+  
+  #   # Arrest rate reactive
+  #   reactive__nattre_intro_arrestRate <- reactive({
+  #     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
+  #     df_stat <- df_pfa %>%
+  #       ungroup() %>%
+  #       mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+  #       mutate(arrest = case_when(outcome == "Arrest"~1, T~0)) %>%
+  #       mutate(numberOfArrests = sum(arrest)) %>%
+  #       summarise(arrestRate = (numberArrest/numberOfSearches)*100) %>%
+  #       slice(1)
+  #     countTo <- df_stat$arrestRate[1]
+  #   })
+  #   
+  #   
+  #   
+  #   # output$countUp_pfa_0 <- renderCountup({
+  #   #   #print()
+  #   #   #browser()
+  #   #   #if(input$pfa_select %in% unique(df_pfa$pfaName)){
+  #   #     countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
+  #   #   #}
+  #   # }
+  #   # )
+  #   
+  #   output$countUp_pfa_text <- renderUI({
+  #     tagList(
+  #       h3(paste0("were recorded by ",input$pfa_select, " Police between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 2.5vh; margin-left: 2.75vw; margin-top: -1vh; color: #333333;")
+  #     )
+  #   })
+  #   
+  #   
+  #   
   
   
   
@@ -468,7 +484,10 @@ function(input, output, session) {
   
   
   
-
+  
+  
+  
+  
   
   
   
@@ -478,51 +497,54 @@ function(input, output, session) {
   
   observeEvent(input$render__natS1_ui, {
     
+    print('Rendering Section 2 UI')
+    
     #  boxxyOutput("subs")
     delay(1000,
-    # insert ui, removeUI
-    #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
-    #random_numbers_items_batch <- generate_random_numbers_divs(100)
-    insertUI(
-      selector = "#natS1-contents",
-      where = "beforeEnd",
-      ui = 
-        tags$div(
-          id='natS1-contents-phase1',
-          div(
-            #div()
-          fluidRow(
-            column(7, 
-              div(countUp_pfa(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35),style='margin-left:.5vw; font-size:6vh'),
-              h2("stop-searches", style="font-size: 4.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
-              uiOutput('natS1_nSearches_countUp_text')
-            ),
-            #column(5, div(id='natS1-contents-phase2', style='height:65vh'))
-          ),
-          div(
-          fluidRow(
-            column(6,
-              highchartOutput('plotOutput__natS1_line', height='65vh')
-            ) # , style='height:90vh'
-          )#,
-          #style='height:3vh'
+          # insert ui, removeUI
+          #https://www.r-bloggers.com/2020/02/shiny-add-removing-modules-dynamically/
+          #random_numbers_items_batch <- generate_random_numbers_divs(100)
+          insertUI(
+            selector = "#natS1-contents",
+            where = "beforeEnd",
+            ui = 
+              tags$div(
+                id='natS1-contents-phase1',
+                div(
+                  #div()
+                  fluidRow(
+                    column(7, 
+                           div(
+                             countUpDown(reactiveVal__natS1_nSearches_countFromTo$countTo, reactiveVal__natS1_nSearches_countFromTo$countFrom, 3.35, 'natS1-contents-phase1-countup'),style='margin-left:.5vw; font-size:6vh'),
+                           h2("stop-searches", style="font-size: 4.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
+                           uiOutput('natS1_nSearches_countUp_text')
+                    ),
+                    #column(5, div(id='natS1-contents-phase2', style='height:65vh'))
+                  ),
+                  div(
+                    fluidRow(
+                      column(6,
+                             highchartOutput('plotOutput__natS1_line', height='65vh')
+                      ) # , style='height:90vh'
+                    )#,
+                    #style='height:3vh'
+                  )
+                  
+                  
+                  # TODO PROXYYYYYY
+                  #https://github.com/jbkunst/highcharter/blob/main/dev/sandbox/proxy-shiny.R
+                  #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
+                  # fluidRow(
+                  #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
+                  #   )
+                )
+                
+                #    ui = tags$div(
+                #      includeCSS("counter.css"),
+                # highchartOutput("hc")
+                #   )
+              )
           )
-                   
-                   
-            # TODO PROXYYYYYY
-            #https://github.com/jbkunst/highcharter/blob/main/dev/sandbox/proxy-shiny.R
-            #div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
-        # fluidRow(
-        #   column(3, countUpOutput("subs")), column(8, p("stop-searches were recorded in England and Wales between 2011/12 and 2021/22", style="font-size: .5vh; font-family: 'Public Sans', sans-serif; margin-top:7vh"))
-        #   )
-        )
-      
-      #    ui = tags$div(
-      #      includeCSS("counter.css"),
-      # highchartOutput("hc")
-      #   )
-        )
-    )
     )
     
     # TODO Might wanna put this into a function
@@ -597,22 +619,22 @@ function(input, output, session) {
     
     delay(1000,#13000,
           highchartProxy('plotOutput__natS1_line') %>%
-          hcpxy_update(
-            yAxis=list(
-
-              plotLines= list(
-                list(
-                  color= '#333333',
-                  label = list(text = paste0("Median = ",  median(df_pfa_plot$numberOfSearches)),
-                               align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline= '3px contrast', color='#333333')),
-                  width= 3,
-                  value= median(df_pfa_plot$numberOfSearches),
-                  dashStyle='LongDash',
-                  zIndex= 5
+            hcpxy_update(
+              yAxis=list(
+                
+                plotLines= list(
+                  list(
+                    color= '#333333',
+                    label = list(text = paste0("Median = ",  median(df_pfa_plot$numberOfSearches)),
+                                 align='right', y=-10, style=list(fontSize='2vh', fontStyle='italic', textOutline= '3px contrast', color='#333333')),
+                    width= 3,
+                    value= median(df_pfa_plot$numberOfSearches),
+                    dashStyle='LongDash',
+                    zIndex= 5
+                  )
                 )
               )
             )
-          )
     )
     
     
@@ -634,18 +656,18 @@ function(input, output, session) {
             #         width= 2,
             #         value= median,
             #         yAxis=1,
-            #         zIndex= 5
-            #       )
-            #     )
-            #   )
-              #   
-              # ) %>%
-            hcpxy_update(
-              annotations= list(
-                labels = list(
-                )
+          #         zIndex= 5
+          #       )
+          #     )
+          #   )
+          #   
+          # ) %>%
+          hcpxy_update(
+            annotations= list(
+              labels = list(
               )
             )
+          )
     )
     
     
@@ -668,98 +690,98 @@ function(input, output, session) {
                   #div(style='margin-left: 4.5vw;',
                   fluidRow(
                     column(11, 
-                      typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>For more detailed insight on each year, take a scroll through our stop and search timeline below</span"),
-                                             contentType = "html", typeSpeed = 20, showCursor=F),
-                      div(style='height:2vh'),
-                      shinyjs::hidden(
-                        div(id='glideshit',
-                      glide(
-                        screen(
-                          navset_card_tab(
-                            title='2011/12',
-                            # TODO move title alignment to right (!proven v difficult so far)
-                            #id='navv',
-                            nav_panel("Timeline", align='left',
-                                      highchartOutput('plotOutput__natS1_2011timeline', height='45vh')
-                            ),
-                            nav_menu(
-                              title = 'Sources', align='left',
-                              nav_panel(' Event 1',
-                                        tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
-                              ),
-                              nav_panel(' Event 2',
-                                        tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
-                              ),
-                              nav_panel(' Event 3',
-                                        tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
-                              )
-                              
-                            )
-                          ),
-                          next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
-                          previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
-                        ),
-                        screen(
-                          p("Second screen."),
-                          next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
-                          previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
-                        )
-                      )
-                        )
-                      )
-                      
+                           typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>For more detailed insight on each year, take a scroll through our stop and search timeline below</span"),
+                                          contentType = "html", typeSpeed = 20, showCursor=F),
+                           div(style='height:2vh'),
+                           shinyjs::hidden(
+                             div(id='glideshit',
+                                 glide(
+                                   screen(
+                                     navset_card_tab(
+                                       title='2011/12',
+                                       # TODO move title alignment to right (!proven v difficult so far)
+                                       #id='navv',
+                                       nav_panel("Timeline", align='left',
+                                                 highchartOutput('plotOutput__natS1_2011timeline', height='45vh')
+                                       ),
+                                       nav_menu(
+                                         title = 'Sources', align='left',
+                                         nav_panel(' Event 1',
+                                                   tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
+                                         ),
+                                         nav_panel(' Event 2',
+                                                   tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
+                                         ),
+                                         nav_panel(' Event 3',
+                                                   tags$iframe(style="height:45vh; width:100%; margin-top:2vh; scrolling=yes",src="2011.html")
+                                         )
+                                         
+                                       )
+                                     ),
+                                     next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
+                                     previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
+                                   ),
+                                   screen(
+                                     p("Second screen."),
+                                     next_label = paste("Next yr", shiny::icon("chevron-right", lib = "glyphicon")),
+                                     previous_label = paste(shiny::icon("chevron-left", lib = "glyphicon"), "Back yr")
+                                   )
+                                 )
+                             )
+                           )
+                           
                     )
                   )
                   #)
-      
+                  
                 )
               )
           )
     )
     
     delay(1000,#28000,
-      insertUI(
-      selector = "#natS1-contents-phase3-text",
-      where = "beforeEnd",
-      ui = 
-        tags$div(
-          id='natS1-contents-phase3-text',
-      div(style='height:3vh'),
-      fluidRow(
-        column(12,
-               typedOutput('typd')
-      # typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>When you're ready, confirm which years (or year) you want to visualise...</span"),
-      #                contentType = "html", typeSpeed = 20)
-        )
-      )
-      )
-      )
+          insertUI(
+            selector = "#natS1-contents-phase3-text",
+            where = "beforeEnd",
+            ui = 
+              tags$div(
+                id='natS1-contents-phase3-text',
+                div(style='height:3vh'),
+                fluidRow(
+                  column(12,
+                         typedOutput('typd')
+                         # typedjs::typed(c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>When you're ready, confirm which years (or year) you want to visualise...</span"),
+                         #                contentType = "html", typeSpeed = 20)
+                  )
+                )
+              )
+          )
     )
-                     
-      
-      
-          
-# 
-#     delay(60000000,
-#           insertUI(
-#             selector = "#natS1-contents",
-#             where = "beforeEnd",
-#             ui = 
-#               tags$div(id='natS1-contents-phase2',
-#                        fluidPage(
-#                          div(
-#                            fluidRow(
-#                              column(2),
-#                              column(4, highchartOutput('plotOutput__natS1_timeline')),
-#                              column(2)
-#                           
-#                            ),
-#                          
-#                          )
-#                        )
-#               )
-#           )
-#     )
+    
+    
+    
+    
+    # 
+    #     delay(60000000,
+    #           insertUI(
+    #             selector = "#natS1-contents",
+    #             where = "beforeEnd",
+    #             ui = 
+    #               tags$div(id='natS1-contents-phase2',
+    #                        fluidPage(
+    #                          div(
+    #                            fluidRow(
+    #                              column(2),
+    #                              column(4, highchartOutput('plotOutput__natS1_timeline')),
+    #                              column(2)
+    #                           
+    #                            ),
+    #                          
+    #                          )
+    #                        )
+    #               )
+    #           )
+    #     )
     
   },
   once=T
@@ -769,7 +791,7 @@ function(input, output, session) {
     delay(1000,#30500,
           show("year_range", anim=T, animType='fade', time=1)
           
-          )
+    )
     delay(1000,#30500,
           show("year_range_confirm", anim=T, animType='fade', time=1)
           
@@ -791,7 +813,7 @@ function(input, output, session) {
     }
     else {
       df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
-   }
+    }
     df_pfa_plot <- df_pfa %>%
       group_by(year) %>%
       mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
@@ -833,9 +855,96 @@ function(input, output, session) {
   # Section Two
   #=============================================================================
   
+  # 
+  S2_reactVal <- reactiveVal()
+  observeEvent(
+    input$render__natS2_phase4_reactVal, {
+
+      if (is.null(input$render__natS2_phase4_reactVal)) {
+        #browser()
+        S2_reactVal('70vh')
+
+      }
+      if (!is.null(input$render__natS2_phase4_reactVal)) {
+        S2_reactVal('35vh')
+      }
+
+
+
+    }, ignoreInit=F, ignoreNULL=F
+
+  )
+  
+  
+  output$plot.ui <- renderUI({
+    combineWidgetsOutput("plotOutput__natS2_mirror", height = S2_reactVal(), width='93%')
+  })
+  
+  
+  
+  
+  #S2_reactVal <- reactiveVal('75vh')
+  
+  
+  # 
+  # S2_reactVal <- eventReactive(
+  #   #list()
+  #   input$render__natS2_phase4_reactVal, {
+  #     #     
+  #     #     if (is.null(input$render__natS2_phase4_reactVal)) return('75vh')
+  #     #     if (!is.null(input$render__natS2_phase4_reactVal)) return('35vh')
+  #     #   
+  #     
+  #     if (!is.null(input$render__natS2_phase4_reactVal)) { #
+  #       val <- '35vh'
+  #       browser()
+  #       print(val)
+  #       # not updating
+  #       a <- 'a'
+  #     }
+  #     else {
+  #       val <- '70vh'
+  #       #browser()
+  #       #print(val)
+  #       # not updating
+  #       #a <- 'a'
+  #     }
+  #     
+  #     return(val)
+  #   },
+  #   ignoreNULL = F,
+  #   ignoreInit = F
+  # )
+  # 
+  
+  
+  
+  
+  # observeEvent(input$render__natS2_phase4_reactVal, {
+  #       if (!is.null(input$render__natS2_phase4_reactVal)) { #
+  #         val <- '35vh'
+  #         browser()
+  #         print(val)
+  #         # not updating
+  #         S2_reactVal(val)
+  #       }
+  #       else {
+  #         val <- '70vh'
+  #         #browser()
+  #         #print(val)
+  #         # not updating
+  #         #a <- 'a'
+  #         S2_reactVal(val)
+  #       }
+  # } , ignoreNULL=F, ignoreInit=F
+  # )
+  
+  
   
   observeEvent(input$render__natS2_ui, {
-  
+    
+    
+    
     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
     df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
     
@@ -858,10 +967,10 @@ function(input, output, session) {
           fluidRow(
             column(2),
             column(8,
-              typedjs::typed(
-                c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span",''),
-                contentType = "html", typeSpeed = 20, showCursor=F, backDelay=2000, backSpeed = 25
-              )
+                   typedjs::typed(
+                     c("<span style ='font-size: 6vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Stop and search is not working...</span",''),
+                     contentType = "html", typeSpeed = 20, showCursor=F, backDelay=2000, backSpeed = 25
+                   )
             ),
             column(2)
           )
@@ -874,83 +983,119 @@ function(input, output, session) {
         selector = '#natS2-contents-phase1'
       )
     )
-    delay(
-      7000,
-      insertUI(
-        selector = '#natS2-content-phase2-textA',
-        where = 'beforeEnd',
-        ui = tags$div(
-          id='natS2-content-phase2-textA',
-          div(style='height: 5vh'),
-          typedjs::typed(
-            c("<span style ='text-align:left;float: left;  margin-left: 2.75vw; margin-top: 4vh; font-family: Public Sans, sans-serif; font-size: 6.5vh; color: #cacaca;'>For every 100 searches</span"),
-            contentType = "html", typeSpeed = 20, showCursor=F
-          )
-        )
-      )
-    )
-    delay(
-      7000,
-      insertUI(
-        selector = '#natS2-content-phase2-item',
-        where = 'beforeEnd',
-        ui = tags$div(
-          id='natS2-content-phase2-item',
-          div(style='height: 5vh'),
-          highchartOutput('plotOutput__natS2_item', height='35vh', width='40vw')
-        )
-      )
-    )
     
     delay(
-      7800,
+      7000,
       insertUI(
-        selector = '#natS2-content-phase2-textB',
+        selector = '#natS2-contents-phase2-textA',
         where = 'beforeEnd',
         ui = tags$div(
-          id='natS2-content-phase2-textB',
-         # style='text-align:left;float: left; margin-left: 4.8vw; margin-top: 1.8vh;',
+          id='natS2-contents-phase2-textA',
+          div(style='text-align:left; float: left; margin-left: .5vw;',
+              div(style='display: inline-block;',   
+                  typedjs::typed(
+                    c("<span style ='font-family: Public Sans Thin, sans-serif; font-size: 7vh;'>&nbsp;</span"),
+                    contentType = "html", typeSpeed = 10, showCursor=F
+                  )
+              ),
+              div(style='display: inline-block;',
+                  typedjs::typed(
+                    c("<span style ='font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #333333;'>For every&nbsp;</span"),
+                    contentType = "html", typeSpeed = 20, showCursor=F
+                  )
+              ),
+              div(style='display: inline-block;',
+                  typedjs::typed(
+                    c(" <span style ='font-family: Public Sans Thin, sans-serif; font-size: 7vh; color: #333333;'>100&nbsp;</span>"),
+                    contentType = "html", typeSpeed = 20, showCursor=F, startDelay=400
+                  )
+              ),
+              div(style='display: inline-block;',
+                  typedjs::typed(
+                    c(" <span style ='font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #333333;'>stop-searches</span>"),
+                    contentType = "html", typeSpeed = 20, showCursor=F, startDelay=700
+                  )
+              )
+          )
+          
+          
+        )
+      )
+    )
+    # typedjs::typed(
+    #   c("
+    #             <span style ='font-family: IBM Plex Mono Light, sans-serif; font-size: 5.5vh; color: #333333;'>For every </span>
+    #             <span style ='font-family: Public Sans Thin, sans-serif; font-size: 12vh; color: #333333;'>100 </span>
+    #             <span style ='font-family: IBM Plex Mono Light, sans-serif; font-size: 5.5vh; color: #333333;'>stop-searches</span>
+    #           "),
+    #   contentType = "html", typeSpeed = 20, showCursor=F
+    # )
+    delay(
+      7700,
+      insertUI(
+        selector = '#natS2-contents-phase2-textB',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-contents-phase2-textB',
+          # style='text-align:left;float: left; margin-left: 4.8vw; margin-top: 1.8vh;',
+          
           typedjs::typed(
-            c("<span style ='text-align:left;float: left; margin-left: 4.8vw; margin-top: 1.5vh; font-family: IBM Plex Mono, sans-serif; font-size: 2.5vh; color: #333333;'>conducted between i and j</span"),
+            c("<span style ='text-align:left;float: left; margin-left: 4.8vw; margin-top: 1.5vh; font-family: IBM Plex Mono Light, sans-serif; font-size: 2.5vh; color: #333333;'>recorded between 2011/12 and 2021/22</span"),
             contentType = "html", typeSpeed = 25, showCursor=F
           )
+          
         )
       )
     )
-    
-    
     
     delay(
       9000,
-      
-      highchartProxy('plotOutput__natS2_item') %>%
-        hcpxy_remove_point(
-          id='outcomes',
-          i=1,
-          redraw=F
-        ) %>%
-        
-      hcpxy_add_point(
-        id='outcomes',
-        point= list(
-          name ='Arrests',
-          y=df_pfa_plot$arrestRate[1],
-          color='#e10000',
-          marker=list(
-            symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
-          )
-        ),
-        shift=F,
-        animation=list(
-          enabled=T, duration=0
+      insertUI(
+        selector = '#natS2-contents-phase2-item',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-contents-phase2-item',
+          #div(style='height: 20vh'),
+          div(style='margin-left: 2.75vw; margin-top: 4vh; '),
+          highchartOutput('plotOutput__natS2_item', height='32vh', width='40vw')
         )
-       ) %>%
+      )
+    )
+    
+    
+    
+    delay(
+      11000,
+      highchartProxy('plotOutput__natS2_item') %>%
+        
+        # or add two invisible series
+        # add an invisible point maybe
+        # then remove series0
+        # then invisible point becomes series 0
+        
+        # Replaces insible 1
+        hcpxy_add_point(
+          id='outcomes',
+          point= list(
+            name ='Arrests',
+            y=df_pfa_plot$arrestRate[1],
+            color='#e10000',
+            marker=list(
+              #symbol='circle'
+              
+              symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+            )
+          ),
+          shift=T, redraw=T,
+          animation=list(
+            enabled=T, duration=0
+          )
+        )%>%
         hcpxy_remove_point(
           id='outcomes',
-          i=0,
-          redraw=F
+          i=0
         ) %>%
-
+        # Replaces initial grey render
         hcpxy_add_point(
           id='outcomes',
           point= list(
@@ -958,33 +1103,562 @@ function(input, output, session) {
             y=df_pfa_plot$nonArrestRate[1],
             color='#333333',
             marker=list(
+              #symbol='circle'
               symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
               
               #symbol='circle'
             )
           ),
-          shift=F,
+          shift=T,redraw=T,
           animation=list(
-            enabled=T, duration=3000
+            enabled=T,  duration=3500
           )
         ) 
-      # TODO update series rather than remove
-      # TODO try just adding individual series
-      
+      # 
+      # hcpxy_remove_point(
+      #   id='outcomes',
+      #   i=0
+      # ) %>%
+      # hcpxy_add_point(
+      #   id='outcomes',
+      #   point= list(
+      #     name ='Arrests',
+      #     y=5 - 10*(round(df_pfa_plot$nonArrestRate[1]/6)-round(df_pfa_plot$nonArrestRate[1]/6,1)),
+      #     color='#ffffff00',
+      #     marker=list(
+      #       symbol='circle'
+      #       
+      #       #symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+      #     )
+      #   ),
+      #   shift=T, redraw=T,
+      #   animation=list(
+      #     enabled=T, duration=3500
+      #   )
+      # ) %>%
+      # # Replaces invisible 2
+      # hcpxy_add_point(
+      #   id='outcomes',
+      #   point= list(
+      #     name ='Arrests',
+      #     y=df_pfa_plot$arrestRate[1],
+      #     color='#e10000',
+      #     marker=list(
+      #       symbol='circle'
+      #       
+      #       #symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+      #     )
+      #   ),
+      #   shift=F, 
+      #   animation=list(
+      #     enabled=T, duration=3500
+      #   )
+      # ) 
       
     )
     
     
- 
+    delay(
+      11500,
+      insertUI(
+        selector = '#natS2-contents-phase2-textC',
+        where = 'afterBegin',
+        ui = tags$div(
+          id='natS2-contents-phase2-textC',
+          div(HTML("<span style = 'font-family:Public Sans Thin, sans-serif; font-size: 4.2vh; color: #e10000; '>Just</span"),style='display: inline-block;'),
+          countUpDown(12, 100, 3, 'natS2-contents-phase2-countup'),
+          div(HTML("<span style = 'font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #e10000'> resulted in an arrest</span"),style='display: inline-block;'),
+          style='text-align:left; float: left; margin-top: .5vh; margin-left: 1.75vw;'
+        )
+        
+      )
+      
+      #countUp_pfa(12, 100, 3.5)
+    )
+    # 
+    # 
+    delay(
+      14000,
+      highchartProxy('plotOutput__natS2_item') %>%
+        hcpxy_update(
+          legend=list(
+            enabled=T, 
+            itemStyle=list(
+              fontSize='1.5vh'
+            )
+            
+          ),
+          series=list(
+            dataLabels=list(enabled=T)
+          )
+          #TODO legend text smaller
+        )
+    ) 
     
+    delay(
+      16000,
+      insertUI(
+        selector = '#natS2-contents-phase3-text',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-contents-phase3-text',
+          div(style='margin-top: 0vh;',
+              typedjs::typed(
+                c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>Arrest rates are highly contingent on the reason for search</span"),
+                contentType = "html", typeSpeed = 20, showCursor=F
+              ),
+              div(id='natS2-contents-phase3-trigger', style='height:1vh; width: 45w;'),
+              div(style='height:2vh')
+          )
+        )
+      )
+    )
     
+    # 
+    delay(
+      18000,
+      shinyjs::show('natS2-contents-phase3-mirror')
 
+    )
+    
+    # Highlight the ones we are interested in e.g. Other reasons and weapons
+    # then gradually render the volume bars
+    #then highlight drusg
+    # and render rudgs bar, with simple label on main plot area in color of bar
+    # then render all bars'
+    # then resize
+    
+    
+    delay(
+      21500,
+      insertUI(
+        selector = '#natS2-contents-phase4-text',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-contents-phase4-text',
+          div(id='natS2-contents-phase4-trigger', style='height:2.5vh; width: 45vw'),
+          typedjs::typed(
+            c("<span style ='font-size: 2.5vh; font-family: IBM Plex Mono, sans-serif;  color: #333333;'>There is also no clear relationship between searches and crime</span"),
+            contentType = "html", typeSpeed = 20, showCursor=F
+          )
+        )
+      )
+    )
+    
+    delay(
+      22500,
+      insertUI(
+        selector = '#natS2-contents-phase4-line',
+        where = 'beforeEnd',
+        ui = tags$div(
+          id='natS2-contents-phase4-line', style='margin-top:2vh',
+          highchartOutput('plotOutput__natS2_line', height='35vh', width='93%')
+        )
+      )
+    )
+    
+    
+    
+    
+    # div(id='natS2-contents-phase4',
+    #     highchartOutput('plotOutput__natS2_line', height = '35vh', width='100%')
+    # )
+    
+    
+    
+    #     hcpxy_remove_point(
+    #       id='outcomes',
+    #       i=2
+    #     )
+    # 
+    # )
+    #     hcpxy_remove_point(
+    #       id='outcomes',
+    #       i=1
+    #     ) #%>%
+    
+    # hcpxy_update_point(
+    #   id='outcomes',
+    #   i=1,
+    #   point=list(
+    #   y=12,
+    #   color='#e10000',
+    #   marker=list(
+    #     symbol='square'
+    #   )
+    #   )
+    #   # point=list(
+    #   #   y=150,
+    #   #   color='#e10000'
+    #   # )
+    # ) %>%
+    # animation=list(
+    #   enabled=T, duration=0
+    # )# %>%
+    
+    # hcpxy_update(
+    # 
+    #   legend=list(enabled=T)
+    # )
+    #)
+    
+    
+    
+    #%>%
+    # hcpxy_update(
+    #   
+    #   legend=list(enabled=T)
+    # )
+    
+    
+    # hcpxy_remove_series(
+    #   id='outcomes'
+    # # ) %>%
+    # hcpxy_update_series(
+    #   id='outcomes',
+    #   name='Count',
+    #   data=list(
+    #     list(
+    #       #i='1',
+    #       name='Arrest',
+    #       y= df_pfa_plot$arrestRate[1],
+    #       marker=list(
+    #         symbol='circle'
+    #         #symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
+    #       )
+    #     ),
+    #     list(
+    #       #i='0',
+    #       name='No Arrest',
+    #       y=df_pfa_plot$nonArrestRate[1],
+    #       marker=list(
+    #         symbol='circle'
+    #         #symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
+    #       )
+    #     )
+    #   ),
+    #   #startAngle = -100,  endAngle = 100,
+    #   center = list("50%", "75%")
+    # ) #%>%
+    # hcpxy_remove_series(
+    #   id='outcomes'
+    # )
+    # hcpxy_add_point(
+    #   id='outcomes',
+    #   point= list(
+    #     name ='Arrests',
+    #     y=df_pfa_plot$arrestRate[1],
+    #     color='#e10000',
+    #     marker=list(
+    #       symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+    #     )
+    #   ),
+    #   redraw=F
+    # )
+    # hcpxy_update_series(
+    #   id = "outcomes",
+    #   data=list(
+    #     list(
+    #       #i='1',
+    #       name='No Arrest',
+    #       y= df_pfa_plot$arrestRate[1],
+    #       marker=list(
+    #         symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+    #         #symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
+    #       )
+    #     ),
+    #     list(
+    #       #i='0',
+    #       name='No Arrest',
+    #       y=df_pfa_plot$nonArrestRate[1],
+    #       marker=list(
+    #         symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
+    #       )
+    #     )
+    #   )
+    #   
+    # )
+    # 
+    
+    # LATEST VERSION##########################################################
+    #   hcpxy_remove_point(
+    #     id='outcomes',
+    #     i=1,
+    #     redraw=F
+    #   ) %>%
+    #   
+    # hcpxy_add_point(
+    #   id='outcomes',
+    #   point= list(
+    #     name ='Arrests',
+    #     y=df_pfa_plot$arrestRate[1],
+    #     color='#e10000',
+    #     marker=list(
+    #       symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
+    #     )
+    #   ),
+    #   shift=F,
+    #   animation=list(
+    #     enabled=T, duration=0
+    #   )
+    #  ) %>%
+    #   hcpxy_remove_point(
+    #     id='outcomes',
+    #     i=0,
+    #     redraw=F
+    #   ) %>%
+    # 
+    #   hcpxy_add_point(
+    #     id='outcomes',
+    #     point= list(
+    #       name ='No Arrests',
+    #       y=df_pfa_plot$nonArrestRate[1],
+    #       color='#333333',
+    #       marker=list(
+    #         symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
+    #         
+    #         #symbol='circle'
+    #       )
+    #     ),
+    #     shift=F,
+    #     animation=list(
+    #       enabled=T, duration=3000
+    #     )
+    #   ) 
+    # TODO update series rather than remove
+    # TODO try just adding individual series
+    ##########################################################################
+    
+    
+    
+    
+    
+    
+    
+    
   },
   once=T
   )
-
+  
+  
+  
   
 
+
+  # 
+  # 
+  # S2_reactVal <- reactiveVal(0)
+  # S2_reactive <- reactive({
+  #   paste0(S2_reactVal(), 'vh')
+  # })
+  # 
+  # 
+  
+  #     if (!is.null(input$render__natS2_phase4_reactVal)) {
+  #       newvalue <- S2_reactVal()/2
+  #       #browser()
+  #       # browser()
+  #       S2_reactVal(newvalue)
+  #       #val <- 100
+  #     }
+  #   }, ignoreInit=F, ignoreNULL=F
+  # )
+  # 
+  # o <- observeEvent(
+  #   S2_reactive(), {
+  #     if (!is.null(input$render__natS2_ui))  {
+  #       
+  #       # possiblly remove the delay, just render
+  #       delay(
+  #         17000,
+  #         insertUI(
+  #           selector = '#natS2-contents-phase3-mirror',
+  #           where = 'beforeEnd',
+  #           ui = tags$div(
+  #             id='natS2-contents-phase3-mirror',
+  #             div(style='margin-top: 2vh;',
+  #                 #highchartOutput('plotOutput__natS2_item2')
+  #                 combineWidgetsOutput('plotOutput__natS2_mirror', height=S2_reactive(), width='45vw')
+  #                 
+  #                 
+  #             )
+  #           )
+  #         )
+  #       )
+  #       
+  #       delay(45000,
+  #             if (S2_reactVal()==35) {
+  #               o$destroy()
+  #             }
+  #       )
+  #     }
+  #   }, ignoreInit=T, ignoreNULL=F
+  #   
+  # )
+  
+  #https://stackoverflow.com/questions/55218798/getting-inputs-from-modules-created-with-insertui
+  #https://stackoverflow.com/questions/56393362/r-shiny-dynamically-adding-dependent-inputs-using-insertui
+  
+  
+  # LATEST but no render of 35vh
+  
+  #https://stackoverflow.com/questions/56393362/r-shiny-dynamically-adding-dependent-inputs-using-insertui
+  # observeEvent(
+  #   list(input$render__natS2_phase4_reactVal, input$render__natS2_ui), {
+  #     if (is.null(input$render__natS2_phase4_reactVal)) {
+  #       browser()
+  #       newvalue <- S2_reactVal()+70
+  #       S2_reactVal(newvalue)
+  #     }
+  #     if (!is.null(input$render__natS2_phase4_reactVal)) {
+  #       newvalue <- S2_reactVal()/2
+  #       browser()
+  #       # browser()
+  #       S2_reactVal(newvalue)
+  #       #val <- 100
+  #     }
+  #   }, ignoreInit=T, ignoreNULL=F
+  # )
+  # 
+  # o <- observeEvent(
+  #   S2_reactive(), {
+  #     
+  #     if (S2_reactive() == '70vh') {
+  #       
+  #       delay(
+  #         17000,
+  #         insertUI(
+  #           selector = '#natS2-contents-phase3-mirror',
+  #           where = 'beforeEnd',
+  #           ui = tags$div(
+  #             id='natS2-contents-phase3-mirror',
+  #             div(style='margin-top: 2vh;',
+  #                 #highchartOutput('plotOutput__natS2_item2')
+  #                 combineWidgetsOutput('plotOutput__natS2_mirror', height=S2_reactive(), width='45vw')
+  #                 
+  #                 
+  #             )
+  #           )
+  #         )
+  #       )
+  #     }
+  #     
+  #     else {
+  #       insertUI(
+  #         selector = '#natS2-contents-phase3-mirror',
+  #         where = 'beforeEnd',
+  #         ui = tags$div(
+  #           id='natS2-contents-phase3-mirror',
+  #           div(style='margin-top: 2vh;',
+  #               #highchartOutput('plotOutput__natS2_item2')
+  #               combineWidgetsOutput('plotOutput__natS2_mirror', height=S2_reactive(), width='45vw')
+  #               
+  #               
+  #           )
+  #         )
+  #       )
+  #       
+  #     }
+  #     
+  #     delay(45000,
+  #           if (S2_reactVal()==35) {
+  #             o$destroy()
+  #           }
+  #     )
+  #   }, ignoreInit=F, ignoreNULL=F
+  #   
+  # )
+  # 
+  # 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  # 
+  # observeEvent(
+  #   input$render__natS2_phase3_react, {
+  #     print('first trigger in viewport')
+  #     S2_reactVal('70vh')
+  #     print(S2_reactVal())
+  #   },
+  #   once=T
+  # )
+  # 
+  # S2_reactVal <- eventReactive(
+  #   #list()
+  #   input$render__natS2_phase4_reactVal, {
+  # #     
+  # #     if (is.null(input$render__natS2_phase4_reactVal)) return('75vh')
+  # #     if (!is.null(input$render__natS2_phase4_reactVal)) return('35vh')
+  # #   
+  # 
+  # if (!is.null(input$render__natS2_phase4_reactVal)) { #
+  #   val <- '35vh'
+  #   browser()
+  #   print(val)
+  #   # not updating
+  #   a <- 'a'
+  # }
+  # else {
+  #   val <- '70vh'
+  #   #browser()
+  #   #print(val)
+  #   # not updating
+  #   #a <- 'a'
+  # }
+  # 
+  # return(val)
+  # },
+  # ignoreNULL = F,
+  # ignoreInit = F
+  # )
+  
+  
+  
+  # 
+  #   S2_reactVal <- reactiveVal()
+  # 
+  #   observeEvent(input$render__natS2_phase4_reactVal, {
+  #     if (is.null(input$render__natS2_phase4_reactVal)) {
+  #       S2_reactVal('70vh')
+  #     }
+  #     if (!is.null(input$render__natS2_phase4_reactVal)) {
+  #       browser()
+  #       S2_reactVal('35vh')
+  #     }
+  #   }, ignoreNULL = F, ignoreInit=F)
+  
+  
+  observeEvent(input$render__natS2_phase4_reactVal, {
+    #browser()
+    print('trigger in viewport')
+    #browser()
+    #a <- 'a'
+  }
+  )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   # countUP PFA
   #############################################################################
   
@@ -992,18 +1666,18 @@ function(input, output, session) {
     
     year_range_int <- which(levels(df_pfa$year) %in% input$year_range)
     df_pfa <- df_pfa %>%
-         group_by(pfaName) %>%
-         mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-         #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
-         ungroup() %>% 
-         distinct(pfaName, .keep_all=T) %>%
-         select(pfaName, numberOfSearches)
+      group_by(pfaName) %>%
+      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+      #mutate(rateOfSearches = sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T)) %>%
+      ungroup() %>% 
+      distinct(pfaName, .keep_all=T) %>%
+      select(pfaName, numberOfSearches)
     countTo <- df_pfa$numberOfSearches[df_pfa$pfaName==input$pfa_select]
     
   })
   
   reactiveVal__countFromTo_pfa <-  reactiveValues(countFrom=0, countTo=0)
- 
+  
   observeEvent( 
     reactive__numberOfSearches_pfa(),{
       reactiveVal__countFromTo_pfa$countFrom <- reactiveVal__countFromTo_pfa$countTo; 
@@ -1012,7 +1686,7 @@ function(input, output, session) {
       #print(reactiveVal__countFromTo_pfa$countTo)
     }
   )
- 
+  
   reactive__countTo_pfa <- reactive({req(reactive__numberOfSearches_pfa());  reactive__numberOfSearches_pfa(); reactiveVal__countFromTo_pfa$countTo})
   reactive__countFrom_pfa <- reactive({req(reactive__numberOfSearches_pfa()); reactive__numberOfSearches_pfa(); reactiveVal__countFromTo_pfa$countFrom})
   
@@ -1049,32 +1723,32 @@ function(input, output, session) {
           where = "afterEnd",
           ui = tagList(
             fluidRow(style='margin-top: 1.5vh',
-              div(countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom),style='margin-left:.5vw'),
-              h2("stop-searches", style="font-size: 5.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
-              uiOutput('countUp_pfa_text'),
-              div(style='height:9vh'),
-              div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
-              # h2("stop-searches", style="font-size: 7vh; color: #e10000; font-weight:bold; margin-top: -4vh; margin-left: 3vw; font-family: 'Public Sans', sans-serif;"),
-              # h3(paste0("were recorded in ",input$pfa_select, " between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 3vh; margin-left: 3vw; margin-top: -1vh;")
+                     div(countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom),style='margin-left:.5vw'),
+                     h2("stop-searches", style="font-size: 5.5vh; color: #e10000; font-weight:bold; margin-top: -2.5vh; margin-left: 2.75vw; font-family: 'Public Sans', sans-serif;"),
+                     uiOutput('countUp_pfa_text'),
+                     div(style='height:9vh'),
+                     div(combineWidgetsOutput('column__pfa_scr_nattrend_agg', height='100%'), style='height: 37vh; width: 45vw; margin-left: -1.5vw;')
+                     # h2("stop-searches", style="font-size: 7vh; color: #e10000; font-weight:bold; margin-top: -4vh; margin-left: 3vw; font-family: 'Public Sans', sans-serif;"),
+                     # h3(paste0("were recorded in ",input$pfa_select, " between ", input$year_range[1]," and ",input$year_range[2]), style="text-align:left;float: left; font-family: 'IBM Plex Mono', sans-serif; font-size: 3vh; margin-left: 3vw; margin-top: -1vh;")
             )
           )
         )
       }
     }
   )
-    
+  
   observeEvent(reactiveVal__countFromTo_pfa$countTo, {
     countupProxy("countUp-pfa") %>% 
       countup_update(reactiveVal__countFromTo_pfa$countTo)
   })
   
-
   
   
-################################################################################  
   
-
-
+  ################################################################################  
+  
+  
+  
   
   
   #h3("stop-searches were recorded in x between t and t1")
@@ -1165,9 +1839,9 @@ function(input, output, session) {
   #   choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
   #   force_edges=TRUE
   # )
-
+  
   output$sidebar_ui <- renderUI({
-
+    
     myvalue <- input$scrcon_nattrend_agg
     ethnic_group <- ifelse(length(input$ethnic_group_scr)==length(unique(df_pfa$selfDefinedEthnicityGroup)), "All", ifelse(length(input$ethnic_group_scr)==0, "None", input$ethnic_group_scr))
     #region_group <-  ifelse(length(input$region_group_scr)==length(unique(df_pfa$region)), "All", ifelse(length(input$region_group_scr)==0, "None", input$region_group_scr))
@@ -1218,7 +1892,7 @@ function(input, output, session) {
     else {
       
     }
-
+    
   })
   
   
@@ -1226,9 +1900,7 @@ function(input, output, session) {
   output$dashboard_chart <- renderHighchart({
     plot__dashboard_chart(df_pfa, input$year_range_dash, input$metric_dash, input$ethnic_group_dash) 
   })
-
-
-
+  
+  
+  
 }
-
-

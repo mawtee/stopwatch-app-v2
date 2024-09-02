@@ -383,26 +383,35 @@ plotFun__natS2_item <- function(df_pfa, year_range) {
       id='outcomes',
       name='Count',
       data=list(
+            list(
+              name='Invisible',
+              y= 0,
+              marker=list(
+                symnbol='circle'
+              )
+            ),
+
               list(
-                #i='0',
                 name='No Arrest',
-                y=df_pfa_plot$nonArrestRate[1],
+                y=100,
                 marker=list(
                   symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
                 )
               ),
-              list(
-                #i='1',
-                name='No Arrest',
-                y= df_pfa_plot$arrestRate[1],
-                marker=list(
-                  symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
-                )
-              )
+        list(
+          name='Invisible',
+          y= 0,
+          marker=list(
+            symnbol='circle'
+          )
+        )
             ),
-            #startAngle = -100,  endAngle = 100,
+      
+           # startAngle = -100,  endAngle = 100, 
       center = list("50%", "75%")
           ) %>%
+
+    
     hc_plotOptions(
       # avoid hide series due bug
       series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
@@ -413,150 +422,14 @@ plotFun__natS2_item <- function(df_pfa, year_range) {
     hc_colors(c('#cacaca','#cacacaca')) %>%
     hc_plotOptions(
       series=list(
-      animation=list(duration=2000),
-      size='155%', 
+      animation=list(enabled=F, duration=0),
+      size='160%', 
       dataLabels=list(enabled=F))
     )
   
   return(plot)
   
-  
-  # 
-  # 
-  # 
-  # 
-  # highchart() %>%
-  #   hc_chart(type='item') %>%
-  #   hc_add_series(
-  #     data=list(
-  #       list(
-  #       id='no_arrest',
-  #       name='No Arrest',
-  #       y=df_pfa_plot$nonArrestRate[1],
-  #       marker=list(
-  #         symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
-  #       )
-  #     )
-  #   )
-  #   ) %>%
-  # 
-  #       list(
-  #         id='no_arrest',
-  #         name='No Arrest',
-  #         y=df_pfa_plot$nonArrestRate[1],
-  #         marker=list(
-  #           symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
-  #         )
-  #       ),
-  #       list(
-  #         id='arrest',
-  #         name='No Arrest',
-  #         y= df_pfa_plot$arrestRate[1],
-  #         marker=list(
-  #           symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
-  #         )
-  #       )
-  #     ),
-  #     startAngle = -100,  endAngle = 100, center = list("50%", "75%")
-  #   ) %>%
-  #   hc_plotOptions(
-  #     # avoid hide series due bug
-  #     series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
-  #   ) %>%
-  #   hc_legend(
-  #     enabled=F, labelFormat =  '{name} <span style="opacity: 0.4">{y}</span>'
-  #   ) %>%
-  #   hc_colors(c('#cacaca','#cacacaca')) %>%
-  #   hc_plotOptions(
-  #     series=list(
-  #       animation=list(duration=2000),
-  #       size='155%', 
-  #       dataLabels=list(enabled=F))
-  #   )
-  # 
-  # 
-  # 
-  # 
-  # 
-  # 
-  
-  # 
-  # 
-  # plot <- highchart() %>%
-  #   hc_chart(type='item') %>%
-  #   hc_add_series(
-  #     data=list(
-  #       list(
-  #         name='No Arrest',
-  #         y=df_pfa_plot$nonArrestRate[1],
-  #         marker=list(
-  #           symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
-  #         )
-  #       ),
-  #       list(
-  #         name='Arrest',
-  #         y= df_pfa_plot$arrestRate[1],
-  #         marker=list(
-  #           symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
-  #         )
-  #       )
-  #     ),
-  #     startAngle = -100,  endAngle = 100, center = list("50%", "75%")
-  #   ) %>%
-  #   hc_plotOptions(
-  #     # avoid hide series due bug
-  #     series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
-  #   ) %>%
-  #   hc_legend(
-  #     labelFormat =  '{name} <span style="opacity: 0.4">{y}</span>'
-  #   ) %>%
-  #   hc_colors(c('#cacaca','#e10000')) %>%
-  #   hc_plotOptions(series=list(
-  #     animation=list(duration=4000), size='155%'))
-  # 
 
-
-  
-  
-  
-  # 
-  # 
-  # highchart() %>%
-  #   hc_chart(type='item') %>%
-  #   hc_add_series(
-  #     data=list(
-  #       list(
-  #         name='No Arrest', 
-  #         y=df_pfa_plot$nonArrestRate[1],
-  #         marker=list(
-  #           symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2NhY2FjYSIgZD0iTTExMiA0OGE0OCA0OCAwIDEgMSA5NiAwIDQ4IDQ4IDAgMSAxIC05NiAwem00MCAzMDRsMCAxMjhjMCAxNy43LTE0LjMgMzItMzIgMzJzLTMyLTE0LjMtMzItMzJsMC0yMjMuMUw1OS40IDMwNC41Yy05LjEgMTUuMS0yOC44IDIwLTQzLjkgMTAuOXMtMjAtMjguOC0xMC45LTQzLjlsNTguMy05N2MxNy40LTI4LjkgNDguNi00Ni42IDgyLjMtNDYuNmwyOS43IDBjMzMuNyAwIDY0LjkgMTcuNyA4Mi4zIDQ2LjZsNTguMyA5N2M5LjEgMTUuMSA0LjIgMzQuOC0xMC45IDQzLjlzLTM0LjggNC4yLTQzLjktMTAuOUwyMzIgMjU2LjkgMjMyIDQ4MGMwIDE3LjctMTQuMyAzMi0zMiAzMnMtMzItMTQuMy0zMi0zMmwwLTEyOC0xNiAweiIvPjwvc3ZnPg==)'
-  #         )
-  #       )#, 
-  #       # list(
-  #       #   name='Arrest',
-  #       #   y= df_pfa_plot$arrestRate[1],
-  #       #   marker=list(
-  #       #     symbol='url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iI2UxMDAwMCIgZD0iTTI0MCAzMmEzMiAzMiAwIDEgMSA2NCAwIDMyIDMyIDAgMSAxIC02NCAwek0xOTIgNDhhMzIgMzIgMCAxIDEgMCA2NCAzMiAzMiAwIDEgMSAwLTY0em0tMzIgODBjMTcuNyAwIDMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUMyODAuMyAyMjkuNiAzMjAgMjg2LjIgMzIwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MFMwIDQ0MC40IDAgMzUyYzAtNjUuOCAzOS43LTEyMi40IDk2LjUtMTQ2LjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyem0wIDMyMGE5NiA5NiAwIDEgMCAwLTE5MiA5NiA5NiAwIDEgMCAwIDE5MnptMTkyLTk2YzAtMjUuOS01LjEtNTAuNS0xNC40LTczLjFjMTYuOS0zMi45IDQ0LjgtNTkuMSA3OC45LTczLjljLS40LTEuNi0uNS0zLjMtLjUtNS4xbDAtMTZjMC0xMy4zIDEwLjctMjQgMjQtMjRsOCAwYzAtMTcuNyAxNC4zLTMyIDMyLTMyczMyIDE0LjMgMzIgMzJsOCAwYzEzLjMgMCAyNCAxMC43IDI0IDI0bDAgMTZjMCAxLjctLjIgMy40LS41IDUuMUM2MDAuMyAyMjkuNiA2NDAgMjg2LjIgNjQwIDM1MmMwIDg4LjQtNzEuNiAxNjAtMTYwIDE2MGMtNjIgMC0xMTUuOC0zNS4zLTE0Mi40LTg2LjljOS4zLTIyLjUgMTQuNC00Ny4yIDE0LjQtNzMuMXptMjI0IDBhOTYgOTYgMCAxIDAgLTE5MiAwIDk2IDk2IDAgMSAwIDE5MiAwek0zNjggMGEzMiAzMiAwIDEgMSAwIDY0IDMyIDMyIDAgMSAxIDAtNjR6bTgwIDQ4YTMyIDMyIDAgMSAxIDAgNjQgMzIgMzIgMCAxIDEgMC02NHoiLz48L3N2Zz4=)'
-  #       #   )
-  #       # )
-  #     ),
-  #     startAngle = -100,  endAngle = 100, center = list("50%", "75%")
-  #   ) %>%
-  #   hc_plotOptions(
-  #     # avoid hide series due bug
-  #     series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
-  #   ) %>%
-  #   hc_legend(
-  #     labelFormat =  '{name} <span style="opacity: 0.4">{y}</span>'
-  #   ) %>%
-  #   hc_colors(c( '#cacaca', '#e10000')) %>%
-  #   hc_plotOptions(series=list(
-  #     animation=list(duration=4000)))
-  # 
-  # 
-  # 
-  
-  
   
   
   
@@ -595,42 +468,212 @@ plotFun__natS2_mirror <- function(df_pfa, year_range) {
     mutate(propOfSearches = (numberOfSearches/totalSearches)*100) %>%
     #arrange(-arrestRate) %>%
     mutate(reasonForSearch = factor(reasonForSearch, ordered=T)) %>%
-    mutate(reasonForSearch = fct_reorder(factor(reasonForSearch),propOfSearches)) %>%
-    arrange(-match(reasonForSearch, levels(reasonForSearch)))
+    mutate(reasonForSearch = fct_reorder(factor(reasonForSearch),arrestRate)) %>%
+    arrange(-match(reasonForSearch, levels(reasonForSearch))) %>%
+    mutate(reasonForSearch2 = c(
+      levels(reasonForSearch)[length(levels(reasonForSearch))],
+      levels(reasonForSearch)[length(levels(reasonForSearch))-1],
+      rep(' ', 5)
+    )) %>%
+    mutate(arrestRate2 = case_when(
+      reasonForSearch2 == ' '~ NA_real_, T~arrestRate
+    ))
+
+    
+    plot_left <-
+      
+      highchart() %>%
+      hc_xAxis(
+        categories = df_pfa_plot$reasonForSearch,
+        opposite=T,
+        labels=list(
+          style=list(
+            fontSize='1.5vh'
+          )
+        )
+      ) %>%
+      hc_add_series(
+        name='Arrest Rate',
+        type='bar',
+        data=df_pfa_plot$arrestRate,
+        color='#e10000'
+      ) %>%
+      hc_yAxis(
+        reversed=T,
+        max=60,
+        gridLineWidth=0,
+        labels=list(
+          style=list(
+            fontSize='1.5vh'
+          )
+        )
+      ) %>%
+      hc_plotOptions(
+        series = list(
+          point = list(
+            events = list(
+              legendItemClick = JS("function(e) {e.preventDefault() }")
+            )
+          ),
+          animation=list(duration=2000)
+        )#,
+        # legend = list(
+        #   itemStyle = list(
+        #     fontSize='1.5vh'
+        #   )
+        # )
+      ) %>%
+       hc_legend(enabled=T)# %>%
+#       hc_chart(
+#         events = list(
+#           load = JS("
+# function(event){
+#   
+# 
+# var path = [
+#   'M',450, 70,
+#   'L', 400, 70,
+#   'L', 400, 200,
+#   'L', 450, 200
+# ];
+# 
+#   this.renderer.path(path)
+#         .attr({
+#         'stroke-width': 2,
+#         stroke: 'blue',
+#         zIndex: 4
+#       })
+#       .add();
+# }"
+#           )
+#         )
+#       )
+#      
   
-  
-  
-  plot_left <- highchart() %>%
-    hc_xAxis(categories = factor(df_pfa_plot$reasonForSearch), opposite=T) %>%#
-    hc_add_series(name='% of searches',type='bar', data=df_pfa_plot$propOfSearches, color='#cacaca') %>%
-    hc_yAxis(reversed=T) %>%
-    hc_plotOptions(
-      series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
-    )  
-  
-  plot_right <- highchart() %>%
-    hc_xAxis(categories = df_pfa_plot$reasonForSearch, labels=list(enabled=F)) %>%
-    hc_add_series(name='Arrest Rate', type='bar', data=df_pfa_plot$arrestRate, color='#e10000') %>%
-    hc_yAxis(max=60) %>%
-    hc_plotOptions(
-      series = list(point = list(events = list(legendItemClick = JS("function(e) {e.preventDefault() }"))))
-    )
-  
+  # plot_right <- highchart() %>%
+  #   hc_xAxis(
+  #     categories = factor(df_pfa_plot$reasonForSearch),
+  #     labels=list(
+  #       enabled=F
+  # 
+  #     )
+  #   ) %>%
+  #   hc_add_series(name='% of searches',type='bar', data=rep(NA, 7), color='#cacaca') %>%
+  #   hc_yAxis(
+  #     reversed=F,
+  #     gridLineWidth=0,
+  #     max=60,
+  #     labels=list(
+  #       style=list(
+  #         fontSize='1.5vh'
+  #       )
+  #     )
+  #   ) %>%
+  #   hc_plotOptions(
+  #     series = list(
+  #       point = list(
+  #         events = list(
+  #           legendItemClick = JS("function(e) {e.preventDefault() }")
+  #         )
+  #       ),
+  #       animation=list(duration=2000)
+  #     )
+  #   ) %>%
+  #   hc_legend(enabled=F)
+    
+    plot_right <- highchart() %>%
+      hc_xAxis(
+        categories = factor(df_pfa_plot$reasonForSearch),
+        labels=list(
+          enabled=F
+
+        )
+      ) %>%
+      hc_add_series(name='% of searches',type='bar', data=df_pfa_plot$propOfSearches, color='#cacaca') %>%
+      hc_yAxis(
+        reversed=F,
+        labels=list(
+          style=list(
+            fontSize='1.5vh'
+          )
+        )
+      ) %>%
+      hc_plotOptions(
+        series = list(
+          point = list(
+            events = list(
+              legendItemClick = JS("function(e) {e.preventDefault() }")
+            )
+          )
+        ),
+        legend = list(
+          itemStyle = list(
+            fontSize='1.5vh'
+          )
+        )
+      )
+
+
+    
   plot <- combineWidgets(plot_left, plot_right, nrow=1, colsize=c(1.4,1))
-  
-  return(plot)
-  
-  # TODO add year slider
+    
   
   
+  
+ 
+  
+  
+  
+  
+#   
+#   plot_right <- highchart() %>%
+#     hc_xAxis(
+#       categories = df_pfa_plot$reasonForSearch, 
+#       labels=list(enabled=F)
+#     ) %>%
+#     hc_add_series(
+#       name='Arrest Rate', 
+#       type='bar', 
+#       data=df_pfa_plot$arrestRate, 
+#       color='#e10000'
+#     ) %>%
+#     hc_yAxis(
+#       max=60,
+#       labels=list(
+#         style=list(
+#           fontSize='1.5vh'
+#         )
+#       )
+#     ) %>%
+#     hc_plotOptions(
+#       series = list(
+#         point = list(
+#           events = list(
+#             legendItemClick = JS("function(e) {e.preventDefault() }")
+#           )
+#         )
+#       ),
+#       legend = list(
+#         itemStyle = list(
+#           fontSize='1.5vh'
+#         )
+#       )
+#     )
+#   
+#   
+   return(plot)
+#   
+#   # TODO add year slider
+#   
+#   
 }  
-  
+#   
 
 plotFun__natS2_line <- function(df_pfa, year_range, crime_type) {
   
   
-  year_range <- c('2014/15', '2021/22')
-  crime_type <- 'crimeSusceptibleToStopAndSearch'
+  #year_range <- c('2014/15', '2021/22')
+  #crime_type <- 'crimeSusceptibleToStopAndSearch'
   
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
   year_range_full <- levels(df_pfa$year)[year_range_int[1]:year_range_int[2]]
@@ -702,11 +745,11 @@ plotFun__natS2_line <- function(df_pfa, year_range, crime_type) {
           justify = FALSE,
           crop = TRUE,
           style = list(
-            textOutline = "1px white"
+            textOutline = "2px white"
           )
         ),
         labels = list(
-          list(point = list(x = 0, y = 0, xAxis = 0, yAxis = 0), text = '<div style="color:#333333; font-size: 2vh;" >2011/12 was the highest year on record for the number stop-searches')
+          list(point = list(x = 0, y = 0, xAxis = 0, yAxis = 0), text = '<div style="color:#333333; font-size: 1.6vh;" >2011/12 was the highest year on record for the number stop-searches')
           #list(point = list(x = 7, y = min, xAxis = 0, yAxis = 1), text = '<div style="color:#333333; font-size: 2vh;" >2018/19 was the lowest year on record')
         )
       )
@@ -1844,8 +1887,7 @@ countUp <- function(count_to, count_from, duration) {
     duration = duration,
     start = TRUE,
     width = NULL,
-    height = NULL,
-    elementId = 'countUp-pfa'
+    height = NULL
   )
 }
 
@@ -1853,7 +1895,7 @@ countUp <- function(count_to, count_from, duration) {
 
 
 
-countUp_pfa <- function(count_to, count_from, duration) {
+countUpDown <- function(count_to, count_from, duration, id) {
 
   # print(count_to)
   # print(as.numeric(count_to))
@@ -1867,7 +1909,7 @@ countUp_pfa <- function(count_to, count_from, duration) {
     start = TRUE,
     width = NULL,
     height = NULL,
-    elementId = 'countUp-pfa'
+    elementId = id
   )
 }
 
