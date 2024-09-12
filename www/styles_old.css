@@ -473,7 +473,36 @@ Filter: "Black"
 
 /*----------------------------------------------------------------------------*/
 
+/* National Trends Section Two ('Stop and search is not working') */
+/*----------------------------------------------------------------------------*/
 
+
+#natS3 {
+  min-height: 92vh;
+  max-height: 92vh;
+  width: 100vw;
+}
+
+
+#natS3-buffer {
+  height: 6vh;
+  width: 100vw;
+
+}
+
+#natS3-contents {
+  height: 84vh;
+  width: 100vw;
+  margin-right: 5.5vw;
+  margin-left:.5vw;
+
+}
+
+#natS3-footer {
+  height: 2vh;
+  width: 100vw;
+
+}
 
 
 #scrcon_nattrend_agg {
