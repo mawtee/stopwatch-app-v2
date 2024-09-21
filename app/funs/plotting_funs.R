@@ -2429,21 +2429,21 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
 plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, ethnic_group, legislation_group, reason_group, outcome_group) {
   
   
-  year_range <- c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))])
-  yaxis <- c("Number of Searches")
-  xaxis <- c("Year")
-  pfa_group <- c(unique(df_pfa$pfaName))
-  ethnic_group <- c(unique(df_pfa$selfDefinedEthnicGroup))
-  legislation_group <- c(unique(df_pfa$legislation))
-  reason_group <- c(unique(df_pfa$reasonForSearch))
-  outcome_group <- c(unique(df_pfa$outcome))
+  # year_range <- c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))])
+  # yaxis <- c("Number of Searches")
+  # xaxis <- c("Year")
+  # pfa_group <- c(unique(df_pfa$pfaName))
+  # ethnic_group <- c(unique(df_pfa$selfDefinedEthnicGroup))
+  # legislation_group <- c(unique(df_pfa$legislation))
+  # reason_group <- c(unique(df_pfa$reasonForSearch))
+  # outcome_group <- c(unique(df_pfa$outcome))
   
   
   
   if (xaxis=="PFA"){
     xFun <- 'pfaName'
   } else if (xaxis=="Ethnicity"){
-    xFun <- 'selfDefinedEthnicityGroup'
+    xFun <- 'selfDefinedEthnicGroup'
   } else  if (xaxis=="Legislation"){
     xFun <- 'legislation'
   } else  if (xaxis=="Reason for Search"){
@@ -2488,7 +2488,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
     df_pfa_plot <- df_pfa %>%
       filter(year%in% yearSelect) %>%
       filter(pfaName%in%pfa_group) %>%
-      filter(selfDefinedEthnicityGroup%in%ethnic_group) %>%
+      filter(selfDefinedEthnicGroup%in%ethnic_group) %>%
       filter(legislation%in%legislation_group) %>%
       filter(reasonForSearch%in%reason_group) %>%
       filter(outcome%in%outcome_group) %>%
@@ -2510,7 +2510,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
   if (xaxis=="PFA"){
     xPlot <- df_pfa_plot$pfaName
   } else if (xaxis=="Ethnicity"){
-    xPlot <- df_pfa_plot$selfDefinedEthnicityGroup
+    xPlot <- df_pfa_plot$selfDefinedEthnicGroup
   } else  if (xaxis=="Legislation"){
     xPlot <- df_pfa_plot$legislation
   } else  if (xaxis=="Reason for Search"){

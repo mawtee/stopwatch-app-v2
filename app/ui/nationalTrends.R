@@ -75,15 +75,16 @@ nationalTrends <- (
       
       conditionalPanel(
         condition = "input.pageview_toggle_nattre == 0",
-        
-        div(style="height: 100vh",
-            div(style='height: 3vh'),
-            fluidRow(#style='background-color:#eeeeee;',
-              column(3,         
+        div(class='section-buffer'),
+        div(id='natDASH',
+            div(id='natDASH-buffer'),
+            div(id='natDASH-contents',
+            fluidRow(
+              column(4,         
                      # starts here
-                     div(class="red-header",
-                         span("Options"),
-                         br()),
+                     div(style='height:15vh',
+                     span("Options"),
+                     tags$head(tags$style(HTML("#xaxis_dash + div > .form-group shiny-input-container {height: .5vh; font-size.5vh}"))),
                      pickerInput(
                        inputId = "yaxis_dash",
                        label = " Select Y Axis",
@@ -97,12 +98,10 @@ nationalTrends <- (
                        choices=c("Year", "PFA", "Ethnicity", "Legislation", "Reason for Search", "Outcome of Search"),
                        selected=c("Year"),
                        multiple = FALSE
+                     )
                      ),
-                     br(),
-                     br(),#Add X and Y 
-                     div(class="red-header",
+                     div(style='height:5vh'),
                          span("Filters"),
-                         br()),
                      shinyWidgets::sliderTextInput(
                        inputId="year_range_dash", label="Which year(s) would like to visualise?",
                        choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
@@ -156,6 +155,8 @@ nationalTrends <- (
               column(7,
                      highchartOutput("dashboard_chart"))
             )
+          ),
+          div(id='natDASH-footer')
         )
       ),
       

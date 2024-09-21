@@ -383,6 +383,65 @@ Filter: "Black"
 
 
 
+/* National Trends Dashboard */
+/*############################################################################*/
+
+
+#natDASH {
+  min-height: 92vh;
+  max-height: 92vh;
+  width: 100vw;
+}
+
+
+#natDASH-buffer {
+  height: 6vh;
+  width: 100vw;
+
+}
+
+#natDASH-contents {
+  height: 84vh;
+  width: 100vw;
+  margin-right: 5.5vw;
+  margin-left:.5vw;
+
+}
+
+#natDASH-footer {
+  height: 2vh;
+  width: 100vw;
+
+}
+
+
+  
+  
+.shiny-input-container:not(.shiny-input-container-inline) {
+  height: 7.5vh;
+} 
+
+.control-label {
+  font-size: 1.8vh;
+  font-weight: normal;
+}
+
+
+.btn {
+  font-size: 1.6vh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /* National Trends Section One ('Introduction') */
 /*----------------------------------------------------------------------------*/
 
