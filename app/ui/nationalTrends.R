@@ -80,10 +80,10 @@ nationalTrends <- (
             div(id='natDASH-buffer'),
             div(id='natDASH-contents',
             fluidRow(
-              column(4,         
+              column(4,
+                    
                      # starts here
-                     div(style='height:15vh',
-                     span("Options"),
+                     p('Chart Builder', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
                      tags$head(tags$style(HTML("#xaxis_dash + div > .form-group shiny-input-container {height: .5vh; font-size.5vh}"))),
                      pickerInput(
                        inputId = "yaxis_dash",
@@ -98,10 +98,10 @@ nationalTrends <- (
                        choices=c("Year", "PFA", "Ethnicity", "Legislation", "Reason for Search", "Outcome of Search"),
                        selected=c("Year"),
                        multiple = FALSE
-                     )
                      ),
                      div(style='height:5vh'),
-                         span("Filters"),
+                     p('Chart Filters', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
+                       div(
                      shinyWidgets::sliderTextInput(
                        inputId="year_range_dash", label="Which year(s) would like to visualise?",
                        choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
@@ -151,9 +151,12 @@ nationalTrends <- (
                          `actions-box` = TRUE),
                        multiple = TRUE
                      )
+                     ),
+                     p('Chart Options', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;')
+                     
               ),
               column(7,
-                     highchartOutput("dashboard_chart"))
+                     highchartOutput("dashboard_chart", height='65vh'))
             )
           ),
           div(id='natDASH-footer')
