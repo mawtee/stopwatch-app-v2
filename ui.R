@@ -32,6 +32,9 @@ source("app/funs/onOffToggle_funs.R")
 
 
 df_pfa <- read_csv("data/dfPFA_clean_nopop_crime.csv")
+df_pfa$population <- 5000
+
+
 df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 
                                ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
 df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))

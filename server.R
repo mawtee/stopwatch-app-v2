@@ -336,7 +336,7 @@ function(input, output, session) {
   })
   
   
-
+  
   
   output$plotOutput__natS3_bubble <- renderHighchart({
     
@@ -374,109 +374,109 @@ function(input, output, session) {
     dfmixed_parsed <- list_parse2(dfmixed)
     
     # Bar 
-  plot <- highchart() %>%
-    hc_chart(type='packedbubble') %>%
-    hc_add_series(
-      id='bar',
-      data=dfbar,
-      type='bar',
-      mapping = hcaes(x=x, y=y, color=color),
-      dataLabels = list(
-        enabled=T,
-        align = 'center',
-        inside = T,
-        useHTML=T,
-        format ="<span style ='font-size: 4vh;'>{point.label}</span>"
-      )
-    ) %>%
-    hc_yAxis(min=0, max=2.4, visible=F) %>%
-    hc_xAxis(visible=F) %>%
-    hc_legend(enabled=F) %>%
-    hc_drilldown(
-      allowPointDrilldown = TRUE,
-      series = list(
-        list(
-          name ='Ethnic Minority',
-          id='ethnic',
-          data = dfethnic_parsed,
-          type = 'packedbubble',
-          keys = list('name', 'value', 'drilldown', 'color'),
-        dataLabels=list(
+    plot <- highchart() %>%
+      hc_chart(type='packedbubble') %>%
+      hc_add_series(
+        id='bar',
+        data=dfbar,
+        type='bar',
+        mapping = hcaes(x=x, y=y, color=color),
+        dataLabels = list(
           enabled=T,
+          align = 'center',
+          inside = T,
           useHTML=T,
-          allowOverlap=T,
-          format= "
-              <span style = 'display: block; text-align: center; color=white'>
-              <span style ='font-size: 4vh;'>{point.name}</span>
-              <br/><span style ='font-size: 1.5vh; '>{point.value} times more likely</span>
-              </span>
-            "
+          format ="<span style ='font-size: 4vh;'>{point.label}</span>"
         )
-        ),
-        list(
-          name = 'Black',
-          id = 'black',
-          data = dfblack_parsed,
-          type='packedbubble',
-          keys = list('name', 'value', 'color'),
-        dataLabels=list(
-          enabled=T,
-          useHTML=T,
-          allowOverlap=T,
-          format= "
+      ) %>%
+      hc_yAxis(min=0, max=2.4, visible=F) %>%
+      hc_xAxis(visible=F) %>%
+      hc_legend(enabled=F) %>%
+      hc_drilldown(
+        allowPointDrilldown = TRUE,
+        series = list(
+          list(
+            name ='Ethnic Minority',
+            id='ethnic',
+            data = dfethnic_parsed,
+            type = 'packedbubble',
+            keys = list('name', 'value', 'drilldown', 'color'),
+            dataLabels=list(
+              enabled=T,
+              useHTML=T,
+              allowOverlap=T,
+              format= "
               <span style = 'display: block; text-align: center; color=white'>
               <span style ='font-size: 4vh;'>{point.name}</span>
               <br/><span style ='font-size: 1.5vh; '>{point.value} times more likely</span>
               </span>
             "
-        )
-        ),
-        list(
-          name = 'Mixed',
-          id = 'mixed',
-          data = dfmixed_parsed,
-          type = 'packedbubble',
-          keys = list('name', 'value', 'color'),
-          dataLabels=list(
-            enabled=T,
-            useHTML=T,
-            allowOverlap=T,
-            format= "
+            )
+          ),
+          list(
+            name = 'Black',
+            id = 'black',
+            data = dfblack_parsed,
+            type='packedbubble',
+            keys = list('name', 'value', 'color'),
+            dataLabels=list(
+              enabled=T,
+              useHTML=T,
+              allowOverlap=T,
+              format= "
               <span style = 'display: block; text-align: center; color=white'>
               <span style ='font-size: 4vh;'>{point.name}</span>
               <br/><span style ='font-size: 1.5vh; '>{point.value} times more likely</span>
               </span>
             "
+            )
+          ),
+          list(
+            name = 'Mixed',
+            id = 'mixed',
+            data = dfmixed_parsed,
+            type = 'packedbubble',
+            keys = list('name', 'value', 'color'),
+            dataLabels=list(
+              enabled=T,
+              useHTML=T,
+              allowOverlap=T,
+              format= "
+              <span style = 'display: block; text-align: center; color=white'>
+              <span style ='font-size: 4vh;'>{point.name}</span>
+              <br/><span style ='font-size: 1.5vh; '>{point.value} times more likely</span>
+              </span>
+            "
+            )
           )
         )
+      ) %>% 
+      hc_plotOptions(
+        series = list(
+          showInLegend = FALSE,
+          pointFormat = "{point.y}%",
+          colorByPoint = TRUE,
+          marker=list(
+            fillOpacity=1
+          )
+        ),
+        packedbubble = list(
+          minSize = '30%',
+          maxSize = '70%',
+          # zMin = 0,
+          # zMax = 1000#,
+          layoutAlgorithm = list(
+            gravitationalConstant = 0.02,
+            splitSeries = F,
+            dragBetweenSeries = F#,
+          )
+        ),
+        events = list(click = JS("function(event) {Shiny.onInputChange('Clicked', event.point.name);}"))
       )
-    ) %>% 
-    hc_plotOptions(
-      series = list(
-        showInLegend = FALSE,
-        pointFormat = "{point.y}%",
-        colorByPoint = TRUE,
-        marker=list(
-          fillOpacity=1
-        )
-      ),
-      packedbubble = list(
-        minSize = '30%',
-        maxSize = '70%',
-        # zMin = 0,
-        # zMax = 1000#,
-        layoutAlgorithm = list(
-          gravitationalConstant = 0.02,
-          splitSeries = F,
-          dragBetweenSeries = F#,
-        )
-      ),
-      events = list(click = JS("function(event) {Shiny.onInputChange('Clicked', event.point.name);}"))
-    )
-  
-  return(plot)
-  })
     
+    return(plot)
+  })
+  
   makeReactiveBinding("outputText")
   
   observeEvent(input$Clicked, {
@@ -490,10 +490,10 @@ function(input, output, session) {
   output$text_text <- renderText({
     outputText
   })
-    
-    
-    
-    
+  
+  
+  
+  
   
   output$plotOutput__natS3_square <- renderHighchart({
     
@@ -1248,20 +1248,20 @@ function(input, output, session) {
   S2_reactVal <- reactiveVal()
   observeEvent(
     input$render__natS2_phase4_reactVal, {
-
+      
       if (is.null(input$render__natS2_phase4_reactVal)) {
         #browser()
         S2_reactVal('70vh')
-
+        
       }
       if (!is.null(input$render__natS2_phase4_reactVal)) {
         S2_reactVal('35vh')
       }
-
-
-
+      
+      
+      
     }, ignoreInit=F, ignoreNULL=F
-
+    
   )
   
   
@@ -1607,7 +1607,7 @@ function(input, output, session) {
     delay(
       18000,
       shinyjs::show('natS2-contents-phase3-mirror')
-
+      
     )
     
     # Highlight the ones we are interested in e.g. Other reasons and weapons
@@ -1658,9 +1658,9 @@ function(input, output, session) {
           icon("fas fa-chevron-down fa-bounce", "fa-3x", style = "color: #333333; margin-top: 30vh; margin-left: -3vw;")
         )
       )
-          
+      
     )
-
+    
     
     
     
@@ -1671,7 +1671,7 @@ function(input, output, session) {
   once=T
   )
   
-
+  
   
   observeEvent(input$render__natS2_phase4_reactVal, {
     #browser()
@@ -1748,10 +1748,10 @@ function(input, output, session) {
               # ),
               div(style='display: inline-block;',
                   fluidRow(
-                  typedjs::typed(
-                    c("<span style ='font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #333333;'>Ethnic minorities are 2.2 times more likely than<br>white people to be stoppd and searched</span"),
-                    contentType = "html", typeSpeed = 20, showCursor=F
-                  ),
+                    typedjs::typed(
+                      c("<span style ='font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #333333;'>Ethnic minorities are 2.2 times more likely than<br>white people to be stoppd and searched</span"),
+                      contentType = "html", typeSpeed = 20, showCursor=F
+                    ),
                     textOutput("text_text")
                   )
               )
@@ -1775,19 +1775,19 @@ function(input, output, session) {
     delay(
       15000,
       highchartProxy('plotOutput__natS3_bubble') %>%
-      hcpxy_set_data(
-        type = "column",
-        data = data.frame(
-          x = factor(c('White', 'Ethnic Minority')),
-          y = c(1, 2.2),
-          label = c('White', 'Ethnic Minority'),
-          color = c('#333333', '#e10000')
-        ),
-        mapping = hcaes(x=x, y=y, color = color, label=label),
-        redraw = TRUE,
-        updatePoints=T,
-        animation =list(enabled=T, duration=3000)
-      )
+        hcpxy_set_data(
+          type = "column",
+          data = data.frame(
+            x = factor(c('White', 'Ethnic Minority')),
+            y = c(1, 2.2),
+            label = c('White', 'Ethnic Minority'),
+            color = c('#333333', '#e10000')
+          ),
+          mapping = hcaes(x=x, y=y, color = color, label=label),
+          redraw = TRUE,
+          updatePoints=T,
+          animation =list(enabled=T, duration=3000)
+        )
     )
     
     
@@ -1849,7 +1849,7 @@ function(input, output, session) {
             )
           )
         )
-      )
+    )
     # https://stackoverflow.com/questions/55168485/r-highcharter-dynamic-drilldown-in-shiny-on-the-fly
     # https://stackoverflow.com/questions/48887731/highcharter-click-event-to-filter-data-from-graph
     # https://stackoverflow.com/questions/37208989/how-to-know-information-about-the-clicked-bar-in-highchart-column-r-shiny-plot/37212681#37212681
@@ -1869,10 +1869,10 @@ function(input, output, session) {
               #     )
               # ),
               div(style='display: inline-block;',
-                    typedjs::typed(
-                      c("<span style ='font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #333333;'>Yet searches of ethnic minorities are just 1.1 times more likely to result in an arrest</span"),
-                      contentType = "html", typeSpeed = 20, showCursor=F
-                    )
+                  typedjs::typed(
+                    c("<span style ='font-family: Public Sans Thin, sans-serif; font-size: 4.2vh; color: #333333;'>Yet searches of ethnic minorities are just 1.1 times more likely to result in an arrest</span"),
+                    contentType = "html", typeSpeed = 20, showCursor=F
+                  )
               )
           )
         )
@@ -1926,9 +1926,9 @@ function(input, output, session) {
             color = c('#333333', '#e10000')
           ),
           keys = list('name', 'value', 'drilldown', 'color'),
-             marker=list(
-               symbol = 'square'
-             ),
+          marker=list(
+            symbol = 'square'
+          ),
           dataLabels=list(
             enabled=T,
             useHTML=T,
@@ -2006,28 +2006,28 @@ function(input, output, session) {
     #   #   fontSize='5vh'
     #   # )
     #     )
-        # legend = list(enabled=T),
-        # dataLabels=list(
-        #   enabled=T,
-        #   useHTML=T,
-        #   format= 
-        #   "
-        #   <span style = 'display: block; text-align: center; color=white'>
-        #   <span style ='font-size: 4vh;'>{point.name}</span>
-        #   <br/><span style ='font-size: 1.5vh; '>{point.label}</span>
-        #   </span>
-        #   "
-        # )
-     # )
-   # )
+    # legend = list(enabled=T),
+    # dataLabels=list(
+    #   enabled=T,
+    #   useHTML=T,
+    #   format= 
+    #   "
+    #   <span style = 'display: block; text-align: center; color=white'>
+    #   <span style ='font-size: 4vh;'>{point.name}</span>
+    #   <br/><span style ='font-size: 1.5vh; '>{point.label}</span>
+    #   </span>
+    #   "
+    # )
+    # )
+    # )
     
     
     
     
-
-      
-      
-
+    
+    
+    
+    
     
     
     
@@ -2153,13 +2153,13 @@ function(input, output, session) {
   
   
   
-
+  
   h3("stop-searches were recorded in x between t and t1")
   output$countUp_pfa <- renderCountup({
     countUp_pfa(reactiveVal__countFromTo_pfa$countTo, reactiveVal__countFromTo_pfa$countFrom)
   })
-
-
+  
+  
   
   observeEvent(
     input$pfa_select,once=T, ignoreNULL=T, {
@@ -2300,10 +2300,11 @@ function(input, output, session) {
     
   })
   
+
   output$dashboard_chart <- renderHighchart({
     plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash)
   })
-  
-  
-  
+
 }
+
+
