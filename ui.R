@@ -72,7 +72,7 @@ bounds_pfa__df <- bounds_pfa__df[1:3]
 
 ui <- 
   tagList(
-
+  
 
   useShinyjs(), 
   # Get user browser size for scaling outputs
@@ -96,6 +96,9 @@ ui <-
     
    # Declare CSS styles
    includeCSS("www/styles_old.css"),
+   includeCSS("www/AdminLTE.css"),
+   includeCSS("www/shinydashboard.css"),
+   includeScript(path = "www/app.js"),
   
    
    

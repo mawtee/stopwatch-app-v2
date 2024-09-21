@@ -83,25 +83,34 @@ nationalTrends <- (
               column(4,
                     
                      # starts here
-                     p('Chart Builder', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
+                     #p('Chart Builder', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
                      tags$head(tags$style(HTML("#xaxis_dash + div > .form-group shiny-input-container {height: .5vh; font-size.5vh}"))),
+                     
+                     #new one here
+                     box(
+                       title = "Chart Options", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                      pickerInput(
                        inputId = "yaxis_dash",
                        label = " Select Y Axis",
                        choices=c("Number of Searches", "Rate of Searches"),
                        selected=c("Number of Searches"),
                        multiple = FALSE
-                     ), #Add X and Y 
+                     ),
                      pickerInput(
                        inputId = "xaxis_dash",
                        label = "Select X Axis",
                        choices=c("Year", "PFA", "Ethnicity", "Legislation", "Reason for Search", "Outcome of Search"),
                        selected=c("Year"),
-                       multiple = FALSE
+                       multiple = FALSE)
                      ),
+                     
+                     
                      div(style='height:5vh'),
-                     p('Chart Filters', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
-                       div(
+                     #p('Chart Filters', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
+                     
+                     #new one here
+                     box(
+                       title = "Chart Filter", background = "red", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                      shinyWidgets::sliderTextInput(
                        inputId="year_range_dash", label="Which year(s) would like to visualise?",
                        choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
@@ -152,8 +161,36 @@ nationalTrends <- (
                        multiple = TRUE
                      )
                      ),
-                     p('Chart Options', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;')
-                     
+                     #p('Chart Options', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
+                     box(
+                       title = "Chart Options", background = "red", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                         pickerInput(
+                           inputId = "legislation_group_dash",
+                           label = " Select Legislation",
+                           choices=c(unique(df_pfa$legislation)),
+                           selected=c(unique(df_pfa$legislation)),
+                           options = list(
+                             `actions-box` = TRUE),
+                           multiple = TRUE
+                         ),
+                         pickerInput(
+                           inputId = "reason_group_dash",
+                           label = " Select Reason for Search",
+                           choices=c(unique(df_pfa$reasonForSearch)),
+                           selected=c(unique(df_pfa$reasonForSearch)),
+                           options = list(
+                             `actions-box` = TRUE),
+                           multiple = TRUE
+                         ),
+                         pickerInput(
+                           inputId = "outcome_group_dash",
+                           label = " Select Outcome of Search",
+                           choices=c(unique(df_pfa$outcome)),
+                           selected=c(unique(df_pfa$outcome)),
+                           options = list(
+                             `actions-box` = TRUE),
+                           multiple = TRUE
+                       ))
               ),
               column(7,
                      highchartOutput("dashboard_chart", height='65vh'))
