@@ -386,7 +386,7 @@ Filter: "Black"
 /* National Trends Dashboard */
 /*############################################################################*/
 
-
+/* height 92 */
 #natDASH {
   min-height: 92vh;
   max-height: 92vh;
@@ -399,9 +399,9 @@ Filter: "Black"
   width: 100vw;
 
 }
-
+/* height 84 */
 #natDASH-contents {
-  height: 84vh;
+  height: 84vh; 
   width: 100vw;
   margin-right: 5.5vw;
   margin-left:.5vw;
@@ -418,17 +418,17 @@ Filter: "Black"
   
   
 .shiny-input-container:not(.shiny-input-container-inline) {
-  height: 6.5vh;
+  height: 5.5vh;
 } 
 
 .control-label {
-  font-size: 1.8vh;
+  font-size: 1.5vh;
   font-weight: normal;
 }
 
 
 .btn {
-  font-size: 1.6vh;
+  font-size: 1.4vh;
 }
 
 

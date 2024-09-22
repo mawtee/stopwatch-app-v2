@@ -85,10 +85,10 @@ nationalTrends <- (
                      # starts here
                      #p('Chart Builder', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
                      tags$head(tags$style(HTML("#xaxis_dash + div > .form-group shiny-input-container {height: .5vh; font-size.5vh}"))),
-                     
                      #new one here
+                     column(8,
                      box(
-                       title = "Chart Options", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                       title = p("Chart Builder", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, width = "2vw",
                      pickerInput(
                        inputId = "yaxis_dash",
                        label = " Select Y Axis",
@@ -105,17 +105,18 @@ nationalTrends <- (
                      ),
                      
                      
-                     div(style='height:5vh'),
-                     #p('Chart Filters', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
+                    # div(style='height:5vh'),
+                     #p('Chart Filters', style='font-size:3vh;font-family: Public Sans Thin, sans-serif;'),
                      
                      #new one here
                      box(
-                       title = "Chart Filter", background = "red", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                       title = p("Chart Filter", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "2vw",
                      shinyWidgets::sliderTextInput(
                        inputId="year_range_dash", label="Which year(s) would like to visualise?",
                        choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
                        force_edges=TRUE
                      ),
+                     div(style='height:1.5vh'),
                      pickerInput(
                        inputId = "pfa_group_dash",
                        label = "Select PFA",
@@ -163,7 +164,7 @@ nationalTrends <- (
                      ),
                      #p('Chart Options', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
                      box(
-                       title = "Chart Options", background = "red", solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                       title = p("Chart Options", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "2vw",
                          pickerInput(
                            inputId = "legislation_group_dash",
                            label = " Select Legislation",
@@ -191,7 +192,7 @@ nationalTrends <- (
                              `actions-box` = TRUE),
                            multiple = TRUE
                        ))
-              ),
+              )),
               column(7,
                      highchartOutput("dashboard_chart", height='65vh'))
             )

@@ -2520,7 +2520,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
   } else  {
     xPlot <- df_pfa_plot$year
   }
-  
+
   plot <-     
     highchart() %>%
     hc_xAxis(categories = xPlot) %>%
@@ -2529,8 +2529,10 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
     hc_title(
       text= (titleText),
       align = "center",style = list(
-        fontSize ="18px",color = "#333333", 
-        fontFamily = "Arial", fontWeight = "400" )) %>%
+        fontSize ="2.5vh",
+        color = "#333333",
+        fontWeight="bold", 
+        fontFamily = "Public Sans Thin, sans-serif")) %>%
     hc_exporting(enabled=T) 
   
   return(plot)
