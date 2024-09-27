@@ -2302,8 +2302,113 @@ function(input, output, session) {
   
 
   output$dashboard_chart <- renderHighchart({
-    plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash)
+    plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'chart')
   })
+  
+  
+  # rv__download_chart_format <- reactiveVal()
+  # rv__download_chart_format(input$download_chart_format)
+  # rv__download_chart_format <- reactive(input$download_chart_format)
+  observe({
+    updateTextInputIcon(
+      session,
+      inputId = "download_chart_name",
+      label = 'Name',
+      placeholder='Your chart',
+      icon = list(NULL, input$download_chart_format)
+    )
+})
+  
+  observe({
+    updateTextInputIcon(
+      session,
+      inputId = "download_data_name",
+      label = 'Name',
+      placeholder='Your data',
+      icon = list(NULL, input$download_data_format)
+    )
+  })
+  
+  output$download_chart <- downloadHandler(
+    
+    filename = function() {
+     # browser()
+      if (input$download_chart_name == "") {
+        paste0('stopwatch_chart_',Sys.Date(), format(Sys.time(), '%X' ), input$download_chart_format)
+      }
+      else {
+        paste0(input$download_chart_name, input$download_chart_format)
+      }
+    },
+    
+    
+    
+    content = function(file) {
+     # browser()
+      #if (input$download_chart_format == '.png') {
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      htmlwidgets::saveWidget(
+        widget = plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'chart'),
+        file='temp.html', selfcontained = FALSE)
+      webshot2::webshot(url = 'temp.html',
+                        file = file, delay =1, cliprect = "viewport")
+    }
+  )
+  
+  
+
+  output$download_data <- downloadHandler(
+
+    filename = function() {
+      #browser()
+      if (input$download_data_name=="") {
+        paste0('stopwatch_data_',Sys.Date(), format(Sys.time(), '%X' ), input$download_data_format)
+      }
+      else {
+        paste0(input$download_data_name, input$download_data_format)
+        
+      }
+    },
+
+
+    content = function(file) {
+      # owd <- setwd(tempdir())
+      # on.exit(setwd(owd))
+      #browser()
+      if (input$download_data_format == ".csv") {
+        write_csv(plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'data'), file)
+      }
+      if (input$download_data_format == ".xlsx") {
+        write.xlsx(plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'data'),file)
+      }
+    }
+
+
+  )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      # if(input$download_chart_format == ".csv") {
+      #   write.csv(datasetInput(), file, row.names = FALSE)
+      # } else if(input$downloadType == ".json") {
+      #   exportJSON <- toJSON(datasetInput())
+      #   write(exportJSON, file)
+      # } else if(input$downloadType == ".xls") {
+      #   write.xlsx(datasetInput(), file,
+      #              sheetName = "Sheet1", row.names = FALSE)
+      # } else if(input$downloadType == ".tsv") {
+      #   write.table(datasetInput(), file, quote = FALSE,
+      #               sep='\t', row.names = FALSE)
+      # }
+
+
 
 }
 

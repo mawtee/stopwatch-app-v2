@@ -2426,7 +2426,7 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
 
 
 # DASHBOARD###################
-plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, ethnic_group, legislation_group, reason_group, outcome_group) {
+plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, ethnic_group, legislation_group, reason_group, outcome_group, return) {
   
   
   # year_range <- c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))])
@@ -2535,7 +2535,14 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
         fontFamily = "Public Sans Thin, sans-serif")) %>%
     hc_exporting(enabled=T) 
   
-  return(plot)
+  
+  if (return=='data') {
+    return(df_pfa_plot)
+  }
+  if (return=='chart') {
+    return(plot)
+  }
+  
   
 }
 

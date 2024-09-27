@@ -306,6 +306,42 @@ Filter: "Black"
 }
 
 
+#download_chart_format {
+ font-size: .65vw; 
+}
+
+#download_chart_name {
+ font-size: .65vw; 
+}
+
+
+#download_chart_format-label {
+  font-size: .85vw;
+}
+#download_chart_name-label {
+  font-size: .85vw;
+}
+
+
+#download_data_format {
+ font-size: .65vw; 
+}
+
+#download_data_name {
+ font-size: .65vw; 
+}
+
+
+#download_data_format-label {
+  font-size: .85vw;
+}
+#download_data_name-label {
+  font-size: .85vw;
+}
+
+
+
+
 /* National Trends */
 /*============================================================================*/
 

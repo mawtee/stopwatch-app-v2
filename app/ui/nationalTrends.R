@@ -80,7 +80,7 @@ nationalTrends <- (
             div(id='natDASH-buffer'),
             div(id='natDASH-contents',
             fluidRow(
-              column(4,
+              column(3,
                     
                      # starts here
                      #p('Chart Builder', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
@@ -193,9 +193,83 @@ nationalTrends <- (
                            multiple = TRUE
                        ))
               )),
-              column(7,
-                     highchartOutput("dashboard_chart", height='65vh'))
+              column(8,
+                fluidRow(
+                  column(12,
+                    highchartOutput("dashboard_chart", height='65vh')
+                  )
+                ),
+                div(style='height:2.5vh'),
+                fluidRow(
+                  column(5,
+                    box(
+                      title = p("Download Chart", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333";right-margin:2vw'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "5vw",
+                      div(style=' display:flex; flex-direction: row; justify-content: space-around; align-items: center; ',
+                      column(2, #style='width:20%;',
+                      radioButtons("download_chart_format", "Format", 
+                                   choices = c("PNG" = ".png",
+                                               "PDF" = ".pdf"),
+                                   inline = F)
+                      ),
+                      column(6,
+                             textInputIcon(
+                               inputId = "download_chart_name",
+                               label = 'Name',
+                               value="",
+                               placeholder='Your chart',
+                               icon = list(NULL, '.png'),
+                               size='sm'
+                             ),
+                      ),
+                      column(4,
+                      downloadButton("download_chart", "Download", style='font-size:.85vw')
+                      )
+                      )
+                    )
+                  ),
+                  div(style='width: .5vw'),
+                  column(5,
+                    box(
+                      title = p("Download Data", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333"; left-margin:2vw'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "1.5vw",
+                      div(style=' display:flex; flex-direction: row; justify-content: space-around; align-items: center',
+                          column(2,
+                                 radioButtons("download_data_format", "Format", 
+                                              choices = c( "XLSX" = ".xlsx",
+                                                           "CSV" = ".csv"
+                                                         ),
+                                              inline = F)
+                          ),
+                          column(6,
+                                 textInputIcon(
+                                   inputId = "download_data_name",
+                                   label = 'Name',
+                                   value="",
+                                   placeholder='Your data',
+                                   icon = list(NULL, ".xlsx"),
+                                   size='sm'
+                                 ),
+                          ),
+                      column(4,
+                      downloadButton("download_data", "Download",  style='font-size:.85vw')
+                    )
+                      )
+                  )
+                ),
+                div(style='width: .5vw'),
+                #https://stackoverflow.com/questions/49061057/create-downloadbutton-that-can-output-multiple-file-types-r-shiny
+                column(2,
+                actionBttn(
+                  inputId = "guided_tour",
+                  label = "Guided Tour",
+                  color = "success",
+                  style = "material-flat",
+                  icon = icon("sliders"),
+                  block = TRUE
+                )
+                )
+              )
             )
+          )
           ),
           div(id='natDASH-footer')
         )

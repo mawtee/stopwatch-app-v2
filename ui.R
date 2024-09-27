@@ -22,6 +22,9 @@ library(sf)
 library(typedjs)
 library(shinyglide)
 library(bslib)
+library(webshot2)
+library(openxlsx)
+
 
 source("app/ui/home.R")
 source("app/ui/nationalTrends.R")
@@ -31,7 +34,7 @@ source("app/funs/countUp_funs.R")
 source("app/funs/onOffToggle_funs.R")
 
 
-df_pfa <- read_csv("data/dfPFA_clean_nopop_crime.csv")
+df_pfa <- read_csv("data/dfPFA_clean_dashboard_nopop.csv")
 df_pfa$population <- 5000
 
 
