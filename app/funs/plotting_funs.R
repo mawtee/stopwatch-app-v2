@@ -2440,17 +2440,25 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
   
   
   
+  # Rename widegt values to actual variable values
+  
+  # Define x-axis
   if (xaxis=="PFA"){
     xFun <- 'pfaName'
-  } else if (xaxis=="Ethnicity"){
+  } 
+  else if (xaxis=="Ethnicity"){
     xFun <- 'selfDefinedEthnicGroup'
-  } else  if (xaxis=="Legislation"){
+  } 
+  else  if (xaxis=="Legislation"){
     xFun <- 'legislation'
-  } else  if (xaxis=="Reason for Search"){
+  } 
+  else  if (xaxis=="Reason for Search"){
     xFun <- 'reasonForSearch'
-  } else  if (xaxis=="Outcome of Search"){
+  } 
+  else  if (xaxis=="Outcome of Search"){
     xFun <- 'outcome'
-  } else  {
+  } 
+  else  {
     xFun <- 'year'
   }
   
@@ -2501,9 +2509,9 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
     
     
     if (xaxis=="Year") {
-      titleText <-  paste0("Rate of stop-searches by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
+      titleText <-  paste0("Stop-search rate per 1,0000 population by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
     } else {
-      titleText <- paste0("Rate of stop-searches by ", xaxis)
+      titleText <- paste0("Stop-search rate per 1,0000 population by ", xaxis)
     }
   }
   

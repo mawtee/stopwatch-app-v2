@@ -34,8 +34,7 @@ source("app/funs/countUp_funs.R")
 source("app/funs/onOffToggle_funs.R")
 
 
-df_pfa <- read_csv("data/dfPFA_clean_dashboard_nopop.csv")
-df_pfa$population <- 5000
+df_pfa <- read_csv("data/dfPFA_clean_dashboard_pop.csv")
 
 
 df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 

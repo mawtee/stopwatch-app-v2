@@ -15,17 +15,67 @@ COLNAMES__LIST <- list(
   )
 )
 
+# A list of years (inset additional year for new data)
+# At the time of writing, the ONS does not publish yearly population estimates by ethnicity and so the next publication year is assumed to be 2031
+YEARS_CENSUS <- c(2011, 2021)
 
-df_process__list <- lapply(
+# A list of numbers denoting the number of rows to skip  when loading census data (insert additional input if additional year)
+NSKIP_CENSUS <- c(8,0)  
+
+# A list of column name lists (create additional list and add to list of lists (COLNAMES_CENSUS) if additional year)   
+COLNAMES0_CENSUS <- c('laName', 'laCode', paste0('v_', 1:18))
+COLNAMES1_CENSUS = c('laCode', 'laName', 'ethnicGroupCode', 'ethnicGroupName', 'count')
+COLNAMES_CENSUS = list(COLNAMES0_CENSUS, COLNAMES1_CENSUS)
+
+################################################################################
+
+# Stop and search
+df_ss__list <- lapply(
   1:length(YEARS), function(y) {
     df <- process_stop_and_search_dashboard(YEARS[y], COLNAMES__LIST[[y]])
     return(df)
   }
 )
+df_ss <- bind_rows(df_ss__list) 
 
-# need to add cirme processing script here
 
-df_process <- bind_rows(df_process__list) %>% left_join(crime_df, by=c('pfaName', 'financialYear'))
+# Census
+df_census__list <- lapply(
+  1:length(YEARS_CENSUS), function(y) {
+    dfCenusLA <- load_and_format_census(YEARS_CENSUS[y], NSKIP_CENSUS[y], COLNAMES_CENSUS[[y]])
+    dfCensusPFA <- aggregate_census_LA_to_PFA(dfCenusLA, YEARS_CENSUS[y])
+  }
+)
+df_census <- bind_rows(df_census__list) %>% expand_census()
+
+df_processed <- left_join(
+  df_ss, df_census, by=c('pfaCode', 'year', 'selfDefinedEthnicity')
+)
+
+# QA
+expectednas <- sum(df_ss$selfDefinedEthnicGroup=='Not Stated / Unknown') + sum(df_ss$pfaName=='British Transport Police')
+complete <- nrow(df_processed[complete.cases(df_processed), ])
+max(c(complete,nrow(df_ss)-expectednas)) - min(c(complete,nrow(df_ss)-expectednas))
+complete==nrow(df_ss)-expectednas
+
+
+df_processed <- df_processed[complete.cases(df_processed), ] %>%
+  select(-selfDefinedEthnicGroup.x) %>%
+  rename('selfDefinedEthnicGroup' = 'selfDefinedEthnicGroup.y')
+
+
+
+write_csv(df_processed, "data/dfPFA_clean_dashboard_pop.csv")
+
+
+
+
+
+
+
+
+
+#%>% left_join(crime_df, by=c('pfaName', 'financialYear'))
 
 
 # add crime data
