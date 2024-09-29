@@ -2329,6 +2329,24 @@ function(input, output, session) {
     )
   })
   
+  observeEvent(input$yaxis_dash, {
+    if (input$yaxis_dash == 'Ethnic disparities') {
+      updatePickerInput(
+        session, 'xaxis_dash',
+        choices = c("Ethnic group"='selfDefinedEthnicGroup')
+      )
+    }
+    else {
+      updatePickerInput(
+        session, 'xaxis_dash',
+        choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
+      )
+    }
+    
+    
+  },
+  ignoreInit=T)
+  
   output$download_chart <- downloadHandler(
     
     filename = function() {

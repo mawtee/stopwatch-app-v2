@@ -93,14 +93,14 @@ nationalTrends <- (
                        pickerInput(
                          inputId = "yaxis_dash",
                          label = " Select metric",
-                         choices=c("Number of stop-searches", "Stop-search rate"),
+                         choices=c("Number of stop-searches", "Stop-search rate", 'Ethnic disparities', 'Arrest rate'),
                          selected=c("Number of searches"),
                          multiple = FALSE
                        ),
                        pickerInput(
                          inputId = "xaxis_dash",
                          label = "Select x-axis",
-                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnicity"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
                          selected=c("Year"),
                          multiple = FALSE
                        ),

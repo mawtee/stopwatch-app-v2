@@ -2446,8 +2446,10 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   
   # rate, ethnicity, outcome = QA, what does this actually show?
   
-  
-  
+  # For now hardcode it, because seems to be delay between observeEvent and the function w/e
+  if (yaxis == 'Ethnic disparities') {
+    xaxis <- 'selfDefinedEthnicGroup'
+  }
   
   
   # Rename widegt values to actual variable values (DONE)
@@ -2537,7 +2539,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   }
   }
   
-
+  #browser()
   
   #browser()
   if (yaxis=="Number of stop-searches") {
@@ -2588,61 +2590,74 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   }
   
   
+  if (yaxis=="Ethnic disparities") {
+  # browser()
+    if (grouping == '') {
+      df_pfa_plot <- df_pfa_filter %>%
+        group_by(xAxis) %>%
+        mutate(rate = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        ungroup() %>%
+        distinct(xAxis, .keep_all=T) %>%
+        select(xAxis, rate) %>%
+        mutate(ref = case_when(xAxis == 'White'~rate, T~0)) %>%
+        mutate(ref = max(ref)) %>%
+        mutate(yAxis = rate/ref) %>%
+        filter(xAxis != 'White') %>%
+        select(xAxis, yAxis)
+      title_text<-  paste0("Ethnic disparities in stop and search (disproportionality ratios relative to White people), ", year_string)
+    }
+    else {
+      df_pfa_plot <- df_pfa_filter %>%
+        rename('group'=grouping) %>%
+        group_by(xAxis, group) %>%
+        mutate(rate = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        ungroup() %>%
+        distinct(xAxis, group, .keep_all=T) %>%
+        select(xAxis, group, rate) %>%
+        group_by(group) %>%
+        mutate(ref = case_when(xAxis == 'White'~rate, T~0)) %>%
+        mutate(ref = max(ref)) %>%
+        mutate(yAxis = rate/ref) %>%
+        ungroup() %>%
+        filter(xAxis != 'White') %>%
+        select(xAxis, group, yAxis)
+      group_palette <- pal(length(unique(df_pfa_plot$group)))
+      df_pfa_plot$color <- recode(
+        df_pfa_plot$group, !!! setNames(group_palette,unique(df_pfa_plot$group)), default='#e10000')
+      title_text<-  paste0("Ethnic disparities in stop and search (disproportionality ratios relative to White people) by ", grouping_text,', ', year_string)
+      
+    }
+  }
+  
+  if (yaxis=="Arrest rate") {
+    #browser()
+    if (grouping == '') {
+      df_pfa_plot <- df_pfa_filter %>%
+        group_by(xAxis, outcome) %>%
+        summarise(count = sum(numberOfSearches, na.rm=T)) %>%
+        group_by(xAxis) %>%
+        mutate(yAxis = first(count)/last(count)) %>%
+        distinct(xAxis, .keep_all=T) %>%
+        select(xAxis, yAxis)
+      title_text<-  paste0("Stop-search arrest rate by ", xaxis_text,', ', year_string)
+    }
+    else {
+      df_pfa_plot <- df_pfa_filter %>%
+        rename('group'=grouping) %>%
+        group_by(xAxis, group, outcome) %>%
+        summarise(count = sum(numberOfSearches, na.rm=T)) %>%
+        group_by(xAxis, group) %>%
+        mutate(yAxis = first(count)/last(count)) %>%
+        distinct(xAxis, group, .keep_all=T) %>%
+        select(xAxis, group, yAxis)
+      group_palette <- pal(length(unique(df_pfa_plot$group)))
+      df_pfa_plot$color <- recode(
+        df_pfa_plot$group, !!! setNames(group_palette,unique(df_pfa_plot$group)), default='#e10000')
+      title_text<-  paste0("Stop-search arrest rate by ", xaxis_text, ' and ',grouping_text, ', ', year_string)
+      
 
-    
-    
-  
-  
-  
-  # if (yaxis=="Number of searches") {
-  #   yearSelect <- unique(df_pfa['year']) 
-  #   yearSelect <- yearSelect %>% pull(year) 
-  #   df_pfa_plot <- df_pfa %>%
-  #     filter(year%in% yearSelect) %>%
-  #     filter(pfaName%in%pfa_filter) %>%
-  #     filter(selfDefinedEthnicGroup%in%ethnicgroup_filter) %>%
-  #     filter(legislation%in%legislation_filter) %>%
-  #     filter(reasonForSearch%in%reason_filter) %>%
-  #     filter(outcome%in%outcome_filter) %>%
-  #     group_by_at(xaxis) %>%
-  #     mutate(yaxis = sum(numberOfSearches, na.rm=T)) %>%
-  #     ungroup() %>%
-  #     distinct(.data[[xaxis]], .keep_all=T) %>%
-  #     select(xaxis, yaxis)
-  #   
-  #   
-  #   if (xaxis=="Year") {
-  #     titleText <-  paste0("Number of stop-searches by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
-  #   } else {
-  #     titleText <- paste0("Number of stop-searches by ", xaxis)
-  #   }
-  # }
-  # 
-  # if (yaxis=="Rate of searches") {
-  #   yearSelect <- unique(df_pfa['year']) 
-  #   yearSelect <- yearSelect %>% pull(year) 
-  #   df_pfa_plot <- df_pfa %>%
-  #     filter(year%in% yearSelect) %>%
-  #     filter(pfaName%in%pfa_filter) %>%
-  #     filter(selfDefinedEthnicGroup%in%ethnicgroup_filter) %>%
-  #     filter(legislation%in%legislation_filter) %>%
-  #     filter(reasonForSearch%in%reason_filter) %>%
-  #     filter(outcome%in%outcome_filter) %>%
-  #     group_by_at(xaxis) %>%
-  #     summarise(across(c(numberOfSearches,population),~sum(.x,na.rm=TRUE))) %>%
-  #     #      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-  #     ungroup() %>%
-  #     mutate(yaxis = (numberOfSearches/population)*1000) %>%
-  #     select(xaxis, yaxis)
-  #   
-  #   
-  #   if (xaxis=="Year") {
-  #     titleText <-  paste0("Stop-search rate per 1,0000 population by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
-  #   } else {
-  #     titleText <- paste0("Stop-search rate per 1,0000 population by ", xaxis)
-  #   }
-  # }
-  # 
+    }
+  }
 
   
   #browser()
@@ -2650,7 +2665,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   plot <-
     highchart() %>%
     hc_add_series(
-      type='column', name='', data=df_pfa_plot, hcaes(x='xAxis', y='yAxis'), color="#e10000") %>%
+      type='column', name=yaxis, data=df_pfa_plot, hcaes(x='xAxis', y='yAxis'), color="#e10000") %>%
     hc_xAxis(
       categories =levels(df_pfa_plot$xAxis),
       labels = list(
@@ -2661,6 +2676,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
       )
     ) %>%
     hc_yAxis(
+      tickAmount=6,
       labels = list(
         formatter = JS(
           "function() {
@@ -2764,6 +2780,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
         )
       ) %>%
       hc_yAxis(
+        tickAmount=6,
         labels = list(
           formatter = JS(
             "function() {
