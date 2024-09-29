@@ -439,7 +439,6 @@ Filter: "Black"
 #natDASH-contents {
   height: 84vh; 
   width: 100vw;
-  margin-right: 5.5vw;
   margin-left:.5vw;
 
 }
@@ -450,9 +449,6 @@ Filter: "Black"
 
 }
 
-
-  
-  
 .shiny-input-container:not(.shiny-input-container-inline) {
   height: 5.5vh;
 } 
@@ -468,13 +464,65 @@ Filter: "Black"
 }
 
 
+.dropdown-menu.open {
+  max-height:50vh !important ;
+  min-height:10vh !important ;
+}
 
 
 
+#bs-select-4.inner.open {
+  max-height:50vh !important ;
+  min-height:10vh !important ;
+}
 
 
+#box-1 {
+  margin-left: -1.5vw;
+  width: 135%;
+  box-shadow: .5px 2px 2px 0px #cecece;
+}
+
+.box-header.with-border {
+  background-color: #fbfbfb !important;
+}
+
+#box-2 {
+  margin-left: -1.5vw;
+  width: 135%;
+  box-shadow: .5px 2px 2px 0px #cecece;
+}
+#box-3 {
+  margin-left: -1.5vw;
+  width: 135%;
+  box-shadow: .5px 2px 2px 0px #cecece
+}
+
+.control-label {
+  font-size: 2vh;
+  font-weight: normal;
+  font-family: Public Sans Light, sans-serif;
+}
+
+.btn.dropdown-toggle.btn-default {
+  background-color: white;
+}
+
+.filter-option {
+  background-color: white;
+}
+
+.bs-caret{
+  color: #e10000;
+}
 
 
+#box-4 {
+  box-shadow: .5px 2px 2px 0px #cecece;
+}
+#box-5 {
+  box-shadow: .5px 2px 2px 0px #cecece
+}
 
 
 

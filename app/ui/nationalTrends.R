@@ -80,7 +80,7 @@ nationalTrends <- (
             div(id='natDASH-buffer'),
             div(id='natDASH-contents',
             fluidRow(
-              column(3,
+              column(3, align='left',
                      div(style='height:2vh'),
                     
                      # starts here
@@ -88,8 +88,16 @@ nationalTrends <- (
                      tags$head(tags$style(HTML("#xaxis_dash + div > .form-group shiny-input-container {height: .5vh; font-size.5vh}"))),
                      #new one here
                      column(8,
-                     box(
-                       title = p("Chart Builder", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, width = "2vw",
+                      shinydashboardPlus::box(
+                       title = 
+                         span(
+                         span("Chart Builder",  style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold',
+                           fontawesome::fa("info-circle", a11y = "sem", fill='#e10000', title='Build your own chart using the selectors below'),
+                         ) # https://shiny.posit.co/blog/posts/bslib-tooltips/
+                       ),
+                       collapsible = TRUE,  width = NULL, id='box-1',
+                       
+                       #),
                        pickerInput(
                          inputId = "yaxis_dash",
                          label = " Select metric",
@@ -118,8 +126,9 @@ nationalTrends <- (
                      #p('Chart Filters', style='font-size:3vh;font-family: Public Sans Thin, sans-serif;'),
                      
                      #new one here
-                     box(
-                       title = p("Chart Filter", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "2vw",
+                    shinydashboardPlus::box(
+                       title = p("Chart Filter", style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold'), 
+                       solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-2',
                      shinyWidgets::sliderTextInput(
                        inputId="year_range_dash", label="Which year(s) would like to visualise?",
                        choices=levels(df_pfa$year), selected=c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))]),
@@ -172,8 +181,9 @@ nationalTrends <- (
                      )
                      ),
                      #p('Chart Options', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
-                     box(
-                       title = p("Chart Options", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "2vw",
+                    shinydashboardPlus::box(
+                       title = p("Chart Options", style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold'),
+                       solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-3',
                          pickerInput(
                            inputId = "legislation_group_dashh",
                            label = " Select Legislation",
@@ -211,8 +221,9 @@ nationalTrends <- (
                 div(style='height:2.5vh'),
                 fluidRow(
                   column(5,
-                    box(
-                      title = p("Download Chart", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333";right-margin:2vw'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "5vw",
+                    shinydashboardPlus::box(
+                      title = p("Download Chart", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333";right-margin:2vw'), 
+                      solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-4',
                       div(style=' display:flex; flex-direction: row; justify-content: space-around; align-items: center; ',
                       column(2, #style='width:20%;',
                       radioButtons("download_chart_format", "Format", 
@@ -238,8 +249,9 @@ nationalTrends <- (
                   ),
                   div(style='width: .5vw'),
                   column(5,
-                    box(
-                      title = p("Download Data", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333"; left-margin:2vw'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "1.5vw",
+                    shinydashboardPlus::box(
+                      title = p("Download Data", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333"; left-margin:2vw'), 
+                      solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL,id='box-4',
                       div(style=' display:flex; flex-direction: row; justify-content: space-around; align-items: center',
                           column(2,
                                  radioButtons("download_data_format", "Format", 

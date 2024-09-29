@@ -3,6 +3,7 @@
 # Libraries
 library(shiny)
 library(shinydashboard)
+library(shinydashboardPlus)
 library(shinyWidgets)
 library(shinyjs)
 library(htmlwidgets)
@@ -21,9 +22,10 @@ library(manipulateWidget)
 library(sf)
 library(typedjs)
 library(shinyglide)
-library(bslib)
 library(webshot2)
 library(openxlsx)
+library(bslib)
+library(bsicons)
 
 
 source("app/ui/home.R")
@@ -67,6 +69,8 @@ hcoptslang <- getOption("highcharter.lang")
 hcoptslang$thousandsSep <- ","
 options(highcharter.lang = hcoptslang)
 
+
+#bs_theme() |> bs_add_rules(".my-tip { background-color: red; color: red; font-size: 30vw }")
 
 
 

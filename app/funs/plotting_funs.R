@@ -2446,6 +2446,16 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   
   # rate, ethnicity, outcome = QA, what does this actually show?
   
+  
+  # add tooltips
+  # css dropdowns
+  # dropdown bottom
+  # image download sort out
+  # download data, name of columns
+  # adding single filter options to title
+  
+  
+  
   # For now hardcode it, because seems to be delay between observeEvent and the function w/e
   if (yaxis == 'Ethnic disparities') {
     xaxis <- 'selfDefinedEthnicGroup'
