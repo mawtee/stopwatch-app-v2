@@ -1513,7 +1513,7 @@ plot__pfa_map <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
 #         mapping = hcaes(selfDefinedEthnicityGroup, numberOfSearches)
 #         
 #       )
-#     
+   # '#f29191'"#600000"
 #     #browser()
 #     #group_categories <- dplyr::n_distinct(df_pfa[group])
 #     
@@ -2426,7 +2426,7 @@ plot__pfa_map_pie <- function(df_pfa, bounds_pfa, year_range, pfa_select) {
 
 
 # DASHBOARD###################
-plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, ethnic_group, legislation_group, reason_group, outcome_group, return) {
+plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pfa_filter, ethnicgroup_filter, legislation_filter, reason_filter, outcome_filter, return) {
   
   
   # year_range <- c(levels(df_pfa$year)[1], levels(df_pfa$year)[length(levels(df_pfa$year))])
@@ -2438,112 +2438,381 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, pfa_group, e
   # reason_group <- c(unique(df_pfa$reasonForSearch))
   # outcome_group <- c(unique(df_pfa$outcome))
   
+  # Default is always clusters
+  # Stacked options for number
+  # Cluster only for rate
+  # Default for PFA is map
+  # color should be two if group length < 2
+  
+  # rate, ethnicity, outcome = QA, what does this actually show?
   
   
-  # Rename widegt values to actual variable values
   
-  # Define x-axis
-  if (xaxis=="PFA"){
-    xFun <- 'pfaName'
+  
+  
+  # Rename widegt values to actual variable values (DONE)
+  # Rename group functions to filter (DONE)
+  # Conduct the processing prior to the plot, then no need for ifelse stuff (DONE)
+  # Then get main metrics working perfect (ALMSOT DONE)
+  # Then move onto groupings (DONE)
+  # Also create title, subtitle note stuff etc. (ALMOST DONE)
+
+  # Year subset
+  year_range_int <- which(levels(df_pfa$year) %in% year_range)
+  if (length(year_range_int > 1)) {
+    df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
+    year_string <- paste0(levels(df_pfa$year)[year_range_int[1]], ' - ',levels(df_pfa$year)[year_range_int[2]])
+  }
+  else {
+    df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]],]
+    year_string <- paste0(levels(df_pfa$year)[year_range_int[1]])
+  }
+  
+  # QA
+  # xaxis <- 'selfDefinedEthnicGroup'
+  # grouping <- 'pfaName'
+  # 
+  # Apply filters
+  df_pfa_filter <- df_pfa %>%
+    filter(
+      pfaName%in%pfa_filter,
+      selfDefinedEthnicGroup%in%ethnicgroup_filter,
+      legislation%in%legislation_filter,
+      reasonForSearch%in%reason_filter,
+      outcome%in%outcome_filter
+    ) %>%
+    rename(
+      'xAxis' = xaxis
+    ) %>%
+    mutate(xAxis = as.factor(xAxis))
+    
+
+  # Palette
+  #https://www.color-hex.com/color/e10000
+  pal <- colorRampPalette(c('#f6b2b2', '#e10000', '#430000'))
+  
+  
+  # Define x-axis text
+  if (xaxis=='pfaName'){
+    xaxis_text <- "PFA"
   } 
-  else if (xaxis=="Ethnicity"){
-    xFun <- 'selfDefinedEthnicGroup'
+  else if (xaxis=='selfDefinedEthnicGroup'){
+    xaxis_text <- tolower("Ethnic group")
   } 
-  else  if (xaxis=="Legislation"){
-    xFun <- 'legislation'
+  else  if (xaxis=='legislation'){
+    xaxis_text <- tolower("Legislation")
   } 
-  else  if (xaxis=="Reason for Search"){
-    xFun <- 'reasonForSearch'
+  else  if (xaxis=='reasonForSearch'){
+    xaxis_text <- tolower("Reason for Search")
   } 
-  else  if (xaxis=="Outcome of Search"){
-    xFun <- 'outcome'
+  else  if (xaxis=='outcome'){
+    xaxis_text <- tolower("Outcome of Search")
   } 
   else  {
-    xFun <- 'year'
+    xaxis_text <- tolower('Year')
   }
   
   
-  year_range_int <- which(levels(df_pfa$year) %in% year_range)
-  df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
   
-  if (yaxis=="Number of Searches") {
-    yearSelect <- unique(df_pfa['year']) 
-    yearSelect <- yearSelect %>% pull(year) 
-    df_pfa_plot <- df_pfa %>%
-      filter(year%in% yearSelect) %>%
-      filter(pfaName%in%pfa_group) %>%
-      filter(selfDefinedEthnicGroup%in%ethnic_group) %>%
-      filter(legislation%in%legislation_group) %>%
-      filter(reasonForSearch%in%reason_group) %>%
-      filter(outcome%in%outcome_group) %>%
-      group_by_at(xFun) %>%
-      mutate(yaxis = sum(numberOfSearches, na.rm=T)) %>%
-      ungroup() %>%
-      distinct(.data[[xFun]], .keep_all=T) %>%
-      select(xFun, yaxis)
-    
-    
-    if (xaxis=="Year") {
-      titleText <-  paste0("Number of stop-searches by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
-    } else {
-      titleText <- paste0("Number of stop-searches by ", xaxis)
-    }
+  # Define grouping
+  # Define x-axis text
+  if (grouping != '') {
+  if (grouping=='pfaName'){
+    grouping_text <- "PFA"
+  } 
+  else if (grouping=='selfDefinedEthnicGroup'){
+    grouping_text <- tolower("Ethnic group")
+  } 
+  else  if (grouping=='legislation'){
+    grouping_text <- tolower("Legislation")
+  } 
+  else  if (grouping=='reasonForSearch'){
+    grouping_text <- tolower("Reason for Search")
+  } 
+  else  if (grouping=='outcome'){
+    grouping_text <- tolower("Outcome of Search")
+  } 
+  else  {
+    grouping_text <- tolower('Year')
+  }
   }
   
-  if (yaxis=="Rate of Searches") {
-    yearSelect <- unique(df_pfa['year']) 
-    yearSelect <- yearSelect %>% pull(year) 
-    df_pfa_plot <- df_pfa %>%
-      filter(year%in% yearSelect) %>%
-      filter(pfaName%in%pfa_group) %>%
-      filter(selfDefinedEthnicGroup%in%ethnic_group) %>%
-      filter(legislation%in%legislation_group) %>%
-      filter(reasonForSearch%in%reason_group) %>%
-      filter(outcome%in%outcome_group) %>%
-      group_by_at(xFun) %>%
-      summarise(across(c(numberOfSearches,population),~sum(.x,na.rm=TRUE))) %>%
-      #      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
-      ungroup() %>%
-      mutate(yaxis = (numberOfSearches/population)*1000) %>%
-      select(xFun, yaxis)
-    
-    
-    if (xaxis=="Year") {
-      titleText <-  paste0("Stop-search rate per 1,0000 population by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
-    } else {
-      titleText <- paste0("Stop-search rate per 1,0000 population by ", xaxis)
-    }
-  }
-  
-  if (xaxis=="PFA"){
-    xPlot <- df_pfa_plot$pfaName
-  } else if (xaxis=="Ethnicity"){
-    xPlot <- df_pfa_plot$selfDefinedEthnicGroup
-  } else  if (xaxis=="Legislation"){
-    xPlot <- df_pfa_plot$legislation
-  } else  if (xaxis=="Reason for Search"){
-    xPlot <- df_pfa_plot$reasonForSearch
-  } else  if (xaxis=="Outcome"){
-    xPlot <- df_pfa_plot$Outcome
-  } else  {
-    xPlot <- df_pfa_plot$year
-  }
 
-  plot <-     
+  
+  #browser()
+  if (yaxis=="Number of stop-searches") {
+    
+    if (grouping == '') {
+      df_pfa_plot <- df_pfa_filter %>%
+        group_by(xAxis) %>%
+        summarise(yAxis = sum(numberOfSearches, na.rm=T)) %>%
+        ungroup()
+      title_text<-  paste0("Number of stop-searches by ",xaxis_text,", ", year_string)
+    }
+    else {
+      df_pfa_plot <- df_pfa_filter %>%
+        rename('group'=grouping) %>%
+        group_by(xAxis, group) %>%
+        summarise(yAxis = sum(numberOfSearches, na.rm=T)) %>%
+        ungroup()
+      group_palette <- pal(length(unique(df_pfa_plot$group)))
+      df_pfa_plot$color <- recode(
+        df_pfa_plot$group, !!! setNames(group_palette,unique(df_pfa_plot$group)), default='#e10000')
+      title_text <- paste0("Number of stop-searches by ",xaxis_text,' and ',grouping_text, ', ', year_string)
+      
+    }
+    #   } else {
+    #     titleText <- paste0("Number of stop-searches by ", xaxis)
+    #   }
+  }
+  
+  if (yaxis=="Stop-search rate") {
+    if (grouping == '') {
+      df_pfa_plot <- df_pfa_filter %>%
+        group_by(xAxis) %>%
+        summarise(yAxis = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        ungroup() 
+      title_text<-  paste0("Stop-search rate per 1,000 population by ",xaxis_text,", ", year_string)
+    }
+    else {
+      df_pfa_plot <- df_pfa_filter %>%
+        rename('group'=grouping) %>%
+        group_by(xAxis, group) %>%
+        summarise(yAxis = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        ungroup() 
+      group_palette <- pal(length(unique(df_pfa_plot$group)))
+      df_pfa_plot$color <- recode(
+        df_pfa_plot$group, !!! setNames(group_palette,unique(df_pfa_plot$group)), default='#e10000')
+      title_text<-  paste0("Stop-search rate per 1,000 population by ",xaxis_text,' and ',grouping_text, ', ', year_string)
+    }
+  }
+  
+  
+
+    
+    
+  
+  
+  
+  # if (yaxis=="Number of searches") {
+  #   yearSelect <- unique(df_pfa['year']) 
+  #   yearSelect <- yearSelect %>% pull(year) 
+  #   df_pfa_plot <- df_pfa %>%
+  #     filter(year%in% yearSelect) %>%
+  #     filter(pfaName%in%pfa_filter) %>%
+  #     filter(selfDefinedEthnicGroup%in%ethnicgroup_filter) %>%
+  #     filter(legislation%in%legislation_filter) %>%
+  #     filter(reasonForSearch%in%reason_filter) %>%
+  #     filter(outcome%in%outcome_filter) %>%
+  #     group_by_at(xaxis) %>%
+  #     mutate(yaxis = sum(numberOfSearches, na.rm=T)) %>%
+  #     ungroup() %>%
+  #     distinct(.data[[xaxis]], .keep_all=T) %>%
+  #     select(xaxis, yaxis)
+  #   
+  #   
+  #   if (xaxis=="Year") {
+  #     titleText <-  paste0("Number of stop-searches by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
+  #   } else {
+  #     titleText <- paste0("Number of stop-searches by ", xaxis)
+  #   }
+  # }
+  # 
+  # if (yaxis=="Rate of searches") {
+  #   yearSelect <- unique(df_pfa['year']) 
+  #   yearSelect <- yearSelect %>% pull(year) 
+  #   df_pfa_plot <- df_pfa %>%
+  #     filter(year%in% yearSelect) %>%
+  #     filter(pfaName%in%pfa_filter) %>%
+  #     filter(selfDefinedEthnicGroup%in%ethnicgroup_filter) %>%
+  #     filter(legislation%in%legislation_filter) %>%
+  #     filter(reasonForSearch%in%reason_filter) %>%
+  #     filter(outcome%in%outcome_filter) %>%
+  #     group_by_at(xaxis) %>%
+  #     summarise(across(c(numberOfSearches,population),~sum(.x,na.rm=TRUE))) %>%
+  #     #      mutate(numberOfSearches = sum(numberOfSearches, na.rm=T)) %>%
+  #     ungroup() %>%
+  #     mutate(yaxis = (numberOfSearches/population)*1000) %>%
+  #     select(xaxis, yaxis)
+  #   
+  #   
+  #   if (xaxis=="Year") {
+  #     titleText <-  paste0("Stop-search rate per 1,0000 population by ",xaxis," ", year_range[1], " - ", year_range[length(year_range)])
+  #   } else {
+  #     titleText <- paste0("Stop-search rate per 1,0000 population by ", xaxis)
+  #   }
+  # }
+  # 
+
+  
+  #browser()
+  if (grouping == '') {
+  plot <-
     highchart() %>%
-    hc_xAxis(categories = xPlot) %>%
     hc_add_series(
-      type='column', name='In-year', data=df_pfa_plot$yaxis, color="#e10000")%>%
+      type='column', name='', data=df_pfa_plot, hcaes(x='xAxis', y='yAxis'), color="#e10000") %>%
+    hc_xAxis(
+      categories =levels(df_pfa_plot$xAxis),
+      labels = list(
+        style = list(
+          fontSize = '.85vw',
+          fontFamily = "Public Sans Thin, sans-serif"
+        )
+      )
+    ) %>%
+    hc_yAxis(
+      labels = list(
+        formatter = JS(
+          "function() {
+             if(this.value >= 1000000000){
+               return (this.value / 1000000000) + 'B';
+              }
+              else if(this.value >= 1000000) {
+                return (this.value / 1000000) + 'M';
+              }
+              else if(this.value >= 1000) {
+                return (this.value / 1000) + 'K';
+              }
+              else {
+                return this.value;
+              }
+          }"
+        ),
+        style = list(
+          fontSize = '.85vw',
+          fontFamily = "Public Sans Thin, sans-serif"
+        )
+      )
+    ) %>%
     hc_title(
-      text= (titleText),
-      align = "center",style = list(
-        fontSize ="2.5vh",
+      text= (title_text),
+      margin=10,
+      align = "left",
+      style = list(
+        fontSize ="2.2vw",
         color = "#333333",
-        fontWeight="bold", 
+        fontWeight="plain",
         fontFamily = "Public Sans Thin, sans-serif")) %>%
-    hc_exporting(enabled=T) 
+    hc_subtitle(
+      text = '<img src="https://www.stop-watch.org/static/img/logo.0b82697fe5d9.png"  style="width:5vw;height:2.14vw;" >',  #7x3
+      #text='yo',
+      useHTML=T,
+      align='right',
+      margin=5
+    ) %>%
+    hc_exporting(enabled=F) %>%
+    hc_legend(enabled=F) 
+  }
   
+  else {
+    # 
+    # if (length(unique(df_pfa_plot$group))> 15) {
+    #   plot <-
+    #     highchart() %>%
+    #     hc_add_series(
+    #       type='column', data=df_pfa_plot, hcaes(x='xAxis', y='yAxis', group='group', color='color', name='xAxis')) %>%
+    #     hc_xAxis(
+    #       categories = levels(df_pfa_plot$xAxis),
+    #       reversedStacks = F,
+    #       labels = list(
+    #         style = list(
+    #           fontSize = '.85vw',
+    #           fontFamily = "Public Sans Thin, sans-serif"
+    #         )
+    #       )
+    #     ) %>%
+    #     hc_yAxis(
+    #       labels = list(
+    #         style = list(
+    #           fontSize = '.85vw',
+    #           fontFamily = "Public Sans Thin, sans-serif"
+    #         )
+    #       )
+    #     ) %>%
+    #     hc_title(
+    #       text= (title_text),
+    #       margin=35,
+    #       align = "left",style = list(
+    #         fontSize ="2.2vw",
+    #         color = "#333333",
+    #         fontWeight="plain",
+    #         fontFamily = "Public Sans Thin, sans-serif")) %>%
+    #     hc_exporting(enabled=F) %>%
+    #     hc_legend(enabled=F) %>%
+    #     hc_colors(group_palette) #%>%
+    #     # hc_plotOptions(
+    #     #   series = list(
+    #     #     stacking='normal'
+    #     #   )
+    #     # )
+    #   
+    # }
+    
+   # else {
+    plot <-
+      highchart() %>%
+      hc_add_series(
+        type='column', data=df_pfa_plot, hcaes(x='xAxis', y='yAxis', group='group', color='color')
+      ) %>%
+      hc_xAxis(
+        categories = levels(df_pfa_plot$xAxis),
+        labels = list(
+          style = list(
+            fontSize = '.85vw',
+            fontFamily = "Public Sans Thin, sans-serif"
+          )
+        )
+      ) %>%
+      hc_yAxis(
+        labels = list(
+          style = list(
+            fontSize = '.85vw',
+            fontFamily = "Public Sans Thin, sans-serif"
+          )
+        )
+      ) %>%
+      hc_title(
+        text= (title_text),
+        margin=10,
+        align = "left",style = list(
+          fontSize ="2.2vw",
+          color = "#333333",
+          fontWeight="plain",
+          fontFamily = "Public Sans Thin, sans-serif")) %>%
+      hc_subtitle(
+        text = '<img src="https://www.stop-watch.org/static/img/logo.0b82697fe5d9.png"  style="width:6vw;height:2.57vw;" >',  #7x3
+        #text='yo',
+        useHTML=T,
+        align='right',
+        margin=5
+      ) %>%
+      hc_exporting(enabled=F) %>%
+      hc_legend(
+        itemStyle = list(
+          fontSize= '.65vw',
+          fontFamily = "Public Sans Thin, sans-serif",
+          fontWeight = 'bold',
+          symbolWidth = '.3vw',
+          symbolHeight = '.2vw'
+          
+          
+        )
+      ) %>%
+      hc_colors(group_palette) #%>%
+      # hc_plotOptions(
+      #   series = list(
+      #     stacking='normal'
+      #   )
+      # )
+   # }
+  }
   
+  # 
+  # 
+  # %>%
+ 
+
+
   if (return=='data') {
     return(df_pfa_plot)
   }

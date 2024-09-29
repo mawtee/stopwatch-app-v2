@@ -63,7 +63,9 @@ bounds_pfa__df <- bounds_pfa__df[1:3]
 # centroids$pfaName <- unique(df_pfa$pfaName)
 # names(centroids)[1:2] <- c("lon", "lat")
 
-
+hcoptslang <- getOption("highcharter.lang")
+hcoptslang$thousandsSep <- ","
+options(highcharter.lang = hcoptslang)
 
 
 

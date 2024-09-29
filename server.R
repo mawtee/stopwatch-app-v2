@@ -2302,7 +2302,7 @@ function(input, output, session) {
   
 
   output$dashboard_chart <- renderHighchart({
-    plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'chart')
+    plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$grouping_dash, input$pfa_filter_dash, input$ethnicgroup_filter_dash, input$legislation_filter_dash, input$reason_filter_dash, input$outcome_filter_dash, 'chart')
   })
   
   
@@ -2349,7 +2349,7 @@ function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       htmlwidgets::saveWidget(
-        widget = plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'chart'),
+        widget = plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$grouping_dash, input$pfa_filter_dash, input$ethnicgroup_filter_dash, input$legislation_filter_dash, input$reason_filter_dash, input$outcome_filter_dash, 'chart'),
         file='temp.html', selfcontained = FALSE)
       webshot2::webshot(url = 'temp.html',
                         file = file, delay =1, cliprect = "viewport")
@@ -2377,10 +2377,10 @@ function(input, output, session) {
       # on.exit(setwd(owd))
       #browser()
       if (input$download_data_format == ".csv") {
-        write_csv(plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'data'), file)
+        write_csv(plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$grouping_dash, input$pfa_filter_dash, input$ethnicgroup_filter_dash, input$legislation_filter_dash, input$reason_filter_dash, input$outcome_filter_dash, 'data'), file)
       }
       if (input$download_data_format == ".xlsx") {
-        write.xlsx(plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$pfa_group_dash, input$ethnic_group_dash, input$legislation_group_dash, input$reason_group_dash, input$outcome_group_dash, 'data'),file)
+        write.xlsx(plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$grouping_dash, input$pfa_filter_dash, input$ethnicgroup_filter_dash, input$legislation_filter_dash, input$reason_filter_dash, input$outcome_filter_dash, 'data'),file)
       }
     }
 

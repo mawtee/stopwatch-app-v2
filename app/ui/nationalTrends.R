@@ -81,6 +81,7 @@ nationalTrends <- (
             div(id='natDASH-contents',
             fluidRow(
               column(3,
+                     div(style='height:2vh'),
                     
                      # starts here
                      #p('Chart Builder', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
@@ -89,19 +90,27 @@ nationalTrends <- (
                      column(8,
                      box(
                        title = p("Chart Builder", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, width = "2vw",
-                     pickerInput(
-                       inputId = "yaxis_dash",
-                       label = " Select Y Axis",
-                       choices=c("Number of Searches", "Rate of Searches"),
-                       selected=c("Number of Searches"),
-                       multiple = FALSE
-                     ),
-                     pickerInput(
-                       inputId = "xaxis_dash",
-                       label = "Select X Axis",
-                       choices=c("Year", "PFA", "Ethnicity", "Legislation", "Reason for Search", "Outcome of Search"),
-                       selected=c("Year"),
-                       multiple = FALSE)
+                       pickerInput(
+                         inputId = "yaxis_dash",
+                         label = " Select metric",
+                         choices=c("Number of stop-searches", "Stop-search rate"),
+                         selected=c("Number of searches"),
+                         multiple = FALSE
+                       ),
+                       pickerInput(
+                         inputId = "xaxis_dash",
+                         label = "Select x-axis",
+                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnicity"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         selected=c("Year"),
+                         multiple = FALSE
+                       ),
+                       pickerInput(
+                         inputId = "grouping_dash",
+                         label = "Select grouping",
+                         choices=c('No grouping'='',  "Year"='year', "Police Force Area"='pfaName', "Ethnicity"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         selected=c("No grouping"),
+                         multiple = FALSE
+                       )
                      ),
                      
                      
@@ -118,7 +127,7 @@ nationalTrends <- (
                      ),
                      div(style='height:1.5vh'),
                      pickerInput(
-                       inputId = "pfa_group_dash",
+                       inputId = "pfa_filter_dash",
                        label = "Select PFA",
                        choices=c(unique(df_pfa$pfaName)),
                        selected=c(unique(df_pfa$pfaName)), options = list(
@@ -126,7 +135,7 @@ nationalTrends <- (
                        multiple = TRUE
                      ),
                      pickerInput(
-                       inputId = "ethnic_group_dash",
+                       inputId = "ethnicgroup_filter_dash",
                        label = " Select Ethnicity",
                        choices=c(unique(df_pfa$selfDefinedEthnicGroup)),
                        selected=c(unique(df_pfa$selfDefinedEthnicGroup)), options = list(
@@ -135,7 +144,7 @@ nationalTrends <- (
                      ),
                      
                      pickerInput(
-                       inputId = "legislation_group_dash",
+                       inputId = "legislation_filter_dash",
                        label = " Select Legislation",
                        choices=c(unique(df_pfa$legislation)),
                        selected=c(unique(df_pfa$legislation)),
@@ -144,7 +153,7 @@ nationalTrends <- (
                        multiple = TRUE
                      ),
                      pickerInput(
-                       inputId = "reason_group_dash",
+                       inputId = "reason_filter_dash",
                        label = " Select Reason for Search",
                        choices=c(unique(df_pfa$reasonForSearch)),
                        selected=c(unique(df_pfa$reasonForSearch)),
@@ -153,7 +162,7 @@ nationalTrends <- (
                        multiple = TRUE
                      ),
                      pickerInput(
-                       inputId = "outcome_group_dash",
+                       inputId = "outcome_filter_dash",
                        label = " Select Outcome of Search",
                        choices=c(unique(df_pfa$outcome)),
                        selected=c(unique(df_pfa$outcome)),
@@ -166,7 +175,7 @@ nationalTrends <- (
                      box(
                        title = p("Chart Options", style = 'font-size:2.5vh;font-family: Public Sans Thin, sans-serif;color = "#333333";'), solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = "2vw",
                          pickerInput(
-                           inputId = "legislation_group_dash",
+                           inputId = "legislation_group_dashh",
                            label = " Select Legislation",
                            choices=c(unique(df_pfa$legislation)),
                            selected=c(unique(df_pfa$legislation)),
@@ -175,7 +184,7 @@ nationalTrends <- (
                            multiple = TRUE
                          ),
                          pickerInput(
-                           inputId = "reason_group_dash",
+                           inputId = "reason_group_dashh",
                            label = " Select Reason for Search",
                            choices=c(unique(df_pfa$reasonForSearch)),
                            selected=c(unique(df_pfa$reasonForSearch)),
@@ -184,7 +193,7 @@ nationalTrends <- (
                            multiple = TRUE
                          ),
                          pickerInput(
-                           inputId = "outcome_group_dash",
+                           inputId = "outcome_group_dashh",
                            label = " Select Outcome of Search",
                            choices=c(unique(df_pfa$outcome)),
                            selected=c(unique(df_pfa$outcome)),
@@ -196,7 +205,7 @@ nationalTrends <- (
               column(8,
                 fluidRow(
                   column(12,
-                    highchartOutput("dashboard_chart", height='65vh')
+                    highchartOutput("dashboard_chart", height='65vh', width='65vw')
                   )
                 ),
                 div(style='height:2.5vh'),
@@ -268,7 +277,8 @@ nationalTrends <- (
                 )
                 )
               )
-            )
+            ),
+            column(1, style='width: 5vw')
           )
           ),
           div(id='natDASH-footer')
