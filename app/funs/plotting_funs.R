@@ -2765,6 +2765,22 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
       ) %>%
       hc_yAxis(
         labels = list(
+          formatter = JS(
+            "function() {
+             if(this.value >= 1000000000){
+               return (this.value / 1000000000) + 'B';
+              }
+              else if(this.value >= 1000000) {
+                return (this.value / 1000000) + 'M';
+              }
+              else if(this.value >= 1000) {
+                return (this.value / 1000) + 'K';
+              }
+              else {
+                return this.value;
+              }
+          }"
+          ),
           style = list(
             fontSize = '.85vw',
             fontFamily = "Public Sans Thin, sans-serif"
@@ -2780,7 +2796,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
           fontWeight="plain",
           fontFamily = "Public Sans Thin, sans-serif")) %>%
       hc_subtitle(
-        text = '<img src="https://www.stop-watch.org/static/img/logo.0b82697fe5d9.png"  style="width:6vw;height:2.57vw;" >',  #7x3
+        text = '<img src="https://www.stop-watch.org/static/img/logo.0b82697fe5d9.png"  style="width:5vw;height:2.14vw;" >',  #7x3
         #text='yo',
         useHTML=T,
         align='right',
