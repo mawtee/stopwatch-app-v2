@@ -2333,19 +2333,89 @@ function(input, output, session) {
     if (input$yaxis_dash == 'Ethnic disparities') {
       updatePickerInput(
         session, 'xaxis_dash',
-        choices = c("Ethnic group"='selfDefinedEthnicGroup')
+        choices = c("Ethnic group"='selfDefinedEthnicGroup', "Ethnic group"='selfDefinedEthnicity'),
+        selected='selfDefinedEthnicGroup'
       )
     }
     else {
       updatePickerInput(
         session, 'xaxis_dash',
-        choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
+        choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity',"Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
       )
     }
     
     
   },
   ignoreInit=T)
+  
+  observeEvent(c(input$grouping_dash,input$yaxis_dash), {
+    xall <-c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
+    if (input$grouping_dash %in% xall) {
+      xcond <- xall[!grepl(paste0(input$grouping_dash, collapse = "|"), xall)]
+      updatePickerInput(
+        session, 'xaxis_dash',
+        choices=xcond
+      )
+    }
+    if (input$yaxis_dash == 'Arrest rate') {
+      #browser()
+      xcond <- xall[!grepl(paste0('outcome', collapse = "|"), xall)]
+      updatePickerInput(
+        session, 'xaxis_dash',
+        choices=c('No grouping'='',xcond),
+        selected=input$xaxis_dash
+      )
+    }
+  },
+  ignoreInit=F)
+  
+  observeEvent(c(input$xaxis_dash, input$yaxis_dash), {
+    #browser()
+    groupingall <- c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
+    groupingcond <- groupingall[!grepl(paste0(input$xaxis_dash, collapse = "|"), groupingall)]
+    updatePickerInput(
+      session, 'grouping_dash',
+      choices=c('No grouping'='',groupingcond),
+      selected=''
+    )
+    if (input$yaxis_dash == 'Arrest rate') {
+      groupingcond <- groupingall[!grepl(paste0('outcome', collapse = "|"), groupingall)]
+      updatePickerInput(
+        session, 'grouping_dash',
+        choices=c('No grouping'='',groupingcond),
+        selected=''
+      )
+    }
+  },
+  ignoreInit=F)
+  
+  # 
+  # observeEvent(input$yaxis_dash, {
+  #   
+  #   if (input$yaxis_dash == 'Arrest rate') {
+  #     browser()
+  #     groupingall <- c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
+  #     groupingcond <- groupingall[!grepl(paste0(input$xaxis_dash, collapse = "|"), groupingall)]
+  #     updatePickerInput(
+  #       session, 'grouping_dash',
+  #       choices=c('No grouping'='',groupingcond),
+  #       selected=''
+  #     )
+  #     
+  #   }
+  #  
+  # },
+  # ignoreInit=F)
+  
+  
+  
+  # create ui ouput for choices
+  
+  
+  
+  
+  
+  
   
   output$download_chart <- downloadHandler(
     

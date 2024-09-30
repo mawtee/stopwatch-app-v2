@@ -1,5 +1,5 @@
 source('processing/processing__funs.R')
-YEARS <- c(2020, 2021, 2022)
+YEARS <- c(2020, 2021, 2022, 2023, 2024)
 COLNAMES__LIST <- list(
   c(
     'financialYear','pfaCode','pfaName','region','legislation','reasonForSearch', 
@@ -12,7 +12,16 @@ COLNAMES__LIST <- list(
   c(
     'financialYear','pfaCode','pfaName', 'region', 'legislation', 'reasonForSearch', 
     'outcome', 'selfDefinedEthnicity', 'selfDefinedEthnicGroup', 'numberOfSearches'
+  ),
+  c(
+    'financialYear','pfaCode','pfaName', 'region', 'legislation', 'reasonForSearch', 
+    'outcome', 'selfDefinedEthnicity', 'selfDefinedEthnicGroup', 'numberOfSearches'
+  ),
+  c(
+    'financialYear','pfaCode','pfaName', 'region', 'legislation', 'reasonForSearch', 
+    'outcome', 'selfDefinedEthnicity', 'selfDefinedEthnicGroup', 'numberOfSearches'
   )
+  
 )
 
 # A list of years (inset additional year for new data)
@@ -58,22 +67,31 @@ complete <- nrow(df_processed[complete.cases(df_processed), ])
 max(c(complete,nrow(df_ss)-expectednas)) - min(c(complete,nrow(df_ss)-expectednas))
 complete==nrow(df_ss)-expectednas
 
+df_processed <- df_processed %>%
+  select(-selfDefinedEthnicGroup.y) %>%
+  rename('selfDefinedEthnicGroup' = 'selfDefinedEthnicGroup.x')
 
-df_processed <- df_processed[complete.cases(df_processed), ] %>%
-  select(-selfDefinedEthnicGroup.x) %>%
-  rename('selfDefinedEthnicGroup' = 'selfDefinedEthnicGroup.y')
-
-
-
-write_csv(df_processed, "data/dfPFA_clean_dashboard_pop.csv")
+write_csv(df_processed, "data/dfPFA_clean_dashboard_pop_2324.csv")
 
 
 
 
+# 112365
+# 112365
 
 
 
+t <- df_ss %>%
+  group_by(financialYear) %>%
+  summarise(numberOfSearches = sum(numberOfSearches))
 
+df_processed %>%
+  group_by(financialYear) %>%
+  summarise(numberOfSearches = sum(numberOfSearches))
+
+df_pfa %>%
+  group_by(financialYear) %>%
+  summarise(numberOfSearches = sum(numberOfSearches))
 
 #%>% left_join(crime_df, by=c('pfaName', 'financialYear'))
 

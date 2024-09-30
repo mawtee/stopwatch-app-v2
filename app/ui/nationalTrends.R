@@ -92,7 +92,8 @@ nationalTrends <- (
                        title = 
                          span(
                          span("Chart Builder",  style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold',
-                           fontawesome::fa("info-circle", a11y = "sem", fill='#e10000', title='Build your own chart using the selectors below'),
+                              span(fontawesome::fa("info-circle", a11y = "sem", fill_opacity=.7, title='Build your own chart using the selectors below'),style = 'font-size:2.4vh; vertical-align: 1.6vh')
+                           #fontawesome::fa("info-circle", a11y = "sem", fill='#e10000', title='Build your own chart using the selectors below'),
                          ) # https://shiny.posit.co/blog/posts/bslib-tooltips/
                        ),
                        collapsible = TRUE,  width = NULL, id='box-1',
@@ -108,14 +109,14 @@ nationalTrends <- (
                        pickerInput(
                          inputId = "xaxis_dash",
                          label = "Select x-axis",
-                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
                          selected=c("Year"),
                          multiple = FALSE
                        ),
                        pickerInput(
                          inputId = "grouping_dash",
                          label = "Select grouping",
-                         choices=c('No grouping'='',  "Year"='year', "Police Force Area"='pfaName', "Ethnicity"='selfDefinedEthnicGroup', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         choices=c('No grouping'='',  "Year"='year', "Police Force Area"='pfaName',  "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
                          selected=c("No grouping"),
                          multiple = FALSE
                        )
@@ -127,7 +128,12 @@ nationalTrends <- (
                      
                      #new one here
                     shinydashboardPlus::box(
-                       title = p("Chart Filter", style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold'), 
+                      title = 
+                        span(
+                          span("Chart Filter",  style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold',
+                               span(fontawesome::fa("info-circle", a11y = "sem", fill_opacity=.7, title='Add filters to your chart to obtain more granular insight'),style = 'font-size:2.4vh; vertical-align: 1.6vh')
+                          ) # https://shiny.posit.co/blog/posts/bslib-tooltips/
+                        ),
                        solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-2',
                      shinyWidgets::sliderTextInput(
                        inputId="year_range_dash", label="Which year(s) would like to visualise?",
@@ -137,7 +143,7 @@ nationalTrends <- (
                      div(style='height:1.5vh'),
                      pickerInput(
                        inputId = "pfa_filter_dash",
-                       label = "Select PFA",
+                       label = "Police Force Area (PFA)",
                        choices=c(unique(df_pfa$pfaName)),
                        selected=c(unique(df_pfa$pfaName)), options = list(
                          `actions-box` = TRUE), 
@@ -145,16 +151,24 @@ nationalTrends <- (
                      ),
                      pickerInput(
                        inputId = "ethnicgroup_filter_dash",
-                       label = " Select Ethnicity",
+                       label = " Ethnic group",
                        choices=c(unique(df_pfa$selfDefinedEthnicGroup)),
                        selected=c(unique(df_pfa$selfDefinedEthnicGroup)), options = list(
+                         `actions-box` = TRUE), 
+                       multiple = TRUE
+                     ),
+                     pickerInput(
+                       inputId = "ethnicity_filter_dash",
+                       label = " Ethnicity",
+                       choices=c(unique(df_pfa$selfDefinedEthnicity)),
+                       selected=c(unique(df_pfa$selfDefinedEthnicity)), options = list(
                          `actions-box` = TRUE), 
                        multiple = TRUE
                      ),
                      
                      pickerInput(
                        inputId = "legislation_filter_dash",
-                       label = " Select Legislation",
+                       label = " Legislation",
                        choices=c(unique(df_pfa$legislation)),
                        selected=c(unique(df_pfa$legislation)),
                        options = list(
@@ -163,7 +177,7 @@ nationalTrends <- (
                      ),
                      pickerInput(
                        inputId = "reason_filter_dash",
-                       label = " Select Reason for Search",
+                       label = " Reason for search",
                        choices=c(unique(df_pfa$reasonForSearch)),
                        selected=c(unique(df_pfa$reasonForSearch)),
                        options = list(
@@ -172,7 +186,7 @@ nationalTrends <- (
                      ),
                      pickerInput(
                        inputId = "outcome_filter_dash",
-                       label = " Select Outcome of Search",
+                       label = " Outcome of search",
                        choices=c(unique(df_pfa$outcome)),
                        selected=c(unique(df_pfa$outcome)),
                        options = list(
@@ -181,36 +195,41 @@ nationalTrends <- (
                      )
                      ),
                      #p('Chart Options', style='font-size:4vh;font-family: Public Sans Thin, sans-serif;'),
-                    shinydashboardPlus::box(
-                       title = p("Chart Options", style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold'),
-                       solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-3',
-                         pickerInput(
-                           inputId = "legislation_group_dashh",
-                           label = " Select Legislation",
-                           choices=c(unique(df_pfa$legislation)),
-                           selected=c(unique(df_pfa$legislation)),
-                           options = list(
-                             `actions-box` = TRUE),
-                           multiple = TRUE
-                         ),
-                         pickerInput(
-                           inputId = "reason_group_dashh",
-                           label = " Select Reason for Search",
-                           choices=c(unique(df_pfa$reasonForSearch)),
-                           selected=c(unique(df_pfa$reasonForSearch)),
-                           options = list(
-                             `actions-box` = TRUE),
-                           multiple = TRUE
-                         ),
-                         pickerInput(
-                           inputId = "outcome_group_dashh",
-                           label = " Select Outcome of Search",
-                           choices=c(unique(df_pfa$outcome)),
-                           selected=c(unique(df_pfa$outcome)),
-                           options = list(
-                             `actions-box` = TRUE),
-                           multiple = TRUE
-                       ))
+                    # shinydashboardPlus::box(
+                    #   title = 
+                    #     span(
+                    #       span("Chart Options",  style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold',
+                    #            span(fontawesome::fa("info-circle", a11y = "sem",  fill_opacity=.7, title='Further customise your chart using the options below'),style = 'font-size:2.4vh; vertical-align: 1.6vh')
+                    #       ) # https://shiny.posit.co/blog/posts/bslib-tooltips/
+                    #     ),
+                    #    solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-3',
+                    #      pickerInput(
+                    #        inputId = "legislation_group_dashh",
+                    #        label = " Select Legislation",
+                    #        choices=c(unique(df_pfa$legislation)),
+                    #        selected=c(unique(df_pfa$legislation)),
+                    #        options = list(
+                    #          `actions-box` = TRUE),
+                    #        multiple = TRUE
+                    #      ),
+                    #      pickerInput(
+                    #        inputId = "reason_group_dashh",
+                    #        label = " Select Reason for Search",
+                    #        choices=c(unique(df_pfa$reasonForSearch)),
+                    #        selected=c(unique(df_pfa$reasonForSearch)),
+                    #        options = list(
+                    #          `actions-box` = TRUE),
+                    #        multiple = TRUE
+                    #      ),
+                    #      pickerInput(
+                    #        inputId = "outcome_group_dashh",
+                    #        label = " Select Outcome of Search",
+                    #        choices=c(unique(df_pfa$outcome)),
+                    #        selected=c(unique(df_pfa$outcome)),
+                    #        options = list(
+                    #          `actions-box` = TRUE),
+                    #        multiple = TRUE
+                    #    ))
               )),
               column(8,
                 fluidRow(
@@ -222,8 +241,12 @@ nationalTrends <- (
                 fluidRow(
                   column(5,
                     shinydashboardPlus::box(
-                      title = p("Download Chart", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333";right-margin:2vw'), 
-                      solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-4',
+                      title = 
+                        span(
+                          span("Download Chart",  style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold',
+                               span(fontawesome::fa("info-circle", a11y = "sem",  fill_opacity=.7, title='Download an image of your chart'),style = 'font-size:2.4vh; vertical-align: 1.6vh')
+                          ) # https://shiny.posit.co/blog/posts/bslib-tooltips/
+                        ),                      solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL, id='box-4',
                       div(style=' display:flex; flex-direction: row; justify-content: space-around; align-items: center; ',
                       column(2, #style='width:20%;',
                       radioButtons("download_chart_format", "Format", 
@@ -250,7 +273,12 @@ nationalTrends <- (
                   div(style='width: .5vw'),
                   column(5,
                     shinydashboardPlus::box(
-                      title = p("Download Data", style = 'font-size:2vh;font-family: Public Sans Thin, sans-serif;color = "#333333"; left-margin:2vw'), 
+                      title = 
+                        span(
+                          span("Download Data",  style = 'font-size:3vh;font-family: Public Sans Thin, sans-serif; color = "#333333"; font-weight: bold',
+                               span(fontawesome::fa("info-circle", a11y = "sem",  fill_opacity=.7, title='Export the data used in your chart'),style = 'font-size:2.4vh; vertical-align: 1.6vh')
+                          ) # https://shiny.posit.co/blog/posts/bslib-tooltips/
+                        ),   
                       solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, width = NULL,id='box-4',
                       div(style=' display:flex; flex-direction: row; justify-content: space-around; align-items: center',
                           column(2,
@@ -278,15 +306,15 @@ nationalTrends <- (
                 ),
                 div(style='width: .5vw'),
                 #https://stackoverflow.com/questions/49061057/create-downloadbutton-that-can-output-multiple-file-types-r-shiny
-                column(2,
-                actionBttn(
-                  inputId = "guided_tour",
-                  label = "Guided Tour",
-                  color = "success",
-                  style = "material-flat",
-                  icon = icon("sliders"),
-                  block = TRUE
-                )
+                column(2#,
+                # actionBttn(
+                #   inputId = "guided_tour",
+                #   label = "Guided Tour",
+                #   color = "success",
+                #   style = "material-flat",
+                #   icon = icon("sliders"),
+                #   block = TRUE
+                # )
                 )
               )
             ),

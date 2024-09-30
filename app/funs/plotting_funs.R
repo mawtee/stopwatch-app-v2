@@ -2454,7 +2454,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   # download data, name of columns
   # adding single filter options to title
   
-  
+ # browser()
   
   # For now hardcode it, because seems to be delay between observeEvent and the function w/e
   if (yaxis == 'Ethnic disparities') {
@@ -2484,6 +2484,8 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   # xaxis <- 'selfDefinedEthnicGroup'
   # grouping <- 'pfaName'
   # 
+
+  #browser()
   # Apply filters
   df_pfa_filter <- df_pfa %>%
     filter(
@@ -2493,10 +2495,15 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
       reasonForSearch%in%reason_filter,
       outcome%in%outcome_filter
     ) %>%
-    rename(
-      'xAxis' = xaxis
-    ) %>%
-    mutate(xAxis = as.factor(xAxis))
+    mutate(
+      xAxis = as.factor(.data[[xaxis]]) # year is renamed here
+    )  #%>%
+    #mutate(xAxis = as.factor(xAxis))
+    
+    # rename(
+    #   'xAxis' = xaxis  # year is renamed here
+    # ) %>%
+    # mutate(xAxis = as.factor(xAxis))
     
 
   # Palette
@@ -2582,7 +2589,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
     if (grouping == '') {
       df_pfa_plot <- df_pfa_filter %>%
         group_by(xAxis) %>%
-        summarise(yAxis = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        summarise(yAxis = round((sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T))*1000,1), na.rm=T) %>%
         ungroup() 
       title_text<-  paste0("Stop-search rate per 1,000 population by ",xaxis_text,", ", year_string)
     }
@@ -2590,7 +2597,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
       df_pfa_plot <- df_pfa_filter %>%
         rename('group'=grouping) %>%
         group_by(xAxis, group) %>%
-        summarise(yAxis = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        summarise(yAxis = round((sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T))*1000,1), na.rm=T) %>%
         ungroup() 
       group_palette <- pal(length(unique(df_pfa_plot$group)))
       df_pfa_plot$color <- recode(
@@ -2605,7 +2612,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
     if (grouping == '') {
       df_pfa_plot <- df_pfa_filter %>%
         group_by(xAxis) %>%
-        mutate(rate = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        mutate(rate = round((sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T))*1000,1), na.rm=T) %>%
         ungroup() %>%
         distinct(xAxis, .keep_all=T) %>%
         select(xAxis, rate) %>%
@@ -2620,7 +2627,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
       df_pfa_plot <- df_pfa_filter %>%
         rename('group'=grouping) %>%
         group_by(xAxis, group) %>%
-        mutate(rate = round((sum(numberOfSearches)/sum(population))*1000,1), na.rm=T) %>%
+        mutate(rate = round((sum(numberOfSearches, na.rm=T)/sum(population, na.rm=T))*1000,1), na.rm=T) %>%
         ungroup() %>%
         distinct(xAxis, group, .keep_all=T) %>%
         select(xAxis, group, rate) %>%

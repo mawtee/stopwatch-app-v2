@@ -36,13 +36,13 @@ source("app/funs/countUp_funs.R")
 source("app/funs/onOffToggle_funs.R")
 
 
-df_pfa <- read_csv("data/dfPFA_clean_dashboard_pop.csv")
+df_pfa <- read_csv("data/dfPFA_clean_dashboard_pop_2324.csv")
 
-
-df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 
-                               ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
+# 
+# df_pfa$financialYear <- ifelse(df_pfa$financialYear=="2020/2021", "2020/21", 
+#                                ifelse(df_pfa$financialYear=="2021/2022", "2021/22", df_pfa$financialYear))
 df_pfa$year <- factor(df_pfa$year,labels=unique(df_pfa$financialYear))
-df_pfa <- df_pfa[df_pfa$pfaName != "British Transport Police",]
+#df_pfa <- df_pfa[df_pfa$pfaName != "British Transport Police",]
 
 #library(here)
 #source(here("scripts_scr/source_code_for_shiny.R"))

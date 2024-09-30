@@ -109,6 +109,10 @@ process_stop_and_search <- function(year, colnames) {
 
 process_stop_and_search_dashboard <- function(year, colnames) {
   
+  # QA shit
+  # year <- YEARS[4]
+  # colnames <- COLNAMES__LIST[[4]]
+  
   # Load data
   print(paste0("Loading and formatting ", year, " stop and search data"))
   if (year==2020) {
@@ -122,12 +126,12 @@ process_stop_and_search_dashboard <- function(year, colnames) {
     df <- df %>% select(-all_of(todrop))
   }
   if (year!= 2020) {
-    todrop <- c('financial_year_quarter', 'link', 'gender', 'sex', 'age_group')
+    todrop <- c('financial_year_quarter', 'link', 'gender',  'sex', 'age_group', 'officer_defined_ethnicity',	'combined_ethnicity')
     df <- df %>% select(-any_of(todrop))
   }
   
   # Rename columns
-  names(df) <- colnames
+  colnames(df) <- colnames
   
   # Homogenise Police Force Area names
   df <- df %>%
@@ -442,7 +446,7 @@ expand_census <- function(dfCensusPFA) {
   # Expand dataframe 6 times (6*2) to create observations required for yearly time series 
   dfCensusPFAseries <- dfCensusPFA %>%
     group_by(year, pfaCode, selfDefinedEthnicity, population, selfDefinedEthnicGroup) %>%
-    expand(id = 1:6) %>%
+    expand(id = 1:7) %>%
     arrange(id) 
   
   # Recode population variable
@@ -450,11 +454,11 @@ expand_census <- function(dfCensusPFA) {
     arrange(pfaCode, year, selfDefinedEthnicity) %>%
     group_by(pfaCode, selfDefinedEthnicity) %>%
     mutate(cumCount = row_number()) %>%
-    mutate(yearSeries=plyr::mapvalues(cumCount,from=1:12,to=2011:2022)) %>%
+    mutate(yearSeries=plyr::mapvalues(cumCount,from=1:14,to=2011:2024)) %>%
     mutate(pop11 = first(population)) %>%
     mutate(pop21 = last(population)) %>%
     mutate(population = case_when(yearSeries < 2021~pop11, T~pop21)) %>%
-    filter(cumCount != 12) %>%
+    filter(cumCount != 14) %>% # Need to functionalise this (effectively, legnth(unique()))
     mutate(year = as.character(yearSeries)) %>%
     ungroup() %>%
     select(year:selfDefinedEthnicGroup)
