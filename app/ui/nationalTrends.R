@@ -39,19 +39,19 @@ nationalTrends <- (
                    shinyWidgets::materialSwitch(
                      inputId = "pageview_toggle_nattre",
                      status = "primary",
-                     value=T,
+                     value=F,
                      width='350px'
                    )
             )
-          ),
+            , style="display:none"),
           column(6,
                  conditionalPanel(
                    condition = "input.pageview_toggle_nattre > 0",
-                   p(HTML("Narrative View (the full experience)"), style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif; margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;")
+                   p(HTML("Narrative View (the full experience)"), style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif;margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;") # margin-left: -30px;
                  ),
                  conditionalPanel(
                    condition = "input.pageview_toggle_nattre == 0",
-                   p("Dashboard View (just the data)",  style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif;margin-left: -30px; margin-top: -2vh; margin-bottom:25vh;")
+                   p("Dashboard View (just the data)",  style = "color: white; font-size: 2.1vw; font-family:   'IBM Plex Mono', sans-serif;margin-left: 30px; margin-top: -2vh; margin-bottom:25vh;") # margin-left: -30px for full prod
                  )
           )
         ),
