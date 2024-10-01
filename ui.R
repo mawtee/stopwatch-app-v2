@@ -114,7 +114,7 @@ ui <-
 
    
    # Home
-   home,
+   #home,
 
    # National Trends
    nationalTrends,
