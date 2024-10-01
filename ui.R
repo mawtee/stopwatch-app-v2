@@ -26,6 +26,7 @@ library(webshot2)
 library(openxlsx)
 library(bslib)
 library(bsicons)
+library(shinycssloaders)
 
 
 source("app/ui/home.R")
@@ -69,7 +70,7 @@ hcoptslang <- getOption("highcharter.lang")
 hcoptslang$thousandsSep <- ","
 options(highcharter.lang = hcoptslang)
 
-setSliderColor('#e10000', 'year_range_dash')
+#setSliderColor('#e10000', 'year_range_dash')
 #bs_theme() |> bs_add_rules(".my-tip { background-color: red; color: red; font-size: 30vw }")
 
 

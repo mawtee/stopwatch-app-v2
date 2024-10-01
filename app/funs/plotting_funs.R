@@ -2457,9 +2457,9 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
  # browser()
   
   # For now hardcode it, because seems to be delay between observeEvent and the function w/e
-  if (yaxis == 'Ethnic disparities') {
-    xaxis <- 'selfDefinedEthnicGroup'
-  }
+  # if (yaxis == 'Ethnic disparities') {
+  #   xaxis <- 'selfDefinedEthnicGroup'
+  # }
   
 
   
@@ -2496,6 +2496,8 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
   
   # NEW ETHNICITY STUFF################
   if (yaxis == 'Ethnic disparities') {
+    
+    if (xaxis == 'selfDefinedEthnicGroup') { 
     df_pfa_filter <- df_pfa %>%
       filter(
         pfaName%in%pfa_filter,
@@ -2507,6 +2509,27 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
       mutate(
         xAxis = as.factor(.data[[xaxis]]) # year is renamed here
       )
+    }
+    
+    if (xaxis == 'selfDefinedEthnicity') {
+      browser()
+      df_pfa_filter <- df_pfa %>%
+        filter(
+          pfaName%in%pfa_filter,
+          selfDefinedEthnicity%in%ethnicgroup_filter|selfDefinedEthnicGroup=='White',
+          legislation%in%legislation_filter,
+          reasonForSearch%in%reason_filter,
+          outcome%in%outcome_filter
+        ) %>%
+        mutate(
+          xAxis = as.factor(.data[[xaxis]]) # year is renamed here
+        )
+      # TODO
+      # basically show/hide ethnicity/ethnic group filters to rmeove the other plus outcome filter for arrest
+      # update ethncity filter for ethnic disaprities  to remove 'white british', but keeping it in data
+      
+    }
+     
 
   }
 

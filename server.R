@@ -2332,7 +2332,6 @@ function(input, output, session) {
   observeEvent(input$yaxis_dash, {
     if (input$yaxis_dash == 'Ethnic disparities') {
       #browser()
-      
       # it does this when you select ethnic disparities, 
       # moving to new xaxis, resulting in new render
       updatePickerInput(
@@ -2348,6 +2347,7 @@ function(input, output, session) {
 
       )
     }
+    
     else {
       updatePickerInput(
         session, 'xaxis_dash',
@@ -2377,36 +2377,61 @@ function(input, output, session) {
       )
     }
     if (input$yaxis_dash == 'Arrest rate') {
-      #browser()
+      ###browser()
       xcond <- xall[!grepl(paste0('outcome', collapse = "|"), xall)]
-      updatePickerInput(
-        session, 'xaxis_dash',
-        choices=c('No grouping'='',xcond),
-        selected=input$xaxis_dash
-      )
+      if (input$xaxis_dash == 'outcome') {
+        updatePickerInput(
+          session, 'xaxis_dash',
+          choices=c(xcond),
+          selected='year'
+        )
+      }
+      else {
+        updatePickerInput(
+          session, 'xaxis_dash',
+          choices=c(xcond),
+          selected=input$xaxis_dash
+        )
+      }
     }
   },
   ignoreInit=F)
   
   
   # This runs and changes only available grouping choices 
-  observeEvent(c(input$xaxis_dash, input$yaxis_dash), {
+  observeEvent(c(input$xaxis_dash, input$yaxis_dash), {  
     #browser()
     groupingall <- c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
     groupingcond <- groupingall[!grepl(paste0(input$xaxis_dash, collapse = "|"), groupingall)]
     updatePickerInput(
       session, 'grouping_dash',
       choices=c('No grouping'='',groupingcond),
-      selected=''
+      selected=input$grouping_dash
     )
+    
     if (input$yaxis_dash == 'Arrest rate') {
-      groupingcond <- groupingall[!grepl(paste0('outcome', collapse = "|"), groupingall)]
-      updatePickerInput(
-        session, 'grouping_dash',
-        choices=c('No grouping'='',groupingcond),
-        selected=''
-      )
+      groupingcond <- groupingall[!grepl(paste0(c('outcome',input$xaxis_dash), collapse = "|"), groupingall)]
+      if (input$grouping_dash=='outcome') {
+        updatePickerInput(
+          session, 'grouping_dash',
+          choices=c('No grouping'='',groupingcond),
+          selected=''
+        )
+      }
+      else {
+        updatePickerInput(
+          session, 'grouping_dash',
+          choices=c('No grouping'='',groupingcond),
+          selected=input$grouping_dash
+        )
+      }
     }
+    
+    if (input$yaxis_dash == 'Ethnic disparities') {
+      #browser()
+        print('hmmmm')
+    }
+    
   },
   ignoreInit=F)
   

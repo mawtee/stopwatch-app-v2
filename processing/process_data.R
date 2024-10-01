@@ -69,7 +69,13 @@ complete==nrow(df_ss)-expectednas
 
 df_processed <- df_processed %>%
   select(-selfDefinedEthnicGroup.y) %>%
-  rename('selfDefinedEthnicGroup' = 'selfDefinedEthnicGroup.x')
+  rename('selfDefinedEthnicGroup' = 'selfDefinedEthnicGroup.x') %>%
+  mutate(reasonForSearch = case_when(
+    reasonForSearch == 'Anticipation of violence'~ 'Anticipation of Violence',
+    reasonForSearch == 'Terrorism Act 2000 s.43a'~ 'Terrorism Act 2000 section 43',
+    T~reasonForSearch
+  ) 
+  )
 
 write_csv(df_processed, "data/dfPFA_clean_dashboard_pop_2324.csv")
 
@@ -81,17 +87,23 @@ write_csv(df_processed, "data/dfPFA_clean_dashboard_pop_2324.csv")
 
 
 
-t <- df_ss %>%
-  group_by(financialYear) %>%
-  summarise(numberOfSearches = sum(numberOfSearches))
+# t <- df_ss %>%
+#   group_by(financialYear) %>%
+#   summarise(numberOfSearches = sum(numberOfSearches))
+# 
+# df_processed %>%
+#   group_by(financialYear) %>%
+#   summarise(numberOfSearches = sum(numberOfSearches))
+# 
+# df_pfa %>%
+#   group_by(financialYear) %>%
+#   summarise(numberOfSearches = sum(numberOfSearches)) %>%
+#   mutate(reasonForSearch = case_when(
+#     reasonForSearch = 'Anticipation of violence'~ 'Anticipation of Violence',
+#     T~reasonForSearch
+#   ))
+# 
 
-df_processed %>%
-  group_by(financialYear) %>%
-  summarise(numberOfSearches = sum(numberOfSearches))
-
-df_pfa %>%
-  group_by(financialYear) %>%
-  summarise(numberOfSearches = sum(numberOfSearches))
 
 #%>% left_join(crime_df, by=c('pfaName', 'financialYear'))
 

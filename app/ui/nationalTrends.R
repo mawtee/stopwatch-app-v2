@@ -63,7 +63,7 @@ nationalTrends <- (
                  ),
                  conditionalPanel(
                    condition = "input.pageview_toggle_nattre == 0",
-                   icon("fas fa-chevron-down", "fa-6x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px;") 
+                   icon("fas fa-chevron-down", "fa-3x", style = "color: #ffffff; margin-left: 30px; margin-bottom: 5px; size: 5vh") 
                  ),
           ),
           column(6,
@@ -109,14 +109,14 @@ nationalTrends <- (
                        pickerInput(
                          inputId = "xaxis_dash",
                          label = "Select x-axis",
-                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for search"='reasonForSearch', "Outcome of search"='outcome'),
                          selected=c("Year"),
                          multiple = FALSE
                        ),
                        pickerInput(
                          inputId = "grouping_dash",
                          label = "Select grouping",
-                         choices=c('No grouping'='',  "Year"='year', "Police Force Area"='pfaName',  "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+                         choices=c('No grouping'='',  "Year"='year', "Police Force Area (PFA)"='pfaName',  "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for search"='reasonForSearch', "Outcome of search"='outcome'),
                          selected=c("No grouping"),
                          multiple = FALSE
                        )
@@ -241,7 +241,10 @@ nationalTrends <- (
               column(8,
                 fluidRow(
                   column(12,
-                    highchartOutput("dashboard_chart", height='65vh', width='65vw')
+                         shinycssloaders::withSpinner(
+                    highchartOutput("dashboard_chart", height='65vh', width='65vw'),
+                    color = '#e10000'
+                         )
                   )
                 ),
                 div(style='height:2.5vh'),
