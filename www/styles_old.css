@@ -307,42 +307,6 @@ Filter: "Black"
 }
 
 
-#download_chart_format {
- font-size: .65vw; 
-}
-
-#download_chart_name {
- font-size: .65vw; 
-}
-
-
-#download_chart_format-label {
-  font-size: .85vw;
-}
-#download_chart_name-label {
-  font-size: .85vw;
-}
-
-
-#download_data_format {
- font-size: .65vw; 
-}
-
-#download_data_name {
- font-size: .65vw; 
-}
-
-
-#download_data_format-label {
-  font-size: .85vw;
-}
-#download_data_name-label {
-  font-size: .85vw;
-}
-
-
-
-
 /* National Trends */
 /*============================================================================*/
 
@@ -466,14 +430,14 @@ Filter: "Black"
 
 
 .dropdown-menu.open {
-  max-height:50vh !important ;
+  max-height:55vh !important ;
   min-height:10vh !important ;
 }
 
 
 
 #bs-select-4.inner.open {
-  max-height:50vh !important ;
+  max-height:55vh !important ;
   min-height:10vh !important ;
 }
 
@@ -539,6 +503,107 @@ Filter: "Black"
 }
 
 
+
+#download_chart_format {
+ font-size: .65vw; 
+}
+
+#download_chart_name {
+ font-size: .65vw; 
+}
+
+
+#download_chart_format-label {
+  font-size: .85vw;
+}
+#download_chart_name-label {
+  font-size: .85vw;
+}
+
+
+#download_data_format {
+ font-size: .65vw; 
+}
+
+#download_data_name {
+ font-size: .65vw; 
+}
+
+
+#download_data_format-label {
+  font-size: .85vw;
+}
+#download_data_name-label {
+  font-size: .85vw;
+}
+
+
+.irs-handle.from {
+  color:#ffffff;
+}
+
+.irs-handle.to {
+  color: #ffffff;
+}
+
+
+.js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {
+  background: #e10000; 
+  border-color:#e10000; 
+  height:.8vh;
+  
+}
+
+.irs--shiny .irs-handle {
+  background: #fbfbfb;
+  border-color: #afafaf;
+  height: 2.8vh;
+  width: 2.8vh;
+}
+
+.irs--shiny .irs-line {
+  background-color:#fbfbfb;
+  height:0vh;
+  border-color:#afafaf;
+}
+
+.irs--shiny .irs-from, .irs--shiny .irs-to, .irs--shiny .irs-single {
+  
+  background: white;
+  border-width: .2vw;
+  border-color: #e10000;
+  color: #333333;
+}
+
+.filter-option-inner {
+  font-size: 1.4vh;
+}
+  
+  
+.btn-rad {
+  background-color: #e10000;
+  border-color: ##e10000;
+}
+
+.btn.dropdown-toggle.btn-default {
+  background-color:#ffffff!important;
+}
+
+.dropdown-item.active.selected {
+  background-color: #e10000;
+}
+
+.glyphicon {color:#e10000 !important;}
+
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover { 
+  background-color: #e10000;
+}
+
+#download_chart_format :after, #download_chart_format :before{
+                            background-color:#bff442;
+                            }
+                            
+/* https://stackoverflow.com/questions/53850152/change-colour-of-checkbox-using-shinywidgets */
 
 /* National Trends Section One ('Introduction') */
 /*----------------------------------------------------------------------------*/

@@ -2461,6 +2461,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
     xaxis <- 'selfDefinedEthnicGroup'
   }
   
+
   
   # Rename widegt values to actual variable values (DONE)
   # Rename group functions to filter (DONE)
@@ -2471,14 +2472,19 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
 
   # Year subset
   year_range_int <- which(levels(df_pfa$year) %in% year_range)
-  if (length(year_range_int > 1)) {
+  #browser()
+  
+  if (length(year_range_int) >= 2) {
     df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]:year_range_int[2]],]
     year_string <- paste0(levels(df_pfa$year)[year_range_int[1]], ' - ',levels(df_pfa$year)[year_range_int[2]])
   }
   else {
+    #browser()
     df_pfa <- df_pfa[df_pfa$year %in% levels(df_pfa$year)[year_range_int[1]],]
     year_string <- paste0(levels(df_pfa$year)[year_range_int[1]])
   }
+  
+  df_pfa$year <- droplevels(df_pfa$year) # resets factor after dropping
   
   # QA
   # xaxis <- 'selfDefinedEthnicGroup'
@@ -2487,6 +2493,24 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
 
   #browser()
   # Apply filters
+  
+  # NEW ETHNICITY STUFF################
+  if (yaxis == 'Ethnic disparities') {
+    df_pfa_filter <- df_pfa %>%
+      filter(
+        pfaName%in%pfa_filter,
+        selfDefinedEthnicGroup%in%ethnicgroup_filter|selfDefinedEthnicGroup=='White',
+        legislation%in%legislation_filter,
+        reasonForSearch%in%reason_filter,
+        outcome%in%outcome_filter
+      ) %>%
+      mutate(
+        xAxis = as.factor(.data[[xaxis]]) # year is renamed here
+      )
+
+  }
+
+  else {
   df_pfa_filter <- df_pfa %>%
     filter(
       pfaName%in%pfa_filter,
@@ -2497,14 +2521,22 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
     ) %>%
     mutate(
       xAxis = as.factor(.data[[xaxis]]) # year is renamed here
-    )  #%>%
-    #mutate(xAxis = as.factor(xAxis))
-    
-    # rename(
-    #   'xAxis' = xaxis  # year is renamed here
-    # ) %>%
-    # mutate(xAxis = as.factor(xAxis))
-    
+    )
+  }
+  
+  
+  # df_pfa_filter <- df_pfa %>%
+  #   filter(
+  #     pfaName%in%pfa_filter,
+  #     selfDefinedEthnicGroup%in%ethnicgroup_filter,
+  #     legislation%in%legislation_filter,
+  #     reasonForSearch%in%reason_filter,
+  #     outcome%in%outcome_filter
+  #   ) %>%
+  #   mutate(
+  #     xAxis = as.factor(.data[[xaxis]]) # year is renamed here
+  #   )  
+  
 
   # Palette
   #https://www.color-hex.com/color/e10000
@@ -2684,7 +2716,7 @@ plot__dashboard_chart <- function(df_pfa, year_range, yaxis, xaxis, grouping, pf
     hc_add_series(
       type='column', name=yaxis, data=df_pfa_plot, hcaes(x='xAxis', y='yAxis'), color="#e10000") %>%
     hc_xAxis(
-      categories =levels(df_pfa_plot$xAxis),
+      type='category',
       labels = list(
         style = list(
           fontSize = '.85vw',

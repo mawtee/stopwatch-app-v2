@@ -146,7 +146,8 @@ nationalTrends <- (
                        label = "Police Force Area (PFA)",
                        choices=c(unique(df_pfa$pfaName)),
                        selected=c(unique(df_pfa$pfaName)), options = list(
-                         `actions-box` = TRUE), 
+                         `actions-box` = TRUE, `virtual-scroll`=T, `live-search`=T,
+                         `live-search-normalize`=T, `live-search-style`='startsWith'), 
                        multiple = TRUE
                      ),
                      pickerInput(
@@ -154,7 +155,8 @@ nationalTrends <- (
                        label = " Ethnic group",
                        choices=c(unique(df_pfa$selfDefinedEthnicGroup)),
                        selected=c(unique(df_pfa$selfDefinedEthnicGroup)), options = list(
-                         `actions-box` = TRUE), 
+                         `actions-box` = TRUE, `virtual-scroll`=T, `live-search`=T,
+                         `live-search-normalize`=T, `live-search-style`='contains'), 
                        multiple = TRUE
                      ),
                      pickerInput(
@@ -162,7 +164,8 @@ nationalTrends <- (
                        label = " Ethnicity",
                        choices=c(unique(df_pfa$selfDefinedEthnicity)),
                        selected=c(unique(df_pfa$selfDefinedEthnicity)), options = list(
-                         `actions-box` = TRUE), 
+                         `actions-box` = TRUE, `virtual-scroll`=T, `live-search`=T,
+                         `live-search-normalize`=T, `live-search-style`='contains'), 
                        multiple = TRUE
                      ),
                      
@@ -172,7 +175,8 @@ nationalTrends <- (
                        choices=c(unique(df_pfa$legislation)),
                        selected=c(unique(df_pfa$legislation)),
                        options = list(
-                         `actions-box` = TRUE),
+                         `actions-box` = TRUE, `virtual-scroll`=T, `live-search`=T,
+                         `live-search-normalize`=T, `live-search-style`='contains'),
                        multiple = TRUE
                      ),
                      pickerInput(
@@ -181,7 +185,8 @@ nationalTrends <- (
                        choices=c(unique(df_pfa$reasonForSearch)),
                        selected=c(unique(df_pfa$reasonForSearch)),
                        options = list(
-                         `actions-box` = TRUE),
+                         `actions-box` = TRUE, `virtual-scroll`=T, `live-search`=T,
+                         `live-search-normalize`=T, `live-search-style`='contains'),
                        multiple = TRUE
                      ),
                      pickerInput(
@@ -190,7 +195,8 @@ nationalTrends <- (
                        choices=c(unique(df_pfa$outcome)),
                        selected=c(unique(df_pfa$outcome)),
                        options = list(
-                         `actions-box` = TRUE),
+                         `actions-box` = TRUE, `virtual-scroll`=T, `live-search`=T,
+                         `live-search-normalize`=T, `live-search-style`='contains'),
                        multiple = TRUE
                      )
                      ),
@@ -229,7 +235,8 @@ nationalTrends <- (
                     #        options = list(
                     #          `actions-box` = TRUE),
                     #        multiple = TRUE
-                    #    ))
+                    #    )
+                    #   )
               )),
               column(8,
                 fluidRow(
@@ -286,7 +293,9 @@ nationalTrends <- (
                                               choices = c( "XLSX" = ".xlsx",
                                                            "CSV" = ".csv"
                                                          ),
-                                              inline = F)
+                                              inline = F)#,
+                                 #tags$script("$(\"input:radio[name='download_data_format'][value='.xlsx']\").parent().css('color', '#e10000');")
+
                           ),
                           column(6,
                                  textInputIcon(

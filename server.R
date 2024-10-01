@@ -2331,22 +2331,40 @@ function(input, output, session) {
   
   observeEvent(input$yaxis_dash, {
     if (input$yaxis_dash == 'Ethnic disparities') {
+      #browser()
+      
+      # it does this when you select ethnic disparities, 
+      # moving to new xaxis, resulting in new render
       updatePickerInput(
         session, 'xaxis_dash',
-        choices = c("Ethnic group"='selfDefinedEthnicGroup', "Ethnic group"='selfDefinedEthnicity'),
+        choices = c("Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity'),
         selected='selfDefinedEthnicGroup'
+      )
+      # but then as it re-renders, it does this so looks to re-render again
+      updatePickerInput(
+        session, 'ethnicgroup_filter_dash',
+        choices = unique(df_pfa$selfDefinedEthnicGroup)[!grepl(paste0(c('White', 'Not Stated / Unknown') , collapse = "|"), unique(df_pfa$selfDefinedEthnicGroup))],
+        selected = unique(df_pfa$selfDefinedEthnicGroup)[!grepl(paste0(c('White', 'Not Stated / Unknown'), collapse = "|"), unique(df_pfa$selfDefinedEthnicGroup))]
+
       )
     }
     else {
       updatePickerInput(
         session, 'xaxis_dash',
-        choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity',"Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
+        choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity',"Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
+        selected=input$xaxis_dash
       )
+      updatePickerInput(
+        session, 'ethnicgroup_filter_dash',
+        choices = unique(df_pfa$selfDefinedEthnicGroup),
+        selected = unique(df_pfa$selfDefinedEthnicGroup)
+      )
+      
     }
     
     
   },
-  ignoreInit=T)
+  ignoreInit=F)
   
   observeEvent(c(input$grouping_dash,input$yaxis_dash), {
     xall <-c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
@@ -2354,7 +2372,8 @@ function(input, output, session) {
       xcond <- xall[!grepl(paste0(input$grouping_dash, collapse = "|"), xall)]
       updatePickerInput(
         session, 'xaxis_dash',
-        choices=xcond
+        choices=xcond,
+        selected=input$xaxis_dash
       )
     }
     if (input$yaxis_dash == 'Arrest rate') {
@@ -2369,6 +2388,8 @@ function(input, output, session) {
   },
   ignoreInit=F)
   
+  
+  # This runs and changes only available grouping choices 
   observeEvent(c(input$xaxis_dash, input$yaxis_dash), {
     #browser()
     groupingall <- c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
