@@ -10,7 +10,7 @@
 library(shiny)
 
 # Define server logic required to draw a histogram
-function(input, output, session) {
+server <- function(input, output, session) {
   
   
   
@@ -480,7 +480,7 @@ function(input, output, session) {
   makeReactiveBinding("outputText")
   
   observeEvent(input$Clicked, {
-    browser()
+   # browser()
     outputText <<- paste0(input$Clicked)
   }#,
   # ignoreInit=T,
@@ -2302,7 +2302,7 @@ function(input, output, session) {
   
 
   output$dashboard_chart <- renderHighchart({
-    plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$xaxis_dash, input$grouping_dash, input$pfa_filter_dash, input$ethnicgroup_filter_dash, input$legislation_filter_dash, input$reason_filter_dash, input$outcome_filter_dash, 'chart')
+    plot__dashboard_chart(df_pfa, input$year_range_dash, input$yaxis_dash, input$ethnic_level_dash, input$ethnic_comp_dash, input$ethnic_ref_dash, input$xaxis_dash, input$grouping_dash, input$pfa_filter_dash, input$ethnicgroup_filter_dash, input$legislation_filter_dash, input$reason_filter_dash, input$outcome_filter_dash, 'chart')
   })
   
   
@@ -2329,44 +2329,141 @@ function(input, output, session) {
     )
   })
   
-  observeEvent(input$yaxis_dash, {
-    if (input$yaxis_dash == 'Ethnic disparities') {
-      #browser()
-      # it does this when you select ethnic disparities, 
-      # moving to new xaxis, resulting in new render
-      updatePickerInput(
-        session, 'xaxis_dash',
-        choices = c("Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity'),
-        selected='selfDefinedEthnicGroup'
-      )
-      # but then as it re-renders, it does this so looks to re-render again
-      updatePickerInput(
-        session, 'ethnicgroup_filter_dash',
-        choices = unique(df_pfa$selfDefinedEthnicGroup)[!grepl(paste0(c('White', 'Not Stated / Unknown') , collapse = "|"), unique(df_pfa$selfDefinedEthnicGroup))],
-        selected = unique(df_pfa$selfDefinedEthnicGroup)[!grepl(paste0(c('White', 'Not Stated / Unknown'), collapse = "|"), unique(df_pfa$selfDefinedEthnicGroup))]
+  
 
+  # Observer to update Ethnic disparities comparison and reference groups when switching between Ethnic Group and Ethnicity
+  #-------------------------------------------------------------------------------------------------------------------------
+  observeEvent(input$ethnic_level_dash, {
+    if (input$ethnic_level_dash=='selfDefinedEthnicGroup') {
+      updatePickerInput(
+        session, 'ethnic_comp_dash',
+        choices= levels(df_pfa$selfDefinedEthnicGroup)[!grepl("Not Stated / Unknown", levels(df_pfa$selfDefinedEthnicGroup))],
+        selected='Black'
+      )
+      updatePickerInput(
+        session, 'ethnic_ref_dash',
+        choices=  levels(df_pfa$selfDefinedEthnicGroup)[!grepl("Not Stated / Unknown", levels(df_pfa$selfDefinedEthnicGroup))],
+        selected='White'
       )
     }
-    
     else {
       updatePickerInput(
-        session, 'xaxis_dash',
-        choices=c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup', "Ethnicity"='selfDefinedEthnicity',"Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome'),
-        selected=input$xaxis_dash
+        session, 'ethnic_comp_dash',
+        choices=list(
+          'Asian'=levels(df_pfa$selfDefinedEthnicity)[1:5],
+          'Black'=levels(df_pfa$selfDefinedEthnicity)[6:8],
+          'Mixed'=levels(df_pfa$selfDefinedEthnicity)[9:12],
+          'Other Ethnicity'=levels(df_pfa$selfDefinedEthnicity)[13:14],
+          'White'=levels(df_pfa$selfDefinedEthnicity)[15:18]
+        ),
+        selected='Black or Black British African'
       )
       updatePickerInput(
-        session, 'ethnicgroup_filter_dash',
-        choices = unique(df_pfa$selfDefinedEthnicGroup),
-        selected = unique(df_pfa$selfDefinedEthnicGroup)
+        session, 'ethnic_ref_dash',
+        choices=list(
+          'Asian'=levels(df_pfa$selfDefinedEthnicity)[1:5],
+          'Black'=levels(df_pfa$selfDefinedEthnicity)[6:8],
+          'Mixed'=levels(df_pfa$selfDefinedEthnicity)[9:12],
+          'Other Ethnicity'=levels(df_pfa$selfDefinedEthnicity)[13:14],
+          'White'=levels(df_pfa$selfDefinedEthnicity)[15:18]
+        ),
+        selected='White British'
       )
-      
     }
-    
-    
+  })
+  
+  
+  # Observer to show and hide Ethnic disparities measure controls 
+  #----------------------------------------------------------------
+  observeEvent(c(input$yaxis_dash, input$xaxis_dash), {
+    if (input$yaxis_dash=='Ethnic disparities') {
+      if (input$xaxis_dash%ni%c('selfDefinedEthnicGroup','selfDefinedEthnicity')) {
+        shinyjs::show('ethnic_dropdown_dash')
+        shinyjs::hide('ethnicgroup_filter_dash')
+        shinyjs::hide('ethnicity_filter_dash')
+      }
+      else {
+        shinyjs::hide('ethnic_dropdown_dash')
+        shinyjs::show('ethnicgroup_filter_dash')
+        shinyjs::show('ethnicity_filter_dash')
+
+      }
+    }
+    else {
+      shinyjs::hide('ethnic_dropdown_dash')
+      shinyjs::show('ethnicgroup_filter_dash')
+      shinyjs::show('ethnicity_filter_dash')
+    }
   },
   ignoreInit=F)
   
-  observeEvent(c(input$grouping_dash,input$yaxis_dash), {
+  
+  
+  
+  # Observer to make both ethnic group filters speak to each other
+  #---------------------------------------------------------------
+  observeEvent(c(input$ethnicgroup_filter_dash), {
+  ethnicity_ops <- lapply(
+    list(asian_grouping, black_grouping, mixed_grouping, other_grouping, white_grouping, unknown_grouping), function(x) {
+        paste0(unique(x[['group']][x[['group']] %in% input$ethnicgroup_filter_dash]),":",x[['ethnicity']][x[['group']] %in% input$ethnicgroup_filter_dash])
+    }
+  )
+  ethnicity_ops_group <- ethnicity_ops
+  for (x in 1:length(  ethnicity_ops_group)) {
+    names(ethnicity_ops_group)[[x]] <- unique(sub("\\:.*", "",   ethnicity_ops_group[[x]]))
+    ethnicity_ops_group[[x]] <- sub('.*:', '',  ethnicity_ops_group[[x]]) 
+    ethnicity_ops[[x]] <- sub('.*:', '',  ethnicity_ops[[x]]) 
+  }
+  updatePickerInput(
+      session, 'ethnicity_filter_dash',
+      choices=ethnicity_ops_group[ethnicity_ops_group!=""],
+      selected=unlist(ethnicity_ops[ethnicity_ops!=""])
+    )
+  },
+  ignoreInit=F, ignoreNULL=F)
+  
+  # Hide ethnic group/ethnicity from filters where you on ethnic disparities without ethnic group/ethnicityon x-axis
+  #
+
+
+  
+  # Observer to update ethnic filters based on Y
+  #----------------------------------------------------------------
+  observeEvent(c(input$yaxis_dash), {
+    if (input$yaxis_dash %in% c('Stop-search rate', 'Ethnic disparities')) {
+      if ("Not Stated / Unknown" %in% input$ethnicgroup_filter_dash) {
+        updatePickerInput(
+          session, 'ethnicgroup_filter_dash',
+          choices=levels(df_pfa$selfDefinedEthnicGroup)[!grepl("Not Stated / Unknown", levels(df_pfa$selfDefinedEthnicGroup))],
+          selected=input$ethnicgroup_filter_dash[!grepl("Not Stated / Unknown", input$ethnicgroup_filter_dash)]
+        )
+      }
+      else {
+        updatePickerInput(
+          session, 'ethnicgroup_filter_dash',
+          choices=levels(df_pfa$selfDefinedEthnicGroup)[!grepl("Not Stated / Unknown", levels(df_pfa$selfDefinedEthnicGroup))],
+          selected=input$ethnicgroup_filter_dash
+        )
+      }
+    }
+    else {
+      updatePickerInput(
+        session, 'ethnicgroup_filter_dash',
+        choices=levels(df_pfa$selfDefinedEthnicGroup),
+        selected=input$ethnicgroup_filter_dash
+      )
+    }
+  },
+  ignoreInit=F)
+  
+  
+  
+  
+  # Observer to update x-axis options
+  # Removes grouping from X 
+  # And additionally remove outcomes where y = Arres Rate
+  #----------------------------------------------------
+  observeEvent(c(input$xaxis_dash, input$yaxis_dash), {
     xall <-c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
     if (input$grouping_dash %in% xall) {
       xcond <- xall[!grepl(paste0(input$grouping_dash, collapse = "|"), xall)]
@@ -2377,7 +2474,6 @@ function(input, output, session) {
       )
     }
     if (input$yaxis_dash == 'Arrest rate') {
-      ###browser()
       xcond <- xall[!grepl(paste0('outcome', collapse = "|"), xall)]
       if (input$xaxis_dash == 'outcome') {
         updatePickerInput(
@@ -2394,21 +2490,20 @@ function(input, output, session) {
         )
       }
     }
+    
+    
+  
+    
+    
   },
   ignoreInit=F)
   
-  
-  # This runs and changes only available grouping choices 
-  observeEvent(c(input$xaxis_dash, input$yaxis_dash), {  
+
+  # This runs and changes only available grouping choices
+  observeEvent(c(input$xaxis_dash, input$yaxis_dash), {
     #browser()
     groupingall <- c("Year"='year', "Police Force Area"='pfaName', "Ethnic group"='selfDefinedEthnicGroup',"Ethnicity"='selfDefinedEthnicity', "Legislation"='legislation', "Reason for Search"='reasonForSearch', "Outcome of Search"='outcome')
-    groupingcond <- groupingall[!grepl(paste0(input$xaxis_dash, collapse = "|"), groupingall)]
-    updatePickerInput(
-      session, 'grouping_dash',
-      choices=c('No grouping'='',groupingcond),
-      selected=input$grouping_dash
-    )
-    
+
     if (input$yaxis_dash == 'Arrest rate') {
       groupingcond <- groupingall[!grepl(paste0(c('outcome',input$xaxis_dash), collapse = "|"), groupingall)]
       if (input$grouping_dash=='outcome') {
@@ -2426,12 +2521,25 @@ function(input, output, session) {
         )
       }
     }
-    
-    if (input$yaxis_dash == 'Ethnic disparities') {
-      #browser()
-        print('hmmmm')
+
+    else if (input$yaxis_dash == 'Ethnic disparities') {
+      groupingcond <- groupingall[!grepl(paste0(c('selfDefinedEthnicGroup','selfDefinedEthnicity',input$xaxis_dash), collapse = "|"), groupingall)]
+      updatePickerInput(
+        session, 'grouping_dash',
+        choices=c('No grouping'='',groupingcond),
+        selected=''
+      )
     }
-    
+
+    else {
+      groupingcond <- groupingall[!grepl(paste0(input$xaxis_dash, collapse = "|"), groupingall)]
+      updatePickerInput(
+        session, 'grouping_dash',
+        choices=c('No grouping'='',groupingcond),
+        selected=input$grouping_dash
+      )
+    }
+
   },
   ignoreInit=F)
   
@@ -2453,6 +2561,44 @@ function(input, output, session) {
   # },
   # ignoreInit=F)
   
+  
+  
+  
+  output$chart_title <- renderUI(
+    textInput(
+      inputId='chart_title_dash',
+      label='',
+      value='A title'
+    )
+  )
+  
+  output$chart_subtitle <- renderUI(
+    textInput(
+      inputId='chart_subtitle_dash',
+      label='',
+      value='A subtitle'
+    )
+  )
+  
+  output$chart_caption <- renderUI(
+    textInput(
+      inputId='chart_caption_dash',
+      label='',
+      value='A caption'
+    )
+  )
+  
+  output$chart_gridline_status <- renderText({
+    if (input$chart_gridline_dash == T) {
+      'Show'
+    }
+    else {
+      'Hide'
+    }
+  })
+  
+  
+
   
   
   # create ui ouput for choices

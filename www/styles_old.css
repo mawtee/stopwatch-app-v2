@@ -7,7 +7,7 @@ hero-inner{
   padding-top: 5%;
 }
 
-/* Set size of all headers */
+/* Set size of all headers 
 h3{
 
     font-size: 20px;
@@ -25,7 +25,7 @@ p{
 
     font-size: 12px;
 }
- 
+ */
  
  #subs {
    color: #e10000;
@@ -36,14 +36,14 @@ p{
 }
 
 
-/* a grey container to place dashboard items in*/ 
+/* a grey container to place dashboard items in
 .grey-container{
   background-color:transparent;
   margin-top: -4px;
 }
- 
+ */ 
 
- /* responsive layout for items placed in container - for larger screens*/
+ /* responsive layout for items placed in container - for larger screens
 .container-inner-contents{
   display: flex;
   flex-direction: row;
@@ -54,19 +54,20 @@ p{
   padding-bottom: 2%;
   
 }  
-
- /* responsive layout for items placed in container - for for smaller screens*/
+*/
+ /* responsive layout for items placed in container - for for smaller screen
 @media (max-width: 800px) {
 .container-inner-contents {
     flex-direction: column;
 }
 }
-
+*/
 
 
 
 /* Hero home banner styles */
 /***************************************/
+
 .hero{
   /* Using "linear-gradient" to add gradient to the image. This will make the text easier to read */
   background-image: linear-gradient(to bottom right, #868686, rgba(0, 0, 0, 0)), url("stopwatch_banner.jpg") ;
@@ -135,46 +136,347 @@ p{
  
   }
   
-*/
+  
+  
 
-/* navbar style
+
+
+/* Basic styling for navbar page*/
 /***************************************/
-.navbar-default {
-  font-family:  'Public Sans Thin', sans-serif;
-  /*border-bottom: 10px #333333;*/
-  border-bottom: #333333 solid 1px;
-  margin: 0 !important;
-  font-weight:250; 
-  padding: 5px;
-  background-color:white;
-  font-size: 2.7vh;
-  color: #333333;
-}
+.container-fluid {        
+    margin: 0 !important;
+    padding: 0 !important;
+} 
 
-.navbar-brand, .navbar-default:hover .navbar-brand:hover {
-  padding: 10px;
-
-}
-
-/* Changes font to black in nav bar */
-.navbar-default .navbar-nav > li > a {
-  color: #333333;
+/* Height of each page */
+.bslib-page-navbar {
+  min-height:100vh;
+  max-height: 100vh;
+  min-width: 100vw;
+  max-width:100vw;
+  padding: 0 0 !important; 
   background-color: white;
-
-}
-
-/* Changes colour of active (clicked) tab on the nav bar */
-.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
-  /*outline: 1px solid #333333;*/
-  font-family:  'Public Sans Thin', sans-serif;
-  background-color: white;
-  font-weight:650; 
-  color: #333333;
 }
 
 
 
+/* LANDING PAGE CLASSES */
+/***************************************/
+@media only screen and (min-width: 768px) {
+  .navbar {
+    min-height: 8vh;
+    max-height: 8vh;
+    padding: 0vh 0vh; 
+  }
+  
+  .navbar-header {
+    float: left;
+  }
+  
+  #navbar-logo {
+    height:7vh ;
+    width:7.8vw ; 
+    margin-top: .4vh ; 
+    /*margin-left:-1.2vh;*/
+  }
+  
+  
+  .navbar-nav {
+    position: fixed;
+    left: 16vw !important;
+    display: flex;
+    align-items: center;
+    top: 0vh;
+  }
+  .nav>li>a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1vh 2vh;
+  }
+  .navbar-default {
+    line-height:8vh;
+    font-family:  'Public Sans Thin', sans-serif;
+    font-size: 2.8vh;
+    color: #333333;
+  /*box-shadow: 12px 12px 24px 0 rgba(22, 22, 22, 0.2),
+    -12px -12px 24px 0 rgba(255, 255, 255, 0.4);*/
+  }
+  .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active >   a:hover {
+    line-height:6vh;
+    /*outline: 1px solid #333333;*/
+    font-weight:650; 
+    background-color:#e10000;
+    color: white; 
+    /*box-shadow: inset 6px 6px 10px 0 rgba(22, 22, 22, 0.2),
+    inset -6px -6px 10px 0 rgba(255, 255, 255, 0.4);*/
+    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;*/
+  }
+  .landing-page {
+    padding-top: .5vh; 
+    margin-top: 8vh;
+    /*margin-left: -2.3vw;
+    margin-right: -2.6vw;*/
+    border-color: #333333;
+    background-color: #333333;
+    background: linear-gradient(rgba(51,51,51,.9), rgba(51,51,51,.9)),
+      url('https://deck.gl/images/examples/hexagon-layer.jpg') !important;
+    min-height: 92vh;
+    max-height: 92vh;
+    width: 100vw;
+  }
+  .landing-page-title {
+    position: relative;
+    left: 1.2vw;
+    top: 2.5vh;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 13.5vh;
+    color: white;
+    font-weight: bold;
+  }
+  .landing-page-subtitle {
+    position: relative;
+    left: 1.2vw;
+    top: 2.5vh;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 7vh;
+    color: white;
+    font-weight: normal;
+  }
+  .landing-page-togggle {
+    position: relative;
+    left: 1.2vw;
+    top: 6vh;
+    line-height:4vw;
+    font-size: 4vh !important;
+  }
+  .landing-page-toggle-begin {
+    position: relative;
+    left: 1.2vw;
+    top: 38vh;
+    line-height:4vh;
+    font-size: 4vh !important;
+  }
+  /*
+  .bg-light-blue, .label-primary, .modal-primary .modal-body {
+    background-color: #e10000 !important;;
+  }
+/*
+  
+  /*
+  #pageview_toggle_nattre-label {
+    color: white;
+    font-family: 'Public Sans', sans-serif;
+    font-weight: normal;
+    font-size: 4vh;
+  }
+  #pageview_toggle_nattre-stateText {
+    color: white;
+    font-family: 'Public Sans', sans-serif;
+    font-weight: normal;
+    font-size: 4vh;
+  }
+  .label-primary {
+    background-color: #e10000;
+  }
+  #pageview_toggle_nattre.ms-Toggle-background {
+  }
+  #pageview_toggle_nattre.ms-Toggle-background.pill-56 {
+    background-color: #e10000;
+  }
+  .label.switch.label-primary.bg-primary {
+    background-color: #e10000;
+  }
+  #label.switch.label-primary.bg-primary {
+    background-color: #e10000;
+  }
+  #pageview-desc-nattre {
+    margin-left: 30px;
+    color: white;
+  }
+  */
+}
 
+
+@media only screen and (min-width: 50px) and (max-width: 767px) {
+  
+  .navbar {
+    min-height: 8vh;
+    max-height: 8vh;
+    padding: 0 0 !important; 
+    margin: 0 0 !important;
+  }
+  
+  .navbar-header {
+    float: left;
+  }
+  
+  #navbar-logo {
+    height:3vh ;
+    width:5vw ; 
+    margin-top: .4vh ; 
+    margin-left:-1.2vh;
+  }
+  
+  .navbar-toggle {
+    position: relative;
+    align-items: center;
+    right: -75vw;
+    top: 3vh;
+    margin: 0 !important;
+    padding: 0  0 !important;
+    border: 2vw; 
+  }
+  
+  .navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    position: relative;
+    top: -1vh;
+    border-color: #e7e7e7;
+    background-color: #EEEEEE;
+    width: 100vw;
+  }
+  
+  
+  
+  .navbar-collapse {
+    margin: 0 0 !important;
+    padding-left: 0 !important
+    padding-right 0!important;
+    max-height: 60vh !important;
+  }
+  
+  
+  .navbar-collapse.in {
+    overflow-y: auto;
+    margin: 0 0 !important;
+    padding 0 0 !important;
+    
+  }
+  
+
+  
+  .navbar-nav {
+    position: relative;
+    display: flex;
+    flex-direction: column !important;
+  }
+  
+  .nav>li>a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column !important;
+    padding: 1vh 2vh;
+  }
+  
+  .navbar-default {
+    line-height:8vh;
+    font-family:  'Public Sans Thin', sans-serif;
+    font-size: 2.8vh;
+    color: #333333;
+  /*box-shadow: 12px 12px 24px 0 rgba(22, 22, 22, 0.2),
+    -12px -12px 24px 0 rgba(255, 255, 255, 0.4);*/
+  }
+  
+  .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active >   a:hover {
+    line-height:6vh;
+    /*outline: 1px solid #333333;*/
+    font-weight:650; 
+    background-color:#e10000;
+    color: white; 
+    /*box-shadow: inset 6px 6px 10px 0 rgba(22, 22, 22, 0.2),
+    inset -6px -6px 10px 0 rgba(255, 255, 255, 0.4);*/
+    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;*/
+  }
+  
+  .landing-page {
+    padding-top: .5vh; 
+    margin-top: 8vh;
+    /*margin-left: -8vw ;
+    margin-right: -4vw; */
+    border-color: #333333;
+    background-color: #333333;
+    background: linear-gradient(rgba(51,51,51,.9), rgba(51,51,51,.9)),
+      url('nattre-background-300.jpg') !important;
+    min-height: 92vh;
+    max-height: 92vh;
+    min-width: 50px;
+    max-width: 767px;
+  }
+   .landing-page-title {
+    position: relative;
+    left: 1.5vw;
+    top: 4vh !important;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 8vh !important;
+    color: white;
+    font-weight: bold;
+  }
+  .landing-page-subtitle {
+    position: relative;
+    left: 1.5vw;
+    top: 10vh !important;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 3.5vh !important;
+    color: white;
+    font-weight: normal;
+    inline-size: 95vw;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .landing-page-togggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    display:inline;
+    left: 1.5vw;
+    top: 20vh !important;
+    line-height:4vw;
+    inline-size: 95vw;
+    overflow-wrap: break-word;
+    hyphens: auto;
+   
+  }
+  .landing-page-toggle-begin {
+    position: relative;
+    display: flex;
+    align-items: center;
+    display:inline;
+    left: 1.5vw;
+    top: 30vh !important;
+    line-height:4vh;
+    inline-size:  95vw;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  
+}
+
+
+/* PHONE CLASS for landing page */
+/***************************************/
+
+
+
+/*Different (monitor and phone) class for dashboard page layout */
+/***************************************/
+
+
+
+
+/* Observert event y axis x axis group conditions, all in one */
+/***************************************/
+
+/* Consider aixs ticks, line thickness tite/axis labels font size change based on viewport height */
+/***************************************/
+
+
+
+
+/*.bg-light-blue, .label-primary, .modal-primary .modal-body {
+     background-color: #e10000 !important; 
+}*/
 
 
 
@@ -311,78 +613,7 @@ Filter: "Black"
 /*============================================================================*/
 
 /* Landing page*/
-/*----------------------------------------------------------------------------*/
-
-.landing-page {
-  padding-top: .5vh; 
-  margin-top: 60px;
-  margin-left: -2.2vw;
-  margin-right: -2.2vw;
-  border-color: #333333;
-  background-color: #333333;
-  background: linear-gradient(rgba(51,51,51,.9), rgba(51,51,51,.9)),
-    url('https://deck.gl/images/examples/hexagon-layer.jpg');
-  min-height: 92vh;
-  max-height: 92vh;
-  width: 100vw;
-}
-.landing-page-title {
-  margin-left: 2.2vw;
-  font-family: 'Public Sans', sans-serif;
-  height: 18vh;
-  font-size: 13.5vh;
-  color: white;
-  font-weight: bold;
-  margin-bottom: 3vh;
-  
-}
-.landing-page-subtitle {
-  margin-left: 2.2vw;
-  margin-bottom: 0px;
-  font-family: 'Public Sans', sans-serif;
-  height: 9vh;
-  font-size: 7vh;
-  color: white;
-  font-weight: normal;
-  margin-bottom: 10vh;
-}
-.pageview-togggle {
-  margin-left: 2.2vw;
-  font-family: 'Public Sans', sans-serif;
-}
-#pageview_toggle_nattre-label {
-  color: white;
-  font-family: 'Public Sans', sans-serif;
-  font-weight: normal;
-  font-size: 4vh;
-}
-#pageview_toggle_nattre-stateText {
-  color: white;
-  font-family: 'Public Sans', sans-serif;
-  font-weight: normal;
-  font-size: 4vh;
-}
-.label-primary {
-  background-color: #e10000;
-}
-}
-#pageview_toggle_nattre.ms-Toggle-background {
-}
-#pageview_toggle_nattre.ms-Toggle-background.pill-56 {
-  background-color: #e10000;
-}
-.label.switch.label-primary.bg-primary {
-  background-color: #e10000;
-}
-#label.switch.label-primary.bg-primary {
-  background-color: #e10000;
-}
-#pageview-desc-nattre {
-  margin-left: 30px;
-  color: white;
-}
-
-
+/*---
 
 /* National Trends Dashboard */
 /*############################################################################*/
@@ -468,6 +699,44 @@ Filter: "Black"
   font-weight: normal;
   font-family: Public Sans Light, sans-serif;
 }
+
+#ethnic_comp_dash-label.control-label {
+  font-size: 1.5vh !important;
+  font-style: italic !important;
+}
+
+#ethnic_ref_dash-label.control-label {
+  font-size: 1.5vh !important;
+  font-style: italic !important;
+}
+
+.nav-tabs {
+    border-bottom: none
+}
+
+
+.nav-tabs>li>a {
+  color:#333333 ;
+  font-size:2vh !important;
+  font-family: Public Sans Light, sans-serif !important;
+  padding: .15vw;
+  width: 5vw !important;
+  margin: auto !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+  color: white;
+  font-size:2vh;
+  cursor: default;
+  background-color: #e10000;
+  border: 1px solid #e10000;
+  border-bottom-color: transparent;
+  font-family: Public Sans Light, sans-serif !important;
+}
+
+
 
 .btn.dropdown-toggle.btn-default {
   background-color: white;
